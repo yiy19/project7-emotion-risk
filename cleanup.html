@@ -179,7 +179,8 @@ pre code {
 <pre class="r"><code>riskraw &lt;- haven::read_spss(&quot;data/relationship_raw.sav&quot;)
 riskraw &lt;- riskraw %&gt;% 
   rename_with(tolower) %&gt;% 
-  select(duration__in_seconds_, consent:fl_40_do_maleprediction)
+  select(duration__in_seconds_, consent:fl_40_do_maleprediction) %&gt;% 
+  rename(time = duration__in_seconds_)
 
 write_sav(riskraw, &quot;data/relationship.sav&quot;)</code></pre>
 </div>
@@ -210,15 +211,37 @@ write_sav(riskraw, &quot;data/relationship.sav&quot;)</code></pre>
 
 # collapse condition variables
 # 1. rename condition variables &amp; drop used variables &amp; put time after consent
-head(riskraw)
-riskraw &lt;- riskraw %&gt;% 
+head(riskraw)</code></pre>
+<pre><code>## # A tibble: 6 x 44
+##    time            consent age     gender friend1 friend2 femsel_risk femsel_neg
+##   &lt;dbl&gt;          &lt;dbl+lbl&gt; &lt;chr&gt; &lt;dbl+lb&gt; &lt;chr&gt;   &lt;chr&gt;     &lt;dbl+lbl&gt;  &lt;dbl+lbl&gt;
+## 1   244 1 [I consent to t… 38    2 [Fema… rachel  vane    NA          NA        
+## 2   180 1 [I consent to t… 43    1 [Male] malathi yuvara… NA          NA        
+## 3   283 1 [I consent to t… 35    1 [Male] ROBERT  MICHAEL NA          NA        
+## 4   357 1 [I consent to t… 54    2 [Fema… Clare   Mary     0 [Not at…  2 [Neutr…
+## 5   392 1 [I consent to t… 44    1 [Male] Sean    William NA          NA        
+## 6   218 1 [I consent to t… 40    1 [Male] Shaun   Robert  NA          NA        
+## # … with 36 more variables: femsel_alert &lt;dbl+lbl&gt;, femsel_pos &lt;dbl+lbl&gt;,
+## #   femsur_risk &lt;dbl+lbl&gt;, femsur_neg &lt;dbl+lbl&gt;, femsur_alert &lt;dbl+lbl&gt;,
+## #   femsur_pos &lt;dbl+lbl&gt;, fempred_risk &lt;dbl+lbl&gt;, fempred_neg &lt;dbl+lbl&gt;,
+## #   fempred_alert &lt;dbl+lbl&gt;, fempred_pos &lt;dbl+lbl&gt;, malsel_risk &lt;dbl+lbl&gt;,
+## #   malsel_neg &lt;dbl+lbl&gt;, malsel_alert &lt;dbl+lbl&gt;, malsel_pos &lt;dbl+lbl&gt;,
+## #   malsur_risk &lt;dbl+lbl&gt;, malsur_neg &lt;dbl+lbl&gt;, malsur_alert &lt;dbl+lbl&gt;,
+## #   malsur_pos &lt;dbl+lbl&gt;, malpred_risk &lt;dbl+lbl&gt;, malpred_neg &lt;dbl+lbl&gt;,
+## #   malpred_alert &lt;dbl+lbl&gt;, malpred_pos &lt;dbl+lbl&gt;, riskyrisk &lt;dbl+lbl&gt;,
+## #   riskavrisk &lt;dbl+lbl&gt;, rel_self &lt;dbl+lbl&gt;, rel_friend1 &lt;dbl+lbl&gt;,
+## #   rel_friend2 &lt;dbl+lbl&gt;, attention1 &lt;dbl+lbl&gt;, attention2 &lt;dbl+lbl&gt;,
+## #   code &lt;chr&gt;, fl_30_do_femaleselfdecision &lt;dbl&gt;,
+## #   fl_30_do_femalesurrogatedecision &lt;dbl&gt;, fl_30_do_femaleprediction &lt;dbl&gt;,
+## #   fl_40_do_maleselfdecision &lt;dbl&gt;, fl_40_do_malesurrogatedecision &lt;dbl&gt;,
+## #   fl_40_do_maleprediction &lt;dbl&gt;</code></pre>
+<pre class="r"><code>riskraw &lt;- riskraw %&gt;% 
   mutate(femself_condition = fl_30_do_femaleselfdecision,
          femsur_condition = fl_30_do_femalesurrogatedecision,
          fempred_condition = fl_30_do_femaleprediction,
          malself_condition = fl_40_do_maleselfdecision,
          malsur_condition = fl_40_do_malesurrogatedecision,
          malpred_condition = fl_40_do_maleprediction,
-         time = duration__in_seconds_,
          .keep = &quot;unused&quot;
   ) %&gt;% 
   relocate(time, .after = consent)
@@ -386,7 +409,33 @@ riskraw &lt;- riskraw %&gt;%
   filter(!is.na(code_mturk))
 
 # 4. write file
-write_sav(riskraw, &quot;data/risk.sav&quot;)</code></pre>
+write_sav(riskraw, &quot;data/risk_labelled.sav&quot;)</code></pre>
+<pre class="r"><code># read in file
+riskraw &lt;- read_sav(&quot;data/risk_labelled.sav&quot;)
+
+# convert column types
+riskraw &lt;- riskraw %&gt;% 
+  mutate(
+   consent = as.factor(consent),
+   time = as.numeric(time),
+   age = as.numeric(age),
+   gender = as.factor(gender),
+   gendcond = as.factor(gendcond),
+   condition = as.factor(condition),
+   risklevel = as.numeric(risklevel),
+   pos = as.numeric(pos),
+   neg = as.numeric(neg),
+   alert = as.numeric(alert),
+   riskyrisk = as.numeric(riskyrisk),
+   riskavrisk = as.numeric(riskavrisk),
+   rel_self = as.factor(rel_self),
+   rel_friend1 = as.factor(rel_friend1),
+   rel_friend2 = as.factor(rel_friend2),
+   attention1 = as.numeric(attention1),
+   attention2 = as.numeric(attention2)
+  )
+# write file
+write_sav(riskraw, &quot;data/risk_nonlabelled.sav&quot;)</code></pre>
 </div>
 
 

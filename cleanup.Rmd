@@ -17,7 +17,8 @@ library(haven)
 riskraw <- haven::read_spss("data/relationship_raw.sav")
 riskraw <- riskraw %>% 
   rename_with(tolower) %>% 
-  select(duration__in_seconds_, consent:fl_40_do_maleprediction)
+  select(duration__in_seconds_, consent:fl_40_do_maleprediction) %>% 
+  rename(time = duration__in_seconds_)
 
 write_sav(riskraw, "data/relationship.sav")
 ```
@@ -67,7 +68,7 @@ I inspected the data again and saw that all the values in the rel_self column we
 
 
 #### Restructure data
-```{r glimpase-data, eval = FALSE}
+```{r glimpase-data}
 # attempts that didn't work
 # collapse risk, pos, neg, and alert columns across conditions    
 # risk <- risk %>% 
@@ -97,7 +98,6 @@ riskraw <- riskraw %>%
          malself_condition = fl_40_do_maleselfdecision,
          malsur_condition = fl_40_do_malesurrogatedecision,
          malpred_condition = fl_40_do_maleprediction,
-         time = duration__in_seconds_,
          .keep = "unused"
   ) %>% 
   relocate(time, .after = consent)
@@ -223,7 +223,36 @@ riskraw <- riskraw %>%
   filter(!is.na(code_mturk))
 
 # 4. write file
-write_sav(riskraw, "data/risk.sav")
+write_sav(riskraw, "data/risk_labelled.sav")
+```
+
+```{r set-type}
+# read in file
+riskraw <- read_sav("data/risk_labelled.sav")
+
+# convert column types
+riskraw <- riskraw %>% 
+  mutate(
+   consent = as.factor(consent),
+   time = as.numeric(time),
+   age = as.numeric(age),
+   gender = as.factor(gender),
+   gendcond = as.factor(gendcond),
+   condition = as.factor(condition),
+   risklevel = as.numeric(risklevel),
+   pos = as.numeric(pos),
+   neg = as.numeric(neg),
+   alert = as.numeric(alert),
+   riskyrisk = as.numeric(riskyrisk),
+   riskavrisk = as.numeric(riskavrisk),
+   rel_self = as.factor(rel_self),
+   rel_friend1 = as.factor(rel_friend1),
+   rel_friend2 = as.factor(rel_friend2),
+   attention1 = as.numeric(attention1),
+   attention2 = as.numeric(attention2)
+  )
+# write file
+write_sav(riskraw, "data/risk_nonlabelled.sav")
 ```
 
 
