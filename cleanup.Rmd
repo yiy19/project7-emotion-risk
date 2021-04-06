@@ -21,6 +21,7 @@ write_sav(risk, "data/relationship.sav")
 
 
 ```{r recode-incorrect-values, include=FALSE}
+# make sure that all the rel-self values are coded correctly
 # bring in choice text data
 choicetext <- read_csv("/Users/yedam/Documents/Academic/WFU/Psychology/Projects/Thesis/Data/Raw data/choice_text.csv")
 head(choicetext)
@@ -58,6 +59,8 @@ risk <- risk %>%
 ```
 
 
+I inspected the data again and saw that all the values in the rel_self column were correctly coded to begin with. So there was no need for this code chunk. 
+
 
 
 ```{r glimpase-data, eval = FALSE}
@@ -77,6 +80,30 @@ risk %>%
     ) %>% 
 # drop condition variables
     select(!starts_with("fl_"))
+
+
+# collapse condition variables
+# 1. rename condition variables
+head(risk)
+risk <- risk %>% 
+  mutate(femself_condition = fl_30_do_femaleselfdecision,
+         femsur_condition = fl_30_do_femalesurrogatedecision,
+         fempred_condition = fl_30_do_femaleprediction,
+         malself_condition = fl_40_do_maleselfdecision,
+         malsur_condition = fl_40_do_malesurrogatedecision,
+         malpred_condition = fl_40_do_maleprediction,
+         time = duration__in_seconds_,
+         .keep = "unused"
+  )
+
+
+risk <- risk %>% 
+  pivot_longer(
+      cols = starts_with(c("fl_30_do_", "fl_40_do_")),
+      names_pattern = "(.+)_(.+)_(.+)_(.+)",
+      names_to = c(".value", "condition")
+  )
   
+
   
 ```

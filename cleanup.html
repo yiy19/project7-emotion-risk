@@ -177,6 +177,7 @@ risk &lt;- risk %&gt;%
   select(duration__in_seconds_, consent:fl_40_do_maleprediction)
 
 write_sav(risk, &quot;data/relationship.sav&quot;)</code></pre>
+<p>I inspected the data again and saw that all the values in the rel_self column were correctly coded to begin with. So there was no need for this code chunk.</p>
 <pre class="r"><code># collapse risk, pos, neg, and alert columns across conditions    
 risk &lt;- risk %&gt;% 
     pivot_longer(
@@ -192,7 +193,30 @@ risk %&gt;%
       names_to = c(NA, NA, &quot;.value&quot;, &quot;condition&quot;)
     ) %&gt;% 
 # drop condition variables
-    select(!starts_with(&quot;fl_&quot;))</code></pre>
+    select(!starts_with(&quot;fl_&quot;))
+
+
+# collapse condition variables
+# 1. rename condition variables
+head(risk)
+risk &lt;- risk %&gt;% 
+  mutate(femself_condition = fl_30_do_femaleselfdecision,
+         femsur_condition = fl_30_do_femalesurrogatedecision,
+         fempred_condition = fl_30_do_femaleprediction,
+         malself_condition = fl_40_do_maleselfdecision,
+         malsur_condition = fl_40_do_malesurrogatedecision,
+         malpred_condition = fl_40_do_maleprediction,
+         time = duration__in_seconds_,
+         .keep = &quot;unused&quot;
+  )
+
+
+risk &lt;- risk %&gt;% 
+  pivot_longer(
+      cols = starts_with(c(&quot;fl_30_do_&quot;, &quot;fl_40_do_&quot;)),
+      names_pattern = &quot;(.+)_(.+)_(.+)_(.+)&quot;,
+      names_to = c(&quot;.value&quot;, &quot;condition&quot;)
+  )</code></pre>
 
 
 
