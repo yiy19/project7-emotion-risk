@@ -5,11 +5,14 @@ date: "4/5/2021"
 output: html_document
 ---
 
+#### Libraries
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(haven)
 ```
 
+
+#### Read in data
 ```{r read-data}
 risk <- haven::read_spss("data/relationship_raw.sav")
 risk <- risk %>% 
@@ -20,7 +23,8 @@ write_sav(risk, "data/relationship.sav")
 ```
 
 
-```{r recode-incorrect-values, include=FALSE}
+#### Recode rel_self
+```{r recode-incorrect-values, include=FALSE, eval= FALSE}
 # make sure that all the rel-self values are coded correctly
 # bring in choice text data
 choicetext <- read_csv("/Users/yedam/Documents/Academic/WFU/Psychology/Projects/Thesis/Data/Raw data/choice_text.csv")
@@ -62,28 +66,29 @@ risk <- risk %>%
 I inspected the data again and saw that all the values in the rel_self column were correctly coded to begin with. So there was no need for this code chunk. 
 
 
-
+#### Restructure data
 ```{r glimpase-data, eval = FALSE}
+# attempts that didn't work
 # collapse risk, pos, neg, and alert columns across conditions    
-risk <- risk %>% 
-    pivot_longer(
-      cols = ends_with(c("_risk", "_pos", "_neg", "_alert")),
-      names_pattern = "(.+)_(.+)",
-      names_to = c("conditiontext",".value"),
-    ) %>% 
+# risk <- risk %>% 
+#    pivot_longer(
+#      cols = ends_with(c("_risk", "_pos", "_neg", "_alert")),
+#      names_pattern = "(.+)_(.+)",
+#      names_to = c("conditiontext",".value"),
+#    ) %>% 
 # collapse condition columns
-risk %>%     
-  pivot_longer(
-      cols = starts_with(c("fl_30_do_", "fl_40_do_")),
-      names_pattern = "(.+)_(.+)_(.+)_(.+)",
-      names_to = c(NA, NA, ".value", "condition")
-    ) %>% 
+#risk %>%     
+#  pivot_longer(
+#      cols = starts_with(c("fl_30_do_", "fl_40_do_")),
+#      names_pattern = "(.+)_(.+)_(.+)_(.+)",
+#      names_to = c(NA, NA, ".value", "condition")
+#    ) %>% 
 # drop condition variables
-    select(!starts_with("fl_"))
+#    select(!starts_with("fl_"))
 
 
 # collapse condition variables
-# 1. rename condition variables
+# 1. rename condition variables & drop used variables & put time after consent
 head(risk)
 risk <- risk %>% 
   mutate(femself_condition = fl_30_do_femaleselfdecision,
@@ -94,16 +99,129 @@ risk <- risk %>%
          malpred_condition = fl_40_do_maleprediction,
          time = duration__in_seconds_,
          .keep = "unused"
-  )
+  ) %>% 
+  relocate(time, .after = consent)
 
-
+# 2. create condition variable
 risk <- risk %>% 
-  pivot_longer(
-      cols = starts_with(c("fl_30_do_", "fl_40_do_")),
-      names_pattern = "(.+)_(.+)_(.+)_(.+)",
-      names_to = c(".value", "condition")
+  mutate(gendcond = case_when(
+                              femself_condition == 1 ~ "femself",
+                              femsur_condition == 1 ~ "femsur",
+                              fempred_condition == 1 ~ "fempred",
+                              malself_condition == 1 ~ "malself",
+                              malsur_condition == 1 ~"malsur",
+                              malpred_condition == 1 ~"malpred"),
+         .keep = "unused"
+                              
   )
-  
 
-  
+# 3. recode ratings by condition
+# risk levels
+risk <- risk %>% 
+  mutate(risklevel = case_when(
+    gendcond == "femself" ~ femsel_risk,
+    gendcond == "femsur" ~ femsur_risk,
+    gendcond == "fempred" ~ fempred_risk,
+    gendcond == "malself" ~ malsel_risk,
+    gendcond == "malsur" ~ malsur_risk,
+    gendcond == "malpred" ~ malpred_risk
+  ),
+  # positive emotion
+  pos = case_when(
+    gendcond == "femself" ~ femsel_pos,
+    gendcond == "femsur" ~ femsur_pos,
+    gendcond == "fempred" ~ fempred_pos,
+    gendcond == "malself" ~ malsel_pos,
+    gendcond == "malsur" ~ malsur_pos,
+    gendcond == "malpred" ~ malpred_pos
+  ),
+  # negative emotion
+  neg = case_when(
+    gendcond == "femself" ~ femsel_neg,
+    gendcond == "femsur" ~ femsur_neg,
+    gendcond == "fempred" ~ fempred_neg,
+    gendcond == "malself" ~ malsel_neg,
+    gendcond == "malsur" ~ malsur_neg,
+    gendcond == "malpred" ~ malpred_neg
+  ),
+  # alertness ratings
+ alert = case_when(
+    gendcond == "femself" ~ femsel_alert,
+    gendcond == "femsur" ~ femsur_alert,
+    gendcond == "fempred" ~ fempred_alert,
+    gendcond == "malself" ~ malsel_alert,
+    gendcond == "malsur" ~ malsur_alert,
+    gendcond == "malpred" ~ malpred_alert
+  ))
+
+# 4. create combined condition variable
+risk <- risk %>% 
+  mutate(condition = case_when(
+    gendcond == "femself" | gendcond == "malself" ~ "Self",
+    gendcond == "femsur" | gendcond == "malsur" ~ "Surrogate",
+    gendcond == "fempred" | gendcond ==  "malpred" ~ "Prediction"
+  ))
+
+# 5. select columns I'm interested in
+risk <- risk %>% 
+  select(consent:gender, gendcond, condition, friend1, friend2, risklevel:alert, riskyrisk:code)
+
+# write_csv(risk, file = "data/risk.csv")
+
 ```
+
+
+I'm not exactly sure if my approach is the most optimal. 
+
+
+#### Compare Qualtrics and Amazon MTurk codes
+
+```{r compare-code}
+# read in data
+batch1 <- read_csv("/Users/yedam/Documents/Academic/WFU/Psychology/Projects/Thesis/Data/Batches/batch1_27.csv", na = c("", "NA"))
+batch2 <- read_csv("/Users/yedam/Documents/Academic/WFU/Psychology/Projects/Thesis/Data/Batches/batch2_27.csv", na = c("", "NA"))
+batch3 <- read_csv("/Users/yedam/Documents/Academic/WFU/Psychology/Projects/Thesis/Data/Batches/batch3_549.csv", na = c("", "NA"))
+
+# convert names into lowercase - extract worker id
+extractcode <- function(df){
+  rename_with(df, tolower) %>% 
+     select(answer.surveycode)
+}
+
+# extract codes
+code1 <- extractcode(batch1)
+code2 <- extractcode(batch2)
+code3 <- extractcode(batch3)
+
+# combine into 1
+code <- bind_rows(code1, code2, code3)
+
+# write file
+write_csv(code, file = "data/code.csv")
+
+```
+
+
+I compared the survey code in each of the risk and code files to make sure that they were consistent with each other. There were several NA's in the Mturk file, which makes sense. 
+
+
+```{r select-rows}
+# select rows in risk that have the survey code in the code column in code
+# 1. create key id variable
+risk <- risk %>% 
+  mutate(id = 1:nrow(risk))
+code <- code %>% 
+  mutate(id = 1:nrow(code)) %>% 
+  rename(code_mturk = answer.surveycode)
+
+# 2. merge two files
+risk <- risk %>% 
+  right_join(code)
+
+# 3. select rows whose mturk code is NOT missing
+risk <- risk %>% 
+  filter(!is.na(code_mturk))
+
+```
+
+

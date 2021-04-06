@@ -171,33 +171,45 @@ pre code {
 </div>
 
 
+<div id="libraries" class="section level4">
+<h4>Libraries</h4>
+</div>
+<div id="read-in-data" class="section level4">
+<h4>Read in data</h4>
 <pre class="r"><code>risk &lt;- haven::read_spss(&quot;data/relationship_raw.sav&quot;)
 risk &lt;- risk %&gt;% 
   rename_with(tolower) %&gt;% 
   select(duration__in_seconds_, consent:fl_40_do_maleprediction)
 
 write_sav(risk, &quot;data/relationship.sav&quot;)</code></pre>
+</div>
+<div id="recode-rel_self" class="section level4">
+<h4>Recode rel_self</h4>
 <p>I inspected the data again and saw that all the values in the rel_self column were correctly coded to begin with. So there was no need for this code chunk.</p>
-<pre class="r"><code># collapse risk, pos, neg, and alert columns across conditions    
-risk &lt;- risk %&gt;% 
-    pivot_longer(
-      cols = ends_with(c(&quot;_risk&quot;, &quot;_pos&quot;, &quot;_neg&quot;, &quot;_alert&quot;)),
-      names_pattern = &quot;(.+)_(.+)&quot;,
-      names_to = c(&quot;conditiontext&quot;,&quot;.value&quot;),
-    ) %&gt;% 
+</div>
+<div id="restructure-data" class="section level4">
+<h4>Restructure data</h4>
+<pre class="r"><code># attempts that didn&#39;t work
+# collapse risk, pos, neg, and alert columns across conditions    
+# risk &lt;- risk %&gt;% 
+#    pivot_longer(
+#      cols = ends_with(c(&quot;_risk&quot;, &quot;_pos&quot;, &quot;_neg&quot;, &quot;_alert&quot;)),
+#      names_pattern = &quot;(.+)_(.+)&quot;,
+#      names_to = c(&quot;conditiontext&quot;,&quot;.value&quot;),
+#    ) %&gt;% 
 # collapse condition columns
-risk %&gt;%     
-  pivot_longer(
-      cols = starts_with(c(&quot;fl_30_do_&quot;, &quot;fl_40_do_&quot;)),
-      names_pattern = &quot;(.+)_(.+)_(.+)_(.+)&quot;,
-      names_to = c(NA, NA, &quot;.value&quot;, &quot;condition&quot;)
-    ) %&gt;% 
+#risk %&gt;%     
+#  pivot_longer(
+#      cols = starts_with(c(&quot;fl_30_do_&quot;, &quot;fl_40_do_&quot;)),
+#      names_pattern = &quot;(.+)_(.+)_(.+)_(.+)&quot;,
+#      names_to = c(NA, NA, &quot;.value&quot;, &quot;condition&quot;)
+#    ) %&gt;% 
 # drop condition variables
-    select(!starts_with(&quot;fl_&quot;))
+#    select(!starts_with(&quot;fl_&quot;))
 
 
 # collapse condition variables
-# 1. rename condition variables
+# 1. rename condition variables &amp; drop used variables &amp; put time after consent
 head(risk)
 risk &lt;- risk %&gt;% 
   mutate(femself_condition = fl_30_do_femaleselfdecision,
@@ -208,15 +220,171 @@ risk &lt;- risk %&gt;%
          malpred_condition = fl_40_do_maleprediction,
          time = duration__in_seconds_,
          .keep = &quot;unused&quot;
+  ) %&gt;% 
+  relocate(time, .after = consent)
+
+# 2. create condition variable
+risk &lt;- risk %&gt;% 
+  mutate(gendcond = case_when(
+                              femself_condition == 1 ~ &quot;femself&quot;,
+                              femsur_condition == 1 ~ &quot;femsur&quot;,
+                              fempred_condition == 1 ~ &quot;fempred&quot;,
+                              malself_condition == 1 ~ &quot;malself&quot;,
+                              malsur_condition == 1 ~&quot;malsur&quot;,
+                              malpred_condition == 1 ~&quot;malpred&quot;),
+         .keep = &quot;unused&quot;
+                              
   )
 
-
+# 3. recode ratings by condition
+# risk levels
 risk &lt;- risk %&gt;% 
-  pivot_longer(
-      cols = starts_with(c(&quot;fl_30_do_&quot;, &quot;fl_40_do_&quot;)),
-      names_pattern = &quot;(.+)_(.+)_(.+)_(.+)&quot;,
-      names_to = c(&quot;.value&quot;, &quot;condition&quot;)
-  )</code></pre>
+  mutate(risklevel = case_when(
+    gendcond == &quot;femself&quot; ~ femsel_risk,
+    gendcond == &quot;femsur&quot; ~ femsur_risk,
+    gendcond == &quot;fempred&quot; ~ fempred_risk,
+    gendcond == &quot;malself&quot; ~ malsel_risk,
+    gendcond == &quot;malsur&quot; ~ malsur_risk,
+    gendcond == &quot;malpred&quot; ~ malpred_risk
+  ),
+  # positive emotion
+  pos = case_when(
+    gendcond == &quot;femself&quot; ~ femsel_pos,
+    gendcond == &quot;femsur&quot; ~ femsur_pos,
+    gendcond == &quot;fempred&quot; ~ fempred_pos,
+    gendcond == &quot;malself&quot; ~ malsel_pos,
+    gendcond == &quot;malsur&quot; ~ malsur_pos,
+    gendcond == &quot;malpred&quot; ~ malpred_pos
+  ),
+  # negative emotion
+  neg = case_when(
+    gendcond == &quot;femself&quot; ~ femsel_neg,
+    gendcond == &quot;femsur&quot; ~ femsur_neg,
+    gendcond == &quot;fempred&quot; ~ fempred_neg,
+    gendcond == &quot;malself&quot; ~ malsel_neg,
+    gendcond == &quot;malsur&quot; ~ malsur_neg,
+    gendcond == &quot;malpred&quot; ~ malpred_neg
+  ),
+  # alertness ratings
+ alert = case_when(
+    gendcond == &quot;femself&quot; ~ femsel_alert,
+    gendcond == &quot;femsur&quot; ~ femsur_alert,
+    gendcond == &quot;fempred&quot; ~ fempred_alert,
+    gendcond == &quot;malself&quot; ~ malsel_alert,
+    gendcond == &quot;malsur&quot; ~ malsur_alert,
+    gendcond == &quot;malpred&quot; ~ malpred_alert
+  ))
+
+# 4. create combined condition variable
+risk &lt;- risk %&gt;% 
+  mutate(condition = case_when(
+    gendcond == &quot;femself&quot; | gendcond == &quot;malself&quot; ~ &quot;Self&quot;,
+    gendcond == &quot;femsur&quot; | gendcond == &quot;malsur&quot; ~ &quot;Surrogate&quot;,
+    gendcond == &quot;fempred&quot; | gendcond ==  &quot;malpred&quot; ~ &quot;Prediction&quot;
+  ))
+
+# 5. select columns I&#39;m interested in
+risk &lt;- risk %&gt;% 
+  select(consent:gender, gendcond, condition, friend1, friend2, risklevel:alert, riskyrisk:code)
+
+# write_csv(risk, file = &quot;data/risk.csv&quot;)</code></pre>
+<p>I’m not exactly sure if my approach is the most optimal.</p>
+</div>
+<div id="compare-qualtrics-and-amazon-mturk-codes" class="section level4">
+<h4>Compare Qualtrics and Amazon MTurk codes</h4>
+<pre class="r"><code># read in data
+batch1 &lt;- read_csv(&quot;/Users/yedam/Documents/Academic/WFU/Psychology/Projects/Thesis/Data/Batches/batch1_27.csv&quot;, na = c(&quot;&quot;, &quot;NA&quot;))</code></pre>
+<pre><code>## 
+## ── Column specification ────────────────────────────────────────────────────────
+## cols(
+##   .default = col_character(),
+##   MaxAssignments = col_double(),
+##   AssignmentDurationInSeconds = col_double(),
+##   AutoApprovalDelayInSeconds = col_double(),
+##   NumberOfSimilarHITs = col_logical(),
+##   LifetimeInSeconds = col_logical(),
+##   ApprovalTime = col_logical(),
+##   RejectionTime = col_logical(),
+##   RequesterFeedback = col_logical(),
+##   WorkTimeInSeconds = col_double(),
+##   Input.filler = col_double(),
+##   Approve = col_logical(),
+##   Reject = col_logical()
+## )
+## ℹ Use `spec()` for the full column specifications.</code></pre>
+<pre class="r"><code>batch2 &lt;- read_csv(&quot;/Users/yedam/Documents/Academic/WFU/Psychology/Projects/Thesis/Data/Batches/batch2_27.csv&quot;, na = c(&quot;&quot;, &quot;NA&quot;))</code></pre>
+<pre><code>## Warning: Missing column names filled in: &#39;X32&#39; [32]</code></pre>
+<pre><code>## 
+## ── Column specification ────────────────────────────────────────────────────────
+## cols(
+##   .default = col_character(),
+##   MaxAssignments = col_double(),
+##   AssignmentDurationInSeconds = col_double(),
+##   AutoApprovalDelayInSeconds = col_double(),
+##   NumberOfSimilarHITs = col_logical(),
+##   LifetimeInSeconds = col_logical(),
+##   ApprovalTime = col_logical(),
+##   RejectionTime = col_logical(),
+##   RequesterFeedback = col_logical(),
+##   WorkTimeInSeconds = col_double(),
+##   Input.filler = col_double(),
+##   Approve = col_logical(),
+##   Reject = col_logical(),
+##   X32 = col_logical()
+## )
+## ℹ Use `spec()` for the full column specifications.</code></pre>
+<pre class="r"><code>batch3 &lt;- read_csv(&quot;/Users/yedam/Documents/Academic/WFU/Psychology/Projects/Thesis/Data/Batches/batch3_549.csv&quot;, na = c(&quot;&quot;, &quot;NA&quot;))</code></pre>
+<pre><code>## 
+## ── Column specification ────────────────────────────────────────────────────────
+## cols(
+##   .default = col_character(),
+##   MaxAssignments = col_double(),
+##   AssignmentDurationInSeconds = col_double(),
+##   AutoApprovalDelayInSeconds = col_double(),
+##   NumberOfSimilarHITs = col_logical(),
+##   LifetimeInSeconds = col_logical(),
+##   ApprovalTime = col_logical(),
+##   RejectionTime = col_logical(),
+##   RequesterFeedback = col_logical(),
+##   WorkTimeInSeconds = col_double(),
+##   Input.filler = col_double(),
+##   Approve = col_logical(),
+##   Reject = col_logical()
+## )
+## ℹ Use `spec()` for the full column specifications.</code></pre>
+<pre class="r"><code># convert names into lowercase - extract worker id
+extractcode &lt;- function(df){
+  rename_with(df, tolower) %&gt;% 
+     select(answer.surveycode)
+}
+
+# extract codes
+code1 &lt;- extractcode(batch1)
+code2 &lt;- extractcode(batch2)
+code3 &lt;- extractcode(batch3)
+
+# combine into 1
+code &lt;- bind_rows(code1, code2, code3)
+
+# write file
+write_csv(code, file = &quot;data/code.csv&quot;)</code></pre>
+<p>I compared the survey code in each of the risk and code files to make sure that they were consistent with each other. There were several NA’s in the Mturk file, which makes sense.</p>
+<pre class="r"><code># select rows in risk that have the survey code in the code column in code
+# 1. create key id variable
+risk &lt;- risk %&gt;% 
+  mutate(id = 1:nrow(risk))
+code &lt;- code %&gt;% 
+  mutate(id = 1:nrow(code)) %&gt;% 
+  rename(code_mturk = answer.surveycode)
+
+# 2. merge two files
+risk &lt;- risk %&gt;% 
+  right_join(code)</code></pre>
+<pre><code>## Joining, by = &quot;id&quot;</code></pre>
+<pre class="r"><code># 3. select rows whose mturk code is NOT missing
+risk &lt;- risk %&gt;% 
+  filter(!is.na(code_mturk))</code></pre>
+</div>
 
 
 
