@@ -176,12 +176,12 @@ pre code {
 </div>
 <div id="read-in-data" class="section level4">
 <h4>Read in data</h4>
-<pre class="r"><code>risk &lt;- haven::read_spss(&quot;data/relationship_raw.sav&quot;)
-risk &lt;- risk %&gt;% 
+<pre class="r"><code>riskraw &lt;- haven::read_spss(&quot;data/relationship_raw.sav&quot;)
+riskraw &lt;- riskraw %&gt;% 
   rename_with(tolower) %&gt;% 
   select(duration__in_seconds_, consent:fl_40_do_maleprediction)
 
-write_sav(risk, &quot;data/relationship.sav&quot;)</code></pre>
+write_sav(riskraw, &quot;data/relationship.sav&quot;)</code></pre>
 </div>
 <div id="recode-rel_self" class="section level4">
 <h4>Recode rel_self</h4>
@@ -210,8 +210,8 @@ write_sav(risk, &quot;data/relationship.sav&quot;)</code></pre>
 
 # collapse condition variables
 # 1. rename condition variables &amp; drop used variables &amp; put time after consent
-head(risk)
-risk &lt;- risk %&gt;% 
+head(riskraw)
+riskraw &lt;- riskraw %&gt;% 
   mutate(femself_condition = fl_30_do_femaleselfdecision,
          femsur_condition = fl_30_do_femalesurrogatedecision,
          fempred_condition = fl_30_do_femaleprediction,
@@ -224,7 +224,7 @@ risk &lt;- risk %&gt;%
   relocate(time, .after = consent)
 
 # 2. create condition variable
-risk &lt;- risk %&gt;% 
+riskraw &lt;- riskraw %&gt;% 
   mutate(gendcond = case_when(
                               femself_condition == 1 ~ &quot;femself&quot;,
                               femsur_condition == 1 ~ &quot;femsur&quot;,
@@ -238,7 +238,7 @@ risk &lt;- risk %&gt;%
 
 # 3. recode ratings by condition
 # risk levels
-risk &lt;- risk %&gt;% 
+riskraw &lt;- riskraw %&gt;% 
   mutate(risklevel = case_when(
     gendcond == &quot;femself&quot; ~ femsel_risk,
     gendcond == &quot;femsur&quot; ~ femsur_risk,
@@ -276,7 +276,7 @@ risk &lt;- risk %&gt;%
   ))
 
 # 4. create combined condition variable
-risk &lt;- risk %&gt;% 
+riskraw &lt;- riskraw %&gt;% 
   mutate(condition = case_when(
     gendcond == &quot;femself&quot; | gendcond == &quot;malself&quot; ~ &quot;Self&quot;,
     gendcond == &quot;femsur&quot; | gendcond == &quot;malsur&quot; ~ &quot;Surrogate&quot;,
@@ -284,7 +284,7 @@ risk &lt;- risk %&gt;%
   ))
 
 # 5. select columns I&#39;m interested in
-risk &lt;- risk %&gt;% 
+riskraw &lt;- riskraw %&gt;% 
   select(consent:gender, gendcond, condition, friend1, friend2, risklevel:alert, riskyrisk:code)
 
 # write_csv(risk, file = &quot;data/risk.csv&quot;)</code></pre>
@@ -371,19 +371,22 @@ write_csv(code, file = &quot;data/code.csv&quot;)</code></pre>
 <p>I compared the survey code in each of the risk and code files to make sure that they were consistent with each other. There were several NA’s in the Mturk file, which makes sense.</p>
 <pre class="r"><code># select rows in risk that have the survey code in the code column in code
 # 1. create key id variable
-risk &lt;- risk %&gt;% 
-  mutate(id = 1:nrow(risk))
+riskraw &lt;- riskraw %&gt;% 
+  mutate(id = 1:nrow(riskraw))
 code &lt;- code %&gt;% 
   mutate(id = 1:nrow(code)) %&gt;% 
   rename(code_mturk = answer.surveycode)
 
 # 2. merge two files
-risk &lt;- risk %&gt;% 
+riskraw &lt;- riskraw %&gt;% 
   right_join(code)</code></pre>
 <pre><code>## Joining, by = &quot;id&quot;</code></pre>
 <pre class="r"><code># 3. select rows whose mturk code is NOT missing
-risk &lt;- risk %&gt;% 
-  filter(!is.na(code_mturk))</code></pre>
+riskraw &lt;- riskraw %&gt;% 
+  filter(!is.na(code_mturk))
+
+# 4. write file
+write_sav(riskraw, &quot;data/risk.sav&quot;)</code></pre>
 </div>
 
 

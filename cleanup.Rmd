@@ -14,12 +14,12 @@ library(haven)
 
 #### Read in data
 ```{r read-data}
-risk <- haven::read_spss("data/relationship_raw.sav")
-risk <- risk %>% 
+riskraw <- haven::read_spss("data/relationship_raw.sav")
+riskraw <- riskraw %>% 
   rename_with(tolower) %>% 
   select(duration__in_seconds_, consent:fl_40_do_maleprediction)
 
-write_sav(risk, "data/relationship.sav")
+write_sav(riskraw, "data/relationship.sav")
 ```
 
 
@@ -44,19 +44,19 @@ relselfchoice <- rel_self %>%
 write_sav(relselfchoice, "data/relself.sav")
 
 # create id in risk
-risk <- risk %>% 
+riskraw <- riskraw %>% 
   mutate(id = 1:613)
 
 # bind rel_self and risk
-risk <- merge(relselfchoice, risk)
+riskraw <- merge(relselfchoice, risk)
 
 
 # check coding 
-risk %>% 
+riskraw %>% 
   relocate(rel_self, .after = value) # output shows that there's no need to recode rel_self
 
 # drop value
-risk <- risk %>% 
+riskraw <- riskraw %>% 
   select(-value)
 
 
@@ -89,8 +89,8 @@ I inspected the data again and saw that all the values in the rel_self column we
 
 # collapse condition variables
 # 1. rename condition variables & drop used variables & put time after consent
-head(risk)
-risk <- risk %>% 
+head(riskraw)
+riskraw <- riskraw %>% 
   mutate(femself_condition = fl_30_do_femaleselfdecision,
          femsur_condition = fl_30_do_femalesurrogatedecision,
          fempred_condition = fl_30_do_femaleprediction,
@@ -103,7 +103,7 @@ risk <- risk %>%
   relocate(time, .after = consent)
 
 # 2. create condition variable
-risk <- risk %>% 
+riskraw <- riskraw %>% 
   mutate(gendcond = case_when(
                               femself_condition == 1 ~ "femself",
                               femsur_condition == 1 ~ "femsur",
@@ -117,7 +117,7 @@ risk <- risk %>%
 
 # 3. recode ratings by condition
 # risk levels
-risk <- risk %>% 
+riskraw <- riskraw %>% 
   mutate(risklevel = case_when(
     gendcond == "femself" ~ femsel_risk,
     gendcond == "femsur" ~ femsur_risk,
@@ -155,7 +155,7 @@ risk <- risk %>%
   ))
 
 # 4. create combined condition variable
-risk <- risk %>% 
+riskraw <- riskraw %>% 
   mutate(condition = case_when(
     gendcond == "femself" | gendcond == "malself" ~ "Self",
     gendcond == "femsur" | gendcond == "malsur" ~ "Surrogate",
@@ -163,7 +163,7 @@ risk <- risk %>%
   ))
 
 # 5. select columns I'm interested in
-risk <- risk %>% 
+riskraw <- riskraw %>% 
   select(consent:gender, gendcond, condition, friend1, friend2, risklevel:alert, riskyrisk:code)
 
 # write_csv(risk, file = "data/risk.csv")
@@ -208,20 +208,22 @@ I compared the survey code in each of the risk and code files to make sure that 
 ```{r select-rows}
 # select rows in risk that have the survey code in the code column in code
 # 1. create key id variable
-risk <- risk %>% 
-  mutate(id = 1:nrow(risk))
+riskraw <- riskraw %>% 
+  mutate(id = 1:nrow(riskraw))
 code <- code %>% 
   mutate(id = 1:nrow(code)) %>% 
   rename(code_mturk = answer.surveycode)
 
 # 2. merge two files
-risk <- risk %>% 
+riskraw <- riskraw %>% 
   right_join(code)
 
 # 3. select rows whose mturk code is NOT missing
-risk <- risk %>% 
+riskraw <- riskraw %>% 
   filter(!is.na(code_mturk))
 
+# 4. write file
+write_sav(riskraw, "data/risk.sav")
 ```
 
 
