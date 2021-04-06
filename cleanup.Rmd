@@ -1,0 +1,82 @@
+---
+title: "Cleanup"
+author: "Ye Dam Yi"
+date: "4/5/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(haven)
+```
+
+```{r read-data}
+risk <- haven::read_spss("data/relationship_raw.sav")
+risk <- risk %>% 
+  rename_with(tolower) %>% 
+  select(duration__in_seconds_, consent:fl_40_do_maleprediction)
+
+write_sav(risk, "data/relationship.sav")
+```
+
+
+```{r recode-incorrect-values, include=FALSE}
+# bring in choice text data
+choicetext <- read_csv("/Users/yedam/Documents/Academic/WFU/Psychology/Projects/Thesis/Data/Raw data/choice_text.csv")
+head(choicetext)
+
+rel_self <- as_tibble(choicetext$rel_self)
+rel_self <- rel_self %>% 
+  mutate(id = 1:615)
+
+# delete first 2 rows
+rel_self <- rel_self[ !(rel_self$id) %in% c(1,2), ]
+relselfchoice <- rel_self %>%
+  select(value) %>% 
+  mutate(id = 1:613)
+
+# save output
+write_sav(relselfchoice, "data/relself.sav")
+
+# create id in risk
+risk <- risk %>% 
+  mutate(id = 1:613)
+
+# bind rel_self and risk
+risk <- merge(relselfchoice, risk)
+
+
+# check coding 
+risk %>% 
+  relocate(rel_self, .after = value) # output shows that there's no need to recode rel_self
+
+# drop value
+risk <- risk %>% 
+  select(-value)
+
+
+```
+
+
+
+
+```{r glimpase-data, eval = FALSE}
+# collapse risk, pos, neg, and alert columns across conditions    
+risk <- risk %>% 
+    pivot_longer(
+      cols = ends_with(c("_risk", "_pos", "_neg", "_alert")),
+      names_pattern = "(.+)_(.+)",
+      names_to = c("conditiontext",".value"),
+    ) %>% 
+# collapse condition columns
+risk %>%     
+  pivot_longer(
+      cols = starts_with(c("fl_30_do_", "fl_40_do_")),
+      names_pattern = "(.+)_(.+)_(.+)_(.+)",
+      names_to = c(NA, NA, ".value", "condition")
+    ) %>% 
+# drop condition variables
+    select(!starts_with("fl_"))
+  
+  
+```
