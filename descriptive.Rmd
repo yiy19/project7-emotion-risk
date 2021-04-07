@@ -1,10 +1,44 @@
 ---
-title: "Descriptive Analysis"
+title: "Analysis"
 author: "Ye Dam Yi"
 date: "4/6/2021"
 output: html_document
 ---
 
+#### Load data
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(labelled)
+library(ggpubr)
+library(rstatix)
+library(psych)
+library(haven)
+
 ```
+
+```{r load-data}
+risk <- read_sav("data/risk_nonlabelled.sav")
+```
+
+
+#### Exclusion
+```{r exclusion}
+# convert types
+risk <- risk %>% 
+  mutate_if(is.labelled, labelled::to_factor)
+
+# exclude those who failed at attention checks and who didn't consent to participate
+risk_excluded <- risk %>% 
+  filter(attention1 == 7 & attention2 == 3 & consent == 1)
+
+
+```
+
+
+There is one non-consent. This observation needs to be excluded. 
+
+After excluding those who didn't consent to participate and those who failed at either of the two attention check questions, there were 579 participants remaining to be part of analysis.
+
+
+
+
