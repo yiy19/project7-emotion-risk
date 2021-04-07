@@ -46,15 +46,130 @@ After excluding those who indicated their gender to be non-binary or other/prefe
 
 
 ### Who are my participants?
-```{r participant, eval = FALSE}
+```{r participant-viz}
 # gender
 risk_excluded %>% 
   ggplot(aes(x = gender)) +
   geom_bar() +
   labs()
 
-# condition by gender
+# condition by gender and by relationship status for self and for friend 1
 risk_excluded %>% 
   ggplot(aes(y = condition, fill = gender)) +
+  geom_bar() +
+  facet_wrap(vars(rel_self, rel_friend1), labeller = "label_both")
+
+# relationship status - self
+risk_excluded %>% 
+  ggplot(aes(y = rel_self, fill = gender)) +
   geom_bar()
+
+# relationship status - friend 1
+risk_excluded %>% 
+  ggplot(aes(y = rel_friend1, fill = gender)) +
+  geom_bar()
+
+
+# numerical variables
+# age
+risk_excluded %>% 
+  ggplot(aes(y = age, color = condition)) +
+  geom_boxplot()
+
+# set anomaly to na
+risk_excluded <- risk_excluded %>% 
+  mutate(age = case_when(
+    age >= 1000 ~ NA_real_, # NA_real_ is the double type counterpart to NA
+    TRUE ~ age
+  ),
+  .keep = "unused")
+
+# check again
+risk_excluded %>% 
+  ggplot(aes(y = age, color = condition)) +
+  geom_boxplot()
+
+# time
+risk_excluded %>% 
+  ggplot(aes(y = time)) +
+  geom_boxplot()
+
 ```
+
+```{r participant-num}
+# count by variables
+# overall
+risk_excluded %>% 
+  group_by(gender, condition, rel_self, rel_friend1, rel_friend2) %>% 
+  count() %>% 
+  group_by() %>% 
+  mutate(percent = n/sum(n))
+
+# gender
+risk_excluded %>% 
+  group_by(gender) %>% 
+  count() %>% 
+  group_by() %>% 
+  mutate(percent = n/sum(n))
+
+# condition
+risk_excluded %>% 
+  group_by(condition) %>% 
+  count() %>% 
+  group_by() %>% 
+  mutate(percent = n/sum(n))
+
+# self relationship status
+risk_excluded %>% 
+  group_by(rel_self) %>% 
+  count() %>% 
+  group_by() %>% 
+  mutate(percent = n/sum(n))
+
+# friend 1 relationship status
+risk_excluded %>% 
+  group_by(rel_friend1) %>% 
+  count() %>% 
+  group_by() %>% 
+  mutate(percent = n/sum(n))
+
+## function - didn't work
+# prop <-  function(data = risk_excluded, var) {
+#  data %>% 
+#  group_by(var) %>% 
+#  count() %>% 
+#  group_by() %>% 
+#  mutate(percent = n/sum(n))
+#}
+# prop(risk_excluded$condition)
+
+
+# numerical variables
+# age
+risk_excluded %>% 
+  group_by(gender) %>% 
+  summarize(mean = mean(age,na.rm = TRUE), 
+            sd = sd(age,na.rm = TRUE),
+            min = min(age,na.rm = TRUE),
+            max = max(age,na.rm = TRUE)
+            )
+
+# inspect why there's NA for female age
+risk_excluded %>% 
+  filter(gender == 2)
+# revised the code above to remove missing values
+
+# time
+risk_excluded %>% 
+  group_by(gender) %>% 
+  summarize(mean = mean(time,na.rm = TRUE), 
+            sd = sd(time,na.rm = TRUE),
+            min = min(time,na.rm = TRUE),
+            max = max(time,na.rm = TRUE)
+            )
+
+```
+
+
+
+
