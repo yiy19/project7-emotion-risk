@@ -455,6 +455,81 @@ t.test(risk_excluded$riskyrisk, risk_excluded$riskavrisk, paired = TRUE) %&gt;%
 <pre class="r"><code>  # kable()</code></pre>
 <p>People rated the risky option to be significantly higher than the risk-averse option.</p>
 </div>
+<div id="effects-of-recipient-on-each-of-the-outcome-variables" class="section level4">
+<h4>Effects of recipient on each of the outcome variables</h4>
+<pre class="r"><code># risk taking levels
+# t-test
+risk_excluded %&gt;% 
+  t_test(risklevel ~ condition, comparisons = list(c(&quot;Self&quot;, &quot;Surrogate&quot;), c(&quot;Self&quot;, &quot;Prediction&quot;)), paired = FALSE) </code></pre>
+<pre><code>## # A tibble: 2 x 10
+##   .y.    group1  group2    n1    n2 statistic    df       p   p.adj p.adj.signif
+## * &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;       
+## 1 riskl… Self    Surro…   192   191     -3.60  380. 3.56e-4 3.56e-4 ***         
+## 2 riskl… Predic… Self     186   192      4.69  363. 3.93e-6 7.86e-6 ****</code></pre>
+<pre class="r"><code># numbers
+risk_excluded %&gt;% group_by(condition) %&gt;% 
+  get_summary_stats(risklevel, type = &quot;mean_sd&quot;)</code></pre>
+<pre><code>## # A tibble: 3 x 5
+##   condition  variable      n  mean    sd
+##   &lt;fct&gt;      &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 Prediction risklevel   186  4.02  1.43
+## 2 Self       risklevel   192  3.24  1.78
+## 3 Surrogate  risklevel   191  3.88  1.70</code></pre>
+<pre class="r"><code># negative emotions
+# t-test
+risk_excluded %&gt;% 
+  t_test(neg ~ condition, comparisons = list(c(&quot;Self&quot;, &quot;Surrogate&quot;), c(&quot;Self&quot;, &quot;Prediction&quot;)), paired = FALSE) </code></pre>
+<pre><code>## # A tibble: 2 x 10
+##   .y.   group1     group2      n1    n2 statistic    df     p p.adj p.adj.signif
+## * &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt;    &lt;int&gt; &lt;int&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;       
+## 1 neg   Self       Surroga…   192   191    -1.45   381. 0.148 0.296 ns          
+## 2 neg   Prediction Self       186   192    -0.756  376. 0.45  0.45  ns</code></pre>
+<pre class="r"><code># numbers
+risk_excluded %&gt;% group_by(condition) %&gt;% 
+  get_summary_stats(neg, type = &quot;mean_sd&quot;)</code></pre>
+<pre><code>## # A tibble: 3 x 5
+##   condition  variable     n  mean    sd
+##   &lt;fct&gt;      &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 Prediction neg        186  1.91  1.15
+## 2 Self       neg        192  2     1.20
+## 3 Surrogate  neg        191  2.18  1.20</code></pre>
+<pre class="r"><code># positive emotions
+# t-test
+risk_excluded %&gt;% 
+  t_test(pos ~ condition, comparisons = list(c(&quot;Self&quot;, &quot;Surrogate&quot;), c(&quot;Self&quot;, &quot;Prediction&quot;)), paired = FALSE) </code></pre>
+<pre><code>## # A tibble: 2 x 10
+##   .y.   group1     group2      n1    n2 statistic    df     p p.adj p.adj.signif
+## * &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt;    &lt;int&gt; &lt;int&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;       
+## 1 pos   Self       Surroga…   192   191     -2.03  378. 0.043 0.086 ns          
+## 2 pos   Prediction Self       186   192      1.48  376. 0.14  0.14  ns</code></pre>
+<pre class="r"><code># numbers
+risk_excluded %&gt;% group_by(condition) %&gt;% 
+  get_summary_stats(pos, type = &quot;mean_sd&quot;)</code></pre>
+<pre><code>## # A tibble: 3 x 5
+##   condition  variable     n  mean    sd
+##   &lt;fct&gt;      &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 Prediction pos        186  3.06 0.829
+## 2 Self       pos        192  2.94 0.841
+## 3 Surrogate  pos        191  3.10 0.767</code></pre>
+<pre class="r"><code># arousal
+# t-test
+risk_excluded %&gt;% 
+  t_test(alert ~ condition, comparisons = list(c(&quot;Self&quot;, &quot;Surrogate&quot;), c(&quot;Self&quot;, &quot;Prediction&quot;)), paired = FALSE) </code></pre>
+<pre><code>## # A tibble: 2 x 10
+##   .y.   group1     group2      n1    n2 statistic    df     p p.adj p.adj.signif
+## * &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt;    &lt;int&gt; &lt;int&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;       
+## 1 alert Self       Surroga…   192   191    -0.797  378. 0.426 0.852 ns          
+## 2 alert Prediction Self       186   192     0.106  376. 0.916 0.916 ns</code></pre>
+<pre class="r"><code># numbers
+risk_excluded %&gt;% group_by(condition) %&gt;% 
+  get_summary_stats(alert, type = &quot;mean_sd&quot;)</code></pre>
+<pre><code>## # A tibble: 3 x 5
+##   condition  variable     n  mean    sd
+##   &lt;fct&gt;      &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 Prediction alert      186  2.96 0.828
+## 2 Self       alert      192  2.95 0.87 
+## 3 Surrogate  alert      191  3.02 0.794</code></pre>
+</div>
 </div>
 
 
