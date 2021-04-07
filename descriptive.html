@@ -183,9 +183,25 @@ risk &lt;- risk %&gt;%
 
 # exclude those who failed at attention checks and who didn&#39;t consent to participate
 risk_excluded &lt;- risk %&gt;% 
-  filter(attention1 == 7 &amp; attention2 == 3 &amp; consent == 1)</code></pre>
+  filter(attention1 == 7 &amp; attention2 == 3 &amp; consent == 1) %&gt;% 
+# exclude those who indicated their gender to be non-binary or other/prefer not to say
+  filter(gender == 1 | gender ==2) </code></pre>
 <p>There is one non-consent. This observation needs to be excluded.</p>
 <p>After excluding those who didn’t consent to participate and those who failed at either of the two attention check questions, there were 579 participants remaining to be part of analysis.</p>
+<p>After excluding those who indicated their gender to be non-binary or other/prefer not to say, there were 569 participants remaining.</p>
+</div>
+<div id="who-are-my-participants" class="section level3">
+<h3>Who are my participants?</h3>
+<pre class="r"><code># gender
+risk_excluded %&gt;% 
+  ggplot(aes(x = gender)) +
+  geom_bar() +
+  labs()
+
+# condition by gender
+risk_excluded %&gt;% 
+  ggplot(aes(y = condition, fill = gender)) +
+  geom_bar()</code></pre>
 </div>
 
 
