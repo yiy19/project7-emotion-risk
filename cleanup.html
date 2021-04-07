@@ -415,25 +415,8 @@ riskraw &lt;- read_sav(&quot;data/risk_labelled.sav&quot;)
 
 # convert column types
 riskraw &lt;- riskraw %&gt;% 
-  mutate(
-   consent = as.factor(consent),
-   time = as.numeric(time),
-   age = as.numeric(age),
-   gender = as.factor(gender),
-   gendcond = as.factor(gendcond),
-   condition = as.factor(condition),
-   risklevel = as.numeric(risklevel),
-   pos = as.numeric(pos),
-   neg = as.numeric(neg),
-   alert = as.numeric(alert),
-   riskyrisk = as.numeric(riskyrisk),
-   riskavrisk = as.numeric(riskavrisk),
-   rel_self = as.factor(rel_self),
-   rel_friend1 = as.factor(rel_friend1),
-   rel_friend2 = as.factor(rel_friend2),
-   attention1 = as.numeric(attention1),
-   attention2 = as.numeric(attention2)
-  )
+  mutate_if(is.labelled, labelled::to_factor)
+  
 # write file
 write_sav(riskraw, &quot;data/risk_nonlabelled.sav&quot;)</code></pre>
 </div>
