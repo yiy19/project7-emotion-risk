@@ -9,10 +9,9 @@ output: html_document
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(labelled)
-library(ggpubr)
 library(rstatix)
-library(psych)
 library(haven)
+library(knitr)
 
 ```
 
@@ -169,6 +168,54 @@ risk_excluded %>%
             )
 
 ```
+
+
+#### Use rstatix to get summary data
+```{r summary}
+# categorical variables
+risk_excluded %>% 
+  freq_table(gender, condition, rel_self, rel_friend1, rel_friend2)
+
+# numerical variables
+risk_excluded %>% 
+  get_summary_stats(age, time)
+
+# identify outliers
+risk_excluded %>% 
+  identify_outliers(age)
+risk_excluded %>% 
+  identify_outliers(time)
+```
+
+
+
+
+
+#### Manipulation check
+```{r manipulation-check}
+# visualize
+risk_excluded %>% 
+  pivot_longer(c(riskyrisk, riskavrisk), names_to = "option", values_to = "riskrating") %>% 
+  ggplot(aes(x = option, y = riskrating)) +
+  geom_boxplot() +
+  scale_x_discrete(labels = c("Risk-Averse Option", "Risky Option"))
+
+# look at the numbers
+risk_excluded %>% 
+  get_summary_stats(riskyrisk, riskavrisk, type = "mean_sd")
+
+
+# compare means
+t.test(risk_excluded$riskyrisk, risk_excluded$riskavrisk, paired = TRUE) %>% 
+  tidy() # %>% 
+  # kable()
+
+
+```
+
+People rated the risky option to be significantly higher than the risk-averse option. 
+
+
 
 
 
