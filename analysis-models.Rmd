@@ -1,0 +1,38 @@
+---
+title: "Test of models"
+author: "Ye Dam Yi"
+date: "4/8/2021"
+output: html_document
+---
+
+
+### Test of the models
+#### Self vs. surrogate decisions
+
+```{r self-surrogate-mediation}
+
+
+
+```
+
+```{r self-surrogate-moderation}
+
+
+```
+
+#### Self decisions vs. predictions
+```{r self-prediction-mediation}
+
+
+```
+
+```{r self-prediction-moderation}
+
+```
+
+
+
+
+```
+
+

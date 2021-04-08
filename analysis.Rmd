@@ -32,6 +32,8 @@ risk_excluded <- risk %>%
 # exclude those who indicated their gender to be non-binary or other/prefer not to say
   filter(gender == 1 | gender ==2) 
 
+# write file
+write_sav(risk_excluded, "data/risk_excluded.sav")
 
 ```
 
@@ -219,42 +221,55 @@ People rated the risky option to be significantly higher than the risk-averse op
 
 #### Effects of recipient on each of the outcome variables
 ```{r recipient-effects}
-
-# risk taking levels
-# t-test
+# risk taking
 risk_excluded %>% 
-  t_test(risklevel ~ condition, comparisons = list(c("Self", "Surrogate"), c("Self", "Prediction")), paired = FALSE) 
+  ggplot(aes(y = risklevel, x = condition)) +
+  geom_boxplot()
+
 # numbers
 risk_excluded %>% group_by(condition) %>% 
   get_summary_stats(risklevel, type = "mean_sd")
 
-# negative emotions
 # t-test
 risk_excluded %>% 
-  t_test(neg ~ condition, comparisons = list(c("Self", "Surrogate"), c("Self", "Prediction")), paired = FALSE) 
+  t_test(risklevel ~ condition, comparisons = list(c("Self", "Surrogate"), c("Self", "Prediction")), paired = FALSE) 
+
+
+
+# negative emotions
+risk_excluded %>% 
+  ggplot(aes(y = neg, x = condition)) +
+  geom_boxplot()
 # numbers
 risk_excluded %>% group_by(condition) %>% 
   get_summary_stats(neg, type = "mean_sd")
-
-# positive emotions
 # t-test
 risk_excluded %>% 
-  t_test(pos ~ condition, comparisons = list(c("Self", "Surrogate"), c("Self", "Prediction")), paired = FALSE) 
+  t_test(neg ~ condition, comparisons = list(c("Self", "Surrogate"), c("Self", "Prediction")), paired = FALSE) 
+
+# positive emotions
+risk_excluded %>% 
+  ggplot(aes(y = pos, x = condition)) +
+  geom_boxplot()
 # numbers
 risk_excluded %>% group_by(condition) %>% 
   get_summary_stats(pos, type = "mean_sd")
-
-# arousal
 # t-test
 risk_excluded %>% 
-  t_test(alert ~ condition, comparisons = list(c("Self", "Surrogate"), c("Self", "Prediction")), paired = FALSE) 
+  t_test(pos ~ condition, comparisons = list(c("Self", "Surrogate"), c("Self", "Prediction")), paired = FALSE) 
+
+
+
+# alertness
+risk_excluded %>% 
+  ggplot(aes(y = alert, x = condition)) +
+  geom_boxplot()
 # numbers
 risk_excluded %>% group_by(condition) %>% 
   get_summary_stats(alert, type = "mean_sd")
+# t-test
+risk_excluded %>% 
+  t_test(alert ~ condition, comparisons = list(c("Self", "Surrogate"), c("Self", "Prediction")), paired = FALSE) 
+
 
 ```
-
-
-
-
-
