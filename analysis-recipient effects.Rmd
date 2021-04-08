@@ -1,0 +1,81 @@
+---
+title: "analysis-recipient effects"
+author: "Ye Dam Yi"
+date: "4/8/2021"
+output: html_document
+---
+#### Load library
+```{r libraries}
+library(tidyverse)
+library(labelled)
+library(rstatix)
+library(haven)
+library(knitr)
+```
+
+#### Read in data
+```{r import-data}
+risk_excluded <- read_sav("data/risk_excluded.sav")
+
+# convert types
+risk_excluded <- risk_excluded %>% 
+  mutate_if(is.labelled, labelled::to_factor)
+```
+
+#### Effects of recipient on each of the outcome variables
+```{r recipient-effects}
+# risk taking
+risk_excluded %>% 
+  ggplot(aes(y = risklevel, x = condition)) +
+  geom_boxplot()
+
+# numbers
+risk_excluded %>% group_by(condition) %>% 
+  get_summary_stats(risklevel, type = "mean_sd")
+
+# t-test
+risk_excluded %>% 
+  t_test(risklevel ~ condition, comparisons = list(c("Self", "Surrogate"), c("Self", "Prediction")), paired = FALSE) 
+
+
+
+# negative emotions
+risk_excluded %>% 
+  ggplot(aes(y = neg, x = condition)) +
+  geom_boxplot()
+
+# numbers
+risk_excluded %>% group_by(condition) %>% 
+  get_summary_stats(neg, type = "mean_sd")
+# t-test
+risk_excluded %>% 
+  t_test(neg ~ condition, comparisons = list(c("Self", "Surrogate"), c("Self", "Prediction")), paired = FALSE) 
+
+# positive emotions
+risk_excluded %>% 
+  ggplot(aes(y = pos, x = condition)) +
+  geom_boxplot()
+# numbers
+risk_excluded %>% group_by(condition) %>% 
+  get_summary_stats(pos, type = "mean_sd")
+# t-test
+risk_excluded %>% 
+  t_test(pos ~ condition, comparisons = list(c("Self", "Surrogate"), c("Self", "Prediction")), paired = FALSE) 
+
+
+
+# alertness
+risk_excluded %>% 
+  ggplot(aes(y = alert, x = condition)) +
+  geom_boxplot()
+# numbers
+risk_excluded %>% group_by(condition) %>% 
+  get_summary_stats(alert, type = "mean_sd")
+# t-test
+risk_excluded %>% 
+  t_test(alert ~ condition, comparisons = list(c("Self", "Surrogate"), c("Self", "Prediction")), paired = FALSE) 
+
+
+```
+
+
