@@ -7,16 +7,88 @@ output: html_document
 
 
 ### Test of the models
-#### Self vs. surrogate decisions
 
-```{r self-surrogate-mediation}
+#### Libraries
+```{r libraries}
+require(lavaan)
+library(tidyverse)
+library(haven)
 
+```
+#### Load data
+```{r load-data}
+risk_excluded <- read_sav("data/risk_excluded.sav")
+
+# convert types
+risk_excluded <- risk_excluded %>% 
+  mutate_if(is.labelled, labelled::to_factor)
+
+# recode condition into two different conditions: 
+# 1. self vs. surrogate decisions & 2. self decisions vs. predictions
+# THe approach below didn't work with the error "x must be a `factor` object, not a logical vector." There seem to be no factor equivalent for NA
+# risk_final <- risk_excluded %>%
+#   mutate(recipient_sur = case_when(
+#     condition == "Self" ~ condition,
+#     condition == "Surrogate" ~ condition,
+#     condition == "Prediction" ~ NA
+#   ),
+#     recipient_pred == case_when(
+#       condition == "Self" ~ condition,
+#       condition == "Surrogate" ~ NA,
+#       condition == "Prediction" ~ condition
+#     ))
+
+risk_final <- risk_excluded %>% 
+  mutate(recipient_sur = fct_recode(condition, NULL = "Prediction"),
+         recipient_pred = fct_recode(condition, NULL = "Surrogate"))
 
 
 ```
 
-```{r self-surrogate-moderation}
+#### Check for normality
+```{r normality}
+# fit a model
+risk_lm = lm(risklevel ~ 0 + condition, data = risk_final)
 
+# create a data with two columns: condition and residuals
+fits = risk_excluded %>%
+    group_by(condition) %>%
+    transmute(fit = mean(risklevel),
+           residual = risklevel - mean(risklevel))
+# look at homoscedasticity
+fits %>% 
+  ggplot(aes(x = condition, y = residual)) +
+  geom_boxplot()
+
+# look at normality of the residuals by condition
+fits %>% 
+  ggplot(aes(sample = residual)) +
+  stat_qq() + facet_wrap(~ condition, ncol = 3)
+  
+# get the sd of the model
+sd(risk_lm$residual)
+round(summary(risk_lm)$sigma, 2)
+
+# look at how the residuals compare to the fitted model of residuals
+fits %>% 
+  ggplot(aes(sample = residual)) +
+  stat_qq() + geom_abline(intercept = mean(fits$residual), slope = summary(risk_lm)$sigma)
+
+
+```
+
+#### Self vs. surrogate decisions
+
+```{r self-surrogate-mediation, eval = FALSE}
+
+# total effect of recipient on y not controlling for m
+risk_sur_med <-  '
+  # direct effect
+  risk ~ b * 
+
+```
+
+```{r self-surrogate-moderation}
 
 ```
 
