@@ -415,14 +415,15 @@ risk_excluded %&gt;%
 ## # … with 38 more rows</code></pre>
 <pre class="r"><code># numerical variables
 risk_excluded %&gt;% 
+  filter(age &lt; 1000) %&gt;% 
   get_summary_stats(age, time)</code></pre>
 <pre><code>## Warning: attributes are not identical across measure variables;
 ## they will be dropped</code></pre>
 <pre><code>## # A tibble: 2 x 13
 ##   variable     n   min   max median    q1    q3   iqr   mad  mean    sd     se
 ## * &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
-## 1 age        568    18    78     36    30    48    18  11.9  39.7  13.0  0.546
-## 2 time       569    45  3142    321   236   444   208 142.  398.  328.  13.7  
+## 1 age        568    18    78    36    30    48    18   11.9  39.7  13.0  0.546
+## 2 time       568    45  3142   320.  236.  444.  209. 142.  398.  328.  13.8  
 ## # … with 1 more variable: ci &lt;dbl&gt;</code></pre>
 <pre class="r"><code># identify outliers
 risk_excluded %&gt;% 

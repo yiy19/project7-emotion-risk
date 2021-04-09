@@ -197,6 +197,7 @@ risk_excluded %>%
 
 # numerical variables
 risk_excluded %>% 
+  filter(age < 1000) %>% 
   get_summary_stats(age, time)
 
 # identify outliers
