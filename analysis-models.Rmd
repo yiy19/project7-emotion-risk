@@ -24,6 +24,11 @@ risk_excluded <- risk_excluded %>%
   mutate_if(is.labelled, labelled::to_factor)
 
 
+# reorder condition levels
+risk_excluded <- risk_excluded %>% 
+  mutate(condition = fct_relevel(condition, "Self", "Surrogate", "Prediction"),
+         condition = fct_drop(condition, only = ""))
+
 ```
 
 #### Check for normality
@@ -60,7 +65,7 @@ fits %>%
 ```
 #### Coding for lavaan
 ##### Approach 1 - dummy coding
-```{r dummy-coding}
+```{r dummy-coding, eval = FALSE}
 
 # recode condition into two different conditions: 
 # 1. self vs. surrogate decisions & 2. self decisions vs. predictions
@@ -77,10 +82,6 @@ fits %>%
 #       condition == "Prediction" ~ condition
 #     ))
 
-# reorder condition levels
-risk_excluded <- risk_excluded %>% 
-  mutate(condition = fct_relevel(condition, "Self", "Surrogate", "Prediction"),
-         condition = fct_drop(condition, only = ""))
 
 # check factor levels
 # levels(risk_excluded$condition)
@@ -106,13 +107,20 @@ I'm not really sure about this approach because if I used the dummy-coded condit
 
 ##### Approach 2 - subsetting datasets
 ```{r subset-dataset}
+# subset self & surrogate
 risk_sur <- risk_excluded %>% 
-  filter(condition == "Self" | condition == "Surrogate")
-glimpse(risk_sur)
+  filter(condition == "Self" | condition == "Surrogate") %>% 
+  mutate(condition = fct_drop(condition, only = "Prediction")) # drop irrelevant level
+levels(risk_sur$condition)
 
+# subset self & prediction
 risk_pred <- risk_excluded %>% 
-  filter(condition == "Self" | condition == "Prediction")
-glimpse(risk_pred)
+  filter(condition == "Self" | condition == "Prediction") %>% 
+  mutate(condition = fct_drop(condition, only = "Surrogate")) # drop irrelevant level
+levels(risk_pred$condition)
+
+# the resulting data have three levels of condition
+# drop the level that doesn't belong to each subsetted dataset
 
 ```
 
@@ -159,7 +167,7 @@ The nlminb command is intended for functions that have at least two continuous d
 
 self_sur_mediation <- '
     # direct effect
-    risklevel ~ b1 * neg + b2 * pos + b3 * alert + c * condition_sur
+    risklevel ~ b1 * neg + b2 * pos + b3 * alert + c * condition
     # mediator
     neg ~ a1 * condition_sur
     pos ~ a2 * condition_sur
@@ -187,7 +195,7 @@ summary(self_sur_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE)
 ```
 
 #### Self decisions vs. predictions
-```{r self-prediction-mediation}
+```{r self-prediction-mediation,eval = FALSE}
 # total effect of recipient on y not controlling for m
 self_pred_mediation <- '
     # direct effect
