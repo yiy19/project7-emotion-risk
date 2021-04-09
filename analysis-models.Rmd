@@ -99,6 +99,20 @@ levels(risk_pred$condition)
 
 ```
 
+##### Write data files for AMOS
+```{r data-for-amos}
+risk_sur_amos <- risk_excluded %>% 
+  filter(condition == "Self" | condition == "Surrogate") %>% 
+  mutate(condition = fct_drop(condition, only = "Prediction"))
+
+risk_pred_amos <- risk_excluded %>% 
+  filter(condition == "Self" | condition == "Prediction") %>% 
+  mutate(condition = fct_drop(condition, only = "Surrogate")) 
+
+write_sav(risk_sur_amos, "data/risk_sur_amos.sav")
+write_sav(risk_pred_amos, "data/risk_pred_amos.sav")
+
+```
 
 #### Check for normality
 ```{r normality}
@@ -216,7 +230,7 @@ This is a saturated model. Someone said the following about a saturated model:
 ```
 
 #### Self decisions vs. predictions
-```{r self-prediction-mediation,eval = FALSE}
+```{r self-prediction-mediation}
 self_pred_mediation <- '
     # direct effect
     risklevel ~ b1 * neg + b2 * pos + b3 * alert + c * condition
