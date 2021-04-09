@@ -23,38 +23,20 @@ risk_excluded <- read_sav("data/risk_excluded.sav")
 risk_excluded <- risk_excluded %>% 
   mutate_if(is.labelled, labelled::to_factor)
 
-# recode condition into two different conditions: 
-# 1. self vs. surrogate decisions & 2. self decisions vs. predictions
-# THe approach below didn't work with the error "x must be a `factor` object, not a logical vector." There seem to be no factor equivalent for NA
-# risk_final <- risk_excluded %>%
-#   mutate(recipient_sur = case_when(
-#     condition == "Self" ~ condition,
-#     condition == "Surrogate" ~ condition,
-#     condition == "Prediction" ~ NA
-#   ),
-#     recipient_pred == case_when(
-#       condition == "Self" ~ condition,
-#       condition == "Surrogate" ~ NA,
-#       condition == "Prediction" ~ condition
-#     ))
-
-risk_final <- risk_excluded %>% 
-  mutate(recipient_sur = fct_recode(condition, NULL = "Prediction"),
-         recipient_pred = fct_recode(condition, NULL = "Surrogate"))
-
 
 ```
 
 #### Check for normality
 ```{r normality}
 # fit a model
-risk_lm = lm(risklevel ~ 0 + condition, data = risk_final)
+risk_lm = lm(risklevel ~ 0 + condition, data = risk_excluded)
 
 # create a data with two columns: condition and residuals
 fits = risk_excluded %>%
     group_by(condition) %>%
     transmute(fit = mean(risklevel),
            residual = risklevel - mean(risklevel))
+
 # look at homoscedasticity
 fits %>% 
   ggplot(aes(x = condition, y = residual)) +
@@ -76,15 +58,127 @@ fits %>%
 
 
 ```
+#### Coding for lavaan
+##### Approach 1 - dummy coding
+```{r dummy-coding}
+
+# recode condition into two different conditions: 
+# 1. self vs. surrogate decisions & 2. self decisions vs. predictions
+# THe approach below didn't work with the error "x must be a `factor` object, not a logical vector." There seem to be no factor equivalent for NA
+# risk_final <- risk_excluded %>%
+#   mutate(recipient_sur = case_when(
+#     condition == "Self" ~ condition,
+#     condition == "Surrogate" ~ condition,
+#     condition == "Prediction" ~ NA
+#   ),
+#     recipient_pred == case_when(
+#       condition == "Self" ~ condition,
+#       condition == "Surrogate" ~ NA,
+#       condition == "Prediction" ~ condition
+#     ))
+
+# reorder condition levels
+risk_excluded <- risk_excluded %>% 
+  mutate(condition = fct_relevel(condition, "Self", "Surrogate", "Prediction"),
+         condition = fct_drop(condition, only = ""))
+
+# check factor levels
+# levels(risk_excluded$condition)
+glimpse(risk_excluded)
+
+  # risk_final <- risk_excluded %>% 
+  # mutate(recipient_sur = fct_recode(condition, NULL = "Prediction"),
+  #        recipient_pred = fct_recode(condition, NULL = "Surrogate"))
+
+risk_final <- risk_excluded %>% 
+  mutate(condition_sur = case_when(
+    condition == "Surrogate" ~ "1",
+    TRUE ~ "0"),
+    condition_pred = case_when(
+      condition == "Prediction" ~ "1",
+      TRUE ~ "0")) %>% 
+  mutate(condition_sur = as.numeric(condition_sur),
+         condition_pred = as.numeric(condition_pred))
+
+```
+
+I'm not really sure about this approach because if I used the dummy-coded condition_sur or condition_pred in my analysis, the observations belonging to prediction will be included in my analysis of self vs. surrogate conditions and vice versa. So I'm going to subset datasets into two.
+
+##### Approach 2 - subsetting datasets
+```{r subset-dataset}
+risk_sur <- risk_excluded %>% 
+  filter(condition == "Self" | condition == "Surrogate")
+glimpse(risk_sur)
+
+risk_pred <- risk_excluded %>% 
+  filter(condition == "Self" | condition == "Prediction")
+glimpse(risk_pred)
+
+```
+
 
 #### Self vs. surrogate decisions
+##### Approach 1
 
-```{r self-surrogate-mediation, eval = FALSE}
+```{r self-surrogate-mediation-dummy, eval = FALSE}
 
 # total effect of recipient on y not controlling for m
-risk_sur_med <-  '
-  # direct effect
-  risk ~ b * 
+self_sur_mediation <- '
+    # direct effect
+    risklevel ~ b1 * neg + b2 * pos + b3 * alert + c * condition_sur
+    # mediator
+    neg ~ a1 * condition_sur
+    pos ~ a2 * condition_sur
+    alert ~ a3 * condition_sur
+    # indirect effect (a*b)
+    indirect1 := a1 * b1
+    indirect2 := a2 * b2
+    Indirect3 := a3 * b3
+    # total effect
+    total := c + (a1 * b1) + (a2 * b2) + (a3 * b3)
+    # covariances
+    neg ~~ pos
+    pos ~~ alert
+    neg ~~ alert
+'
+self_sur_fit <- sem(model = self_sur_mediation, data = risk_final, se = "bootstrap", bootstrap = 5000)
+summary(self_sur_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE)
+
+mi <- modindices(self_sur_fit)
+fitmeasures(self_sur_fit)
+
+```
+
+
+The nlminb command is intended for functions that have at least two continuous derivatives on all of the feasible region, including the boundary. For best results, the gradient of the objective should be supplied whenever possible. Supplying the Hessian matrix as well will sometimes, but not always, lead to a substantial decrease in the number of iterations required to reach a minimum.
+
+
+
+##### Approach 2
+```{r r self-surrogate-mediation-subset, eval = FALSE}
+
+self_sur_mediation <- '
+    # direct effect
+    risklevel ~ b1 * neg + b2 * pos + b3 * alert + c * condition_sur
+    # mediator
+    neg ~ a1 * condition_sur
+    pos ~ a2 * condition_sur
+    alert ~ a3 * condition_sur
+    # indirect effect (a*b)
+    indirect1 := a1 * b1
+    indirect2 := a2 * b2
+    Indirect3 := a3 * b3
+    # total effect
+    total := c + (a1 * b1) + (a2 * b2) + (a3 * b3)
+    # covariances
+    neg ~~ pos
+    pos ~~ alert
+    neg ~~ alert
+'
+self_sur_fit <- sem(model = self_sur_mediation, data = risk_final, se = "bootstrap", bootstrap = 5000)
+summary(self_sur_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE)
+
+
 
 ```
 
@@ -94,7 +188,30 @@ risk_sur_med <-  '
 
 #### Self decisions vs. predictions
 ```{r self-prediction-mediation}
+# total effect of recipient on y not controlling for m
+self_pred_mediation <- '
+    # direct effect
+    risklevel ~ b1 * neg + b2 * pos + b3 * alert + c * condition_pred
+    # mediator
+    neg ~ a1 * condition_pred
+    pos ~ a2 * condition_pred
+    alert ~ a3 * condition_pred
+    # indirect effect (a*b)
+    indirect1 := a1 * b1
+    indirect2 := a2 * b2
+    Indirect3 := a3 * b3
+    # total effect
+    total := c + (a1 * b1) + (a2 * b2) + (a3 * b3)
+    # covariances
+    neg ~~ pos
+    pos ~~ alert
+    neg ~~ alert
+'
+self_pred_fit <- sem(model = self_pred_mediation, data = risk_final, se = "bootstrap", bootstrap = 5000)
+summary(self_pred_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE)
 
+mi <- modindices(self_pred_fit)
+fitmeasures(self_pred_fit)
 
 ```
 
