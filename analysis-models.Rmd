@@ -31,38 +31,7 @@ risk_excluded <- risk_excluded %>%
 
 ```
 
-#### Check for normality
-```{r normality}
-# fit a model
-risk_lm = lm(risklevel ~ 0 + condition, data = risk_excluded)
 
-# create a data with two columns: condition and residuals
-fits = risk_excluded %>%
-    group_by(condition) %>%
-    transmute(fit = mean(risklevel),
-           residual = risklevel - mean(risklevel))
-
-# look at homoscedasticity
-fits %>% 
-  ggplot(aes(x = condition, y = residual)) +
-  geom_boxplot()
-
-# look at normality of the residuals by condition
-fits %>% 
-  ggplot(aes(sample = residual)) +
-  stat_qq() + facet_wrap(~ condition, ncol = 3)
-  
-# get the sd of the model
-sd(risk_lm$residual)
-round(summary(risk_lm)$sigma, 2)
-
-# look at how the residuals compare to the fitted model of residuals
-fits %>% 
-  ggplot(aes(sample = residual)) +
-  stat_qq() + geom_abline(intercept = mean(fits$residual), slope = summary(risk_lm)$sigma)
-
-
-```
 #### Coding for lavaan
 ##### Approach 1 - dummy coding
 ```{r dummy-coding, eval = FALSE}
@@ -110,23 +79,63 @@ I'm not really sure about this approach because if I used the dummy-coded condit
 # subset self & surrogate
 risk_sur <- risk_excluded %>% 
   filter(condition == "Self" | condition == "Surrogate") %>% 
-  mutate(condition = fct_drop(condition, only = "Prediction")) # drop irrelevant level
-levels(risk_sur$condition)
+  mutate(condition = fct_drop(condition, only = "Prediction")) %>%  # drop irrelevant level
+  mutate(condition = as.numeric(as.character(fct_recode(condition, "0" = "Self", "1" = "Surrogate"))))
 
 # subset self & prediction
 risk_pred <- risk_excluded %>% 
   filter(condition == "Self" | condition == "Prediction") %>% 
-  mutate(condition = fct_drop(condition, only = "Surrogate")) # drop irrelevant level
+  mutate(condition = fct_drop(condition, only = "Surrogate")) %>%  # drop irrelevant level
+  mutate(condition = as.numeric(as.character(fct_recode(condition, "0" = "Self", "1" = "Prediction"))))
 levels(risk_pred$condition)
 
 # the resulting data have three levels of condition
 # drop the level that doesn't belong to each subsetted dataset
 
+# running the SEM model with data resulted in this warning:
+#   lavaan ERROR: unordered factor(s) with more than 2 levels detected as exogenous covariate(s): condition
+# order data in the model fit summary didn't work
+# recode variables
+
+```
+
+
+#### Check for normality
+```{r normality}
+# fit a model
+risk_lm = lm(risklevel ~ 0 + condition, data = risk_excluded)
+
+# create a data with two columns: condition and residuals
+fits = risk_excluded %>%
+    group_by(condition) %>%
+    transmute(fit = mean(risklevel),
+           residual = risklevel - mean(risklevel))
+
+# look at homoscedasticity
+fits %>% 
+  ggplot(aes(x = condition, y = residual)) +
+  geom_boxplot()
+
+# look at normality of the residuals by condition
+fits %>% 
+  ggplot(aes(sample = residual)) +
+  stat_qq() + facet_wrap(~ condition, ncol = 3)
+  
+# get the sd of the model
+sd(risk_lm$residual)
+round(summary(risk_lm)$sigma, 2)
+
+# look at how the residuals compare to the fitted model of residuals
+fits %>% 
+  ggplot(aes(sample = residual)) +
+  stat_qq() + geom_abline(intercept = mean(fits$residual), slope = summary(risk_lm)$sigma)
+
+
 ```
 
 
 #### Self vs. surrogate decisions
-##### Approach 1
+##### Approach 1 - Didn't work
 
 ```{r self-surrogate-mediation-dummy, eval = FALSE}
 
@@ -163,15 +172,14 @@ The nlminb command is intended for functions that have at least two continuous d
 
 
 ##### Approach 2
-```{r r self-surrogate-mediation-subset, eval = FALSE}
-
+```{r r self-surrogate-mediation-subset}
 self_sur_mediation <- '
     # direct effect
     risklevel ~ b1 * neg + b2 * pos + b3 * alert + c * condition
     # mediator
-    neg ~ a1 * condition_sur
-    pos ~ a2 * condition_sur
-    alert ~ a3 * condition_sur
+    neg ~ a1 * condition
+    pos ~ a2 * condition
+    alert ~ a3 * condition
     # indirect effect (a*b)
     indirect1 := a1 * b1
     indirect2 := a2 * b2
@@ -183,12 +191,25 @@ self_sur_mediation <- '
     pos ~~ alert
     neg ~~ alert
 '
-self_sur_fit <- sem(model = self_sur_mediation, data = risk_final, se = "bootstrap", bootstrap = 5000)
+self_sur_fit <- sem(model = self_sur_mediation, data = risk_sur)
 summary(self_sur_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE)
 
 
 
 ```
+
+
+This is a saturated model. Someone said the following about a saturated model:
+
+  Also, I see very little use of the fit indexes for path analysis. It seems incoherent to say that the relation between variables will reproduce the covariance matrix, as we can get the saturated model by including all relations. 
+  
+  Fit its useful for a measurement model, when you try to state that latent variables structure reproduce the covariance matrix. 
+  
+  I had to answer a reviewer asking me for fit measure in a model just like yours (path analysis and saturated)
+
+
+
+
 
 ```{r self-surrogate-moderation}
 
