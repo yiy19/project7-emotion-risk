@@ -349,7 +349,7 @@ fitmeasures(self_sur_fit)</code></pre>
     pos ~~ alert
     neg ~~ alert
 &#39;
-self_sur_fit &lt;- sem(model = self_sur_mediation, data = risk_sur)
+self_sur_fit &lt;- sem(model = self_sur_mediation, data = risk_sur, se = &quot;bootstrap&quot;, bootstrap = 5000)
 summary(self_sur_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE)</code></pre>
 <pre><code>## lavaan 0.6-7 ended normally after 34 iterations
 ## 
@@ -397,46 +397,46 @@ summary(self_sur_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE)
 ## 
 ## Parameter Estimates:
 ## 
-##   Standard errors                             Standard
-##   Information                                 Expected
-##   Information saturated (h1) model          Structured
+##   Standard errors                            Bootstrap
+##   Number of requested bootstrap draws             5000
+##   Number of successful bootstrap draws            5000
 ## 
 ## Regressions:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
 ##   risklevel ~                                                           
-##     neg       (b1)   -0.069    0.071   -0.979    0.328   -0.069   -0.047
-##     pos       (b2)    0.822    0.104    7.899    0.000    0.822    0.376
-##     alert     (b3)   -0.016    0.103   -0.158    0.874   -0.016   -0.008
-##     condition  (c)    0.516    0.165    3.132    0.002    0.516    0.146
+##     neg       (b1)   -0.069    0.076   -0.914    0.361   -0.069   -0.047
+##     pos       (b2)    0.822    0.110    7.459    0.000    0.822    0.376
+##     alert     (b3)   -0.016    0.106   -0.153    0.878   -0.016   -0.008
+##     condition  (c)    0.516    0.169    3.058    0.002    0.516    0.146
 ##   neg ~                                                                 
-##     condition (a1)    0.178    0.122    1.454    0.146    0.178    0.074
+##     condition (a1)    0.178    0.123    1.450    0.147    0.178    0.074
 ##   pos ~                                                                 
-##     condition (a2)    0.167    0.082    2.037    0.042    0.167    0.104
+##     condition (a2)    0.167    0.081    2.062    0.039    0.167    0.104
 ##   alert ~                                                               
-##     condition (a3)    0.068    0.085    0.799    0.425    0.068    0.041
+##     condition (a3)    0.068    0.084    0.804    0.422    0.068    0.041
 ## 
 ## Covariances:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
 ##  .neg ~~                                                                
-##    .pos              -0.106    0.049   -2.140    0.032   -0.106   -0.110
+##    .pos              -0.106    0.052   -2.050    0.040   -0.106   -0.110
 ##  .pos ~~                                                                
-##    .alert             0.102    0.035    2.952    0.003    0.102    0.153
+##    .alert             0.102    0.038    2.683    0.007    0.102    0.153
 ##  .neg ~~                                                                
-##    .alert             0.231    0.052    4.414    0.000    0.231    0.231
+##    .alert             0.231    0.055    4.156    0.000    0.231    0.231
 ## 
 ## Variances:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .risklevel         2.553    0.184   13.838    0.000    2.553    0.821
-##    .neg               1.436    0.104   13.838    0.000    1.436    0.995
-##    .pos               0.645    0.047   13.838    0.000    0.645    0.989
-##    .alert             0.691    0.050   13.838    0.000    0.691    0.998
+##    .risklevel         2.553    0.170   15.033    0.000    2.553    0.821
+##    .neg               1.436    0.073   19.629    0.000    1.436    0.995
+##    .pos               0.645    0.049   13.279    0.000    0.645    0.989
+##    .alert             0.691    0.061   11.259    0.000    0.691    0.998
 ## 
 ## Defined Parameters:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##     indirect1        -0.012    0.015   -0.812    0.417   -0.012   -0.004
-##     indirect2         0.137    0.070    1.972    0.049    0.137    0.039
-##     Indirect3        -0.001    0.007   -0.155    0.877   -0.001   -0.000
-##     total             0.640    0.177    3.612    0.000    0.640    0.182</code></pre>
+##     indirect1        -0.012    0.019   -0.664    0.507   -0.012   -0.004
+##     indirect2         0.137    0.069    1.999    0.046    0.137    0.039
+##     Indirect3        -0.001    0.011   -0.097    0.923   -0.001   -0.000
+##     total             0.640    0.178    3.589    0.000    0.640    0.182</code></pre>
 <p>This is a saturated model. Someone said the following about a saturated model:</p>
 <p>Also, I see very little use of the fit indexes for path analysis. It seems incoherent to say that the relation between variables will reproduce the covariance matrix, as we can get the saturated model by including all relations.</p>
 <p>Fit its useful for a measurement model, when you try to state that latent variables structure reproduce the covariance matrix.</p>
@@ -445,14 +445,13 @@ summary(self_sur_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE)
 </div>
 <div id="self-decisions-vs.-predictions" class="section level4">
 <h4>Self decisions vs. predictions</h4>
-<pre class="r"><code># total effect of recipient on y not controlling for m
-self_pred_mediation &lt;- &#39;
+<pre class="r"><code>self_pred_mediation &lt;- &#39;
     # direct effect
-    risklevel ~ b1 * neg + b2 * pos + b3 * alert + c * condition_pred
+    risklevel ~ b1 * neg + b2 * pos + b3 * alert + c * condition
     # mediator
-    neg ~ a1 * condition_pred
-    pos ~ a2 * condition_pred
-    alert ~ a3 * condition_pred
+    neg ~ a1 * condition
+    pos ~ a2 * condition
+    alert ~ a3 * condition
     # indirect effect (a*b)
     indirect1 := a1 * b1
     indirect2 := a2 * b2
@@ -464,11 +463,8 @@ self_pred_mediation &lt;- &#39;
     pos ~~ alert
     neg ~~ alert
 &#39;
-self_pred_fit &lt;- sem(model = self_pred_mediation, data = risk_final, se = &quot;bootstrap&quot;, bootstrap = 5000)
-summary(self_pred_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE)
-
-mi &lt;- modindices(self_pred_fit)
-fitmeasures(self_pred_fit)</code></pre>
+self_pred_fit &lt;- sem(model = self_pred_mediation, data = risk_pred,se = &quot;bootstrap&quot;, bootstrap = 5000)
+summary(self_pred_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE)</code></pre>
 <p>```</p>
 </div>
 </div>

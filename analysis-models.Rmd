@@ -191,7 +191,7 @@ self_sur_mediation <- '
     pos ~~ alert
     neg ~~ alert
 '
-self_sur_fit <- sem(model = self_sur_mediation, data = risk_sur)
+self_sur_fit <- sem(model = self_sur_mediation, data = risk_sur, se = "bootstrap", bootstrap = 5000)
 summary(self_sur_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE)
 
 
@@ -217,14 +217,13 @@ This is a saturated model. Someone said the following about a saturated model:
 
 #### Self decisions vs. predictions
 ```{r self-prediction-mediation,eval = FALSE}
-# total effect of recipient on y not controlling for m
 self_pred_mediation <- '
     # direct effect
-    risklevel ~ b1 * neg + b2 * pos + b3 * alert + c * condition_pred
+    risklevel ~ b1 * neg + b2 * pos + b3 * alert + c * condition
     # mediator
-    neg ~ a1 * condition_pred
-    pos ~ a2 * condition_pred
-    alert ~ a3 * condition_pred
+    neg ~ a1 * condition
+    pos ~ a2 * condition
+    alert ~ a3 * condition
     # indirect effect (a*b)
     indirect1 := a1 * b1
     indirect2 := a2 * b2
@@ -236,11 +235,8 @@ self_pred_mediation <- '
     pos ~~ alert
     neg ~~ alert
 '
-self_pred_fit <- sem(model = self_pred_mediation, data = risk_final, se = "bootstrap", bootstrap = 5000)
+self_pred_fit <- sem(model = self_pred_mediation, data = risk_pred,se = "bootstrap", bootstrap = 5000)
 summary(self_pred_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE)
-
-mi <- modindices(self_pred_fit)
-fitmeasures(self_pred_fit)
 
 ```
 
