@@ -25,6 +25,23 @@ risk <- read_sav("data/risk_nonlabelled.sav")
 # convert types
 risk <- risk %>% 
   mutate_if(is.labelled, labelled::to_factor)
+# get participant info from the raw data
+# gender
+risk %>% 
+  group_by(gender) %>% 
+  count() %>% 
+  group_by() %>% 
+  mutate(percent = n/sum(n))
+
+# age
+risk %>% 
+  filter(age < 1000) %>% 
+  summarize(mean = mean(age,na.rm = TRUE), 
+            sd = sd(age,na.rm = TRUE),
+            min = min(age,na.rm = TRUE),
+            max = max(age,na.rm = TRUE)
+            )
+
 
 # exclude those who failed at attention checks and who didn't consent to participate
 risk_excluded <- risk %>% 
