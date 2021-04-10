@@ -18,18 +18,25 @@ library(haven)
 #### Load data
 ```{r load-data}
 risk_excluded <- read_sav("data/risk_excluded.sav")
+glimpse(risk_excluded)
 
 # convert types
 risk_excluded <- risk_excluded %>% 
   mutate_if(is.labelled, labelled::to_factor)
 
-
-# reorder condition levels
+# convert condition
 risk_excluded <- risk_excluded %>% 
-  mutate(condition = fct_relevel(condition, "Self", "Surrogate", "Prediction"),
-         condition = fct_drop(condition, only = ""))
+mutate(condition = fct_recode(condition, "Self" = "4")) 
+
+
+
+# # reorder condition levels
+# risk_excluded <- risk_excluded %>% 
+#   mutate(condition = fct_relevel(condition, "Self", "Surrogate", "Prediction"),
+#          condition = fct_drop(condition))
 
 ```
+
 
 
 #### Coding for lavaan
@@ -79,14 +86,14 @@ I'm not really sure about this approach because if I used the dummy-coded condit
 # subset self & surrogate
 risk_sur <- risk_excluded %>% 
   filter(condition == "Self" | condition == "Surrogate") %>% 
-  mutate(condition = fct_drop(condition, only = "Prediction")) %>%  # drop irrelevant level
-  mutate(condition = as.numeric(as.character(fct_recode(condition, "0" = "Self", "1" = "Surrogate"))))
+  mutate(condition = fct_drop(condition)) %>%  # drop irrelevant level
+  mutate(recipient_num = as.numeric(as.character(fct_recode(condition, "0" = "Self", "1" = "Surrogate"))))
 
 # subset self & prediction
 risk_pred <- risk_excluded %>% 
   filter(condition == "Self" | condition == "Prediction") %>% 
   mutate(condition = fct_drop(condition, only = "Surrogate")) %>%  # drop irrelevant level
-  mutate(condition = as.numeric(as.character(fct_recode(condition, "0" = "Self", "1" = "Prediction"))))
+  mutate(recipient_num = as.numeric(as.character(fct_recode(condition, "0" = "Self", "1" = "Prediction"))))
 levels(risk_pred$condition)
 
 # the resulting data have three levels of condition
@@ -96,21 +103,6 @@ levels(risk_pred$condition)
 #   lavaan ERROR: unordered factor(s) with more than 2 levels detected as exogenous covariate(s): condition
 # order data in the model fit summary didn't work
 # recode variables
-
-```
-
-##### Write data files for AMOS
-```{r data-for-amos}
-risk_sur_amos <- risk_excluded %>% 
-  filter(condition == "Self" | condition == "Surrogate") %>% 
-  mutate(condition = fct_drop(condition, only = "Prediction"))
-
-risk_pred_amos <- risk_excluded %>% 
-  filter(condition == "Self" | condition == "Prediction") %>% 
-  mutate(condition = fct_drop(condition, only = "Surrogate")) 
-
-write_sav(risk_sur_amos, "data/risk_sur_amos.sav")
-write_sav(risk_pred_amos, "data/risk_pred_amos.sav")
 
 ```
 
@@ -189,11 +181,11 @@ The nlminb command is intended for functions that have at least two continuous d
 ```{r r self-surrogate-mediation-subset}
 self_sur_mediation <- '
     # direct effect
-    risklevel ~ b1 * neg + b2 * pos + b3 * alert + c * condition
+    risklevel ~ b1 * neg + b2 * pos + b3 * alert + c * recipient_num
     # mediator
-    neg ~ a1 * condition
-    pos ~ a2 * condition
-    alert ~ a3 * condition
+    neg ~ a1 * recipient_num
+    pos ~ a2 * recipient_num
+    alert ~ a3 * recipient_num
     # indirect effect (a*b)
     indirect1 := a1 * b1
     indirect2 := a2 * b2
@@ -226,11 +218,11 @@ This is a saturated model. Someone said the following about a saturated model:
 ```{r self-prediction-mediation}
 self_pred_mediation <- '
     # direct effect
-    risklevel ~ b1 * neg + b2 * pos + b3 * alert + c * condition
+    risklevel ~ b1 * neg + b2 * pos + b3 * alert + c * recipient_num
     # mediator
-    neg ~ a1 * condition
-    pos ~ a2 * condition
-    alert ~ a3 * condition
+    neg ~ a1 * recipient_num
+    pos ~ a2 * recipient_num
+    alert ~ a3 * recipient_num
     # indirect effect (a*b)
     indirect1 := a1 * b1
     indirect2 := a2 * b2
@@ -260,8 +252,8 @@ risk_sur <- risk_sur %>%
          alertmc = alert - mean(alert),
         
         # recode condition variable
-         conditionrecoded = case_when(condition == 1 ~ -1,
-                         condition == 2 ~ 1),
+         conditionrecoded = case_when(condition == "Self" ~ -1,
+                         condition == "Surrogate" ~ 1),
         
         # create interaction terms
          negint = negmc * conditionrecoded,
@@ -279,8 +271,8 @@ risk_pred <- risk_pred %>%
          alertmc = alert - mean(alert),
         
         # recode condition variable
-         conditionrecoded = case_when(condition == 1 ~ -1,
-                         condition == 2 ~ 1),
+         conditionrecoded = case_when(condition == "Self" ~ -1,
+                         condition == "Prediction" ~ 1),
         
         # create interaction terms
          negint = negmc * conditionrecoded,
@@ -294,7 +286,7 @@ write_sav(risk_pred, "data/risk_pred.sav")
 ```
 
 ##### Self vs. Surrogate Moderation
-```{r self-sur-moderation, eval = FALSE}
+```{r self-sur-moderation}
 
 self_sur_mod <- lm(risklevel ~ neg + pos + alert + negint + posint + alertint, data = risk_sur)
 summary(self_sur_mod)
