@@ -5,11 +5,50 @@ date: "4/10/2021"
 output: html_document
 ---
 ```{r libraries}
-# install.packages("ppcor)
+# install.packages("ppcor")
+# install.packages("corrr")
 require(tidyverse)
 require(ppcor)
 require(haven)
+library(corrr)
+library(Hmisc)
+library(broom)
 ```
+
+
+```{r load-data}
+risk_all <- read_sav("data/risk_excluded.sav")
+risk_sur <- read_sav("data/risk_sur.sav")
+risk_pred <- read_sav("data/risk_pred.sav")
+```
+
+
+```{r correlations}
+# create a dataframe
+vars <- c("risklevel", "neg", "pos", "alert", "negmc", "posmc", "alertmc", "negint", "posint", "alertint", "condition", "recipient_num")
+# self vs. sur
+cor_sur <- risk_sur %>% 
+  dplyr::select(all_of(vars)) %>%
+  as.matrix() %>% 
+  rcorr(type = "spearman") 
+ # convert into a dataframe
+  # cor_sur <- do.call(rbind.data.frame, cor_sur) # doesn't look tidy
+
+# self vs. pred 
+cor_pred <- risk_pred %>% 
+  dplyr::select(all_of(vars)) %>% 
+  as.matrix() %>% 
+  rcorr(type = "spearman") 
+
+
+# overall correlation
+cor_overall <- risk_all %>% 
+  dplyr::select(risklevel:alert) %>% 
+  as.matrix() %>% 
+  rcorr(type = "spearman") 
+
+```
+
 
 
 

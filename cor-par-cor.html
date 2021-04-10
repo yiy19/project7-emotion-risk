@@ -171,7 +171,8 @@ pre code {
 </div>
 
 
-<pre class="r"><code># install.packages(&quot;ppcor)
+<pre class="r"><code># install.packages(&quot;ppcor&quot;)
+# install.packages(&quot;corrr&quot;)
 require(tidyverse)</code></pre>
 <pre><code>## Loading required package: tidyverse</code></pre>
 <pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
@@ -192,6 +193,45 @@ require(tidyverse)</code></pre>
 ##     select</code></pre>
 <pre class="r"><code>require(haven)</code></pre>
 <pre><code>## Loading required package: haven</code></pre>
+<pre class="r"><code>library(corrr)
+library(Hmisc)</code></pre>
+<pre><code>## Loading required package: lattice</code></pre>
+<pre><code>## Loading required package: survival</code></pre>
+<pre><code>## Loading required package: Formula</code></pre>
+<pre><code>## 
+## Attaching package: &#39;Hmisc&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:dplyr&#39;:
+## 
+##     src, summarize</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     format.pval, units</code></pre>
+<pre class="r"><code>library(broom)</code></pre>
+<pre class="r"><code>risk_all &lt;- read_sav(&quot;data/risk_excluded.sav&quot;)
+risk_sur &lt;- read_sav(&quot;data/risk_sur.sav&quot;)
+risk_pred &lt;- read_sav(&quot;data/risk_pred.sav&quot;)</code></pre>
+<pre class="r"><code># create a dataframe
+vars &lt;- c(&quot;risklevel&quot;, &quot;neg&quot;, &quot;pos&quot;, &quot;alert&quot;, &quot;negmc&quot;, &quot;posmc&quot;, &quot;alertmc&quot;, &quot;negint&quot;, &quot;posint&quot;, &quot;alertint&quot;, &quot;condition&quot;, &quot;recipient_num&quot;)
+# self vs. sur
+cor_sur &lt;- risk_sur %&gt;% 
+  dplyr::select(all_of(vars)) %&gt;%
+  as.matrix() %&gt;% 
+  rcorr(type = &quot;spearman&quot;) 
+ # convert into a dataframe
+  # cor_sur &lt;- do.call(rbind.data.frame, cor_sur) # doesn&#39;t look tidy
+
+# self vs. pred 
+cor_pred &lt;- risk_pred %&gt;% 
+  dplyr::select(all_of(vars)) %&gt;% 
+  as.matrix() %&gt;% 
+  rcorr(type = &quot;spearman&quot;) 
+
+
+# overall correlation
+cor_overall &lt;- risk_all %&gt;% 
+  dplyr::select(risklevel:alert) %&gt;% 
+  as.matrix() %&gt;% 
+  rcorr(type = &quot;spearman&quot;) </code></pre>
 <p>```</p>
 
 
