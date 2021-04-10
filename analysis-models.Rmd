@@ -248,6 +248,7 @@ summary(self_pred_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE
 ```
 
 #### Moderation
+##### Code variables
 
 ```{r mean-centering}
 # mean center IVs
@@ -292,8 +293,18 @@ write_sav(risk_pred, "data/risk_pred.sav")
 
 ```
 
-
+##### Self vs. Surrogate Moderation
 ```{r self-sur-moderation, eval = FALSE}
 
-self_sur_mod <- lm(risklevel ~ )
+self_sur_mod <- lm(risklevel ~ neg + pos + alert + negint + posint + alertint, data = risk_sur)
+summary(self_sur_mod)
+
+
+
+```
+
+##### Self vs. Prediction Moderation
+```{r self-pred-moderation}
+self_pred_mod <- lm(risklevel ~ neg + pos + alert + negint + posint + alertint, data = risk_sur)
+summary(self_pred_mod)
 ```

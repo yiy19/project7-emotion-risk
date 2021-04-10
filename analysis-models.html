@@ -417,39 +417,39 @@ summary(self_sur_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE)
 ## Regressions:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
 ##   risklevel ~                                                           
-##     neg       (b1)   -0.069    0.076   -0.912    0.362   -0.069   -0.047
-##     pos       (b2)    0.822    0.109    7.548    0.000    0.822    0.376
-##     alert     (b3)   -0.016    0.107   -0.152    0.879   -0.016   -0.008
-##     condition  (c)    0.516    0.166    3.104    0.002    0.516    0.146
+##     neg       (b1)   -0.069    0.077   -0.896    0.370   -0.069   -0.047
+##     pos       (b2)    0.822    0.109    7.572    0.000    0.822    0.376
+##     alert     (b3)   -0.016    0.106   -0.154    0.878   -0.016   -0.008
+##     condition  (c)    0.516    0.166    3.110    0.002    0.516    0.146
 ##   neg ~                                                                 
-##     condition (a1)    0.178    0.124    1.440    0.150    0.178    0.074
+##     condition (a1)    0.178    0.122    1.457    0.145    0.178    0.074
 ##   pos ~                                                                 
-##     condition (a2)    0.167    0.083    2.008    0.045    0.167    0.104
+##     condition (a2)    0.167    0.083    2.025    0.043    0.167    0.104
 ##   alert ~                                                               
-##     condition (a3)    0.068    0.086    0.787    0.431    0.068    0.041
+##     condition (a3)    0.068    0.085    0.801    0.423    0.068    0.041
 ## 
 ## Covariances:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
 ##  .neg ~~                                                                
-##    .pos              -0.106    0.052   -2.054    0.040   -0.106   -0.110
+##    .pos              -0.106    0.053   -2.010    0.044   -0.106   -0.110
 ##  .pos ~~                                                                
-##    .alert             0.102    0.038    2.716    0.007    0.102    0.153
+##    .alert             0.102    0.038    2.665    0.008    0.102    0.153
 ##  .neg ~~                                                                
-##    .alert             0.231    0.057    4.075    0.000    0.231    0.231
+##    .alert             0.231    0.056    4.128    0.000    0.231    0.231
 ## 
 ## Variances:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .risklevel         2.553    0.168   15.189    0.000    2.553    0.821
-##    .neg               1.436    0.071   20.169    0.000    1.436    0.995
-##    .pos               0.645    0.048   13.462    0.000    0.645    0.989
-##    .alert             0.691    0.063   10.994    0.000    0.691    0.998
+##    .risklevel         2.553    0.169   15.070    0.000    2.553    0.821
+##    .neg               1.436    0.072   19.818    0.000    1.436    0.995
+##    .pos               0.645    0.049   13.262    0.000    0.645    0.989
+##    .alert             0.691    0.063   11.011    0.000    0.691    0.998
 ## 
 ## Defined Parameters:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##     indirect1        -0.012    0.019   -0.659    0.510   -0.012   -0.004
-##     indirect2         0.137    0.071    1.939    0.052    0.137    0.039
-##     Indirect3        -0.001    0.012   -0.092    0.927   -0.001   -0.000
-##     total             0.640    0.176    3.641    0.000    0.640    0.182</code></pre>
+##     indirect1        -0.012    0.019   -0.647    0.518   -0.012   -0.004
+##     indirect2         0.137    0.070    1.958    0.050    0.137    0.039
+##     Indirect3        -0.001    0.011   -0.098    0.922   -0.001   -0.000
+##     total             0.640    0.176    3.644    0.000    0.640    0.182</code></pre>
 <p>This is a saturated model. Someone said the following about a saturated model:</p>
 <p>Also, I see very little use of the fit indexes for path analysis. It seems incoherent to say that the relation between variables will reproduce the covariance matrix, as we can get the saturated model by including all relations.</p>
 <p>Fit its useful for a measurement model, when you try to state that latent variables structure reproduce the covariance matrix.</p>
@@ -531,42 +531,44 @@ summary(self_pred_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE
 ## Regressions:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
 ##   risklevel ~                                                           
-##     neg       (b1)   -0.143    0.076   -1.886    0.059   -0.143   -0.102
-##     pos       (b2)    0.645    0.111    5.786    0.000    0.645    0.325
-##     alert     (b3)   -0.041    0.113   -0.362    0.718   -0.041   -0.021
-##     condition  (c)    0.682    0.159    4.289    0.000    0.682    0.206
+##     neg       (b1)   -0.143    0.077   -1.870    0.062   -0.143   -0.102
+##     pos       (b2)    0.645    0.112    5.777    0.000    0.645    0.325
+##     alert     (b3)   -0.041    0.110   -0.370    0.712   -0.041   -0.021
+##     condition  (c)    0.682    0.156    4.375    0.000    0.682    0.206
 ##   neg ~                                                                 
-##     condition (a1)   -0.091    0.121   -0.757    0.449   -0.091   -0.039
+##     condition (a1)   -0.091    0.122   -0.748    0.455   -0.091   -0.039
 ##   pos ~                                                                 
-##     condition (a2)    0.127    0.086    1.481    0.138    0.127    0.076
+##     condition (a2)    0.127    0.086    1.478    0.139    0.127    0.076
 ##   alert ~                                                               
-##     condition (a3)    0.009    0.088    0.105    0.916    0.009    0.005
+##     condition (a3)    0.009    0.087    0.106    0.916    0.009    0.005
 ## 
 ## Covariances:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
 ##  .neg ~~                                                                
-##    .pos              -0.174    0.055   -3.176    0.001   -0.174   -0.178
+##    .pos              -0.174    0.054   -3.211    0.001   -0.174   -0.178
 ##  .pos ~~                                                                
-##    .alert             0.198    0.043    4.628    0.000    0.198    0.281
+##    .alert             0.198    0.042    4.719    0.000    0.198    0.281
 ##  .neg ~~                                                                
-##    .alert             0.239    0.055    4.325    0.000    0.239    0.241
+##    .alert             0.239    0.055    4.317    0.000    0.239    0.241
 ## 
 ## Variances:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .risklevel         2.255    0.152   14.861    0.000    2.255    0.820
-##    .neg               1.374    0.069   19.935    0.000    1.374    0.998
-##    .pos               0.694    0.054   12.903    0.000    0.694    0.994
-##    .alert             0.718    0.063   11.370    0.000    0.718    1.000
+##    .risklevel         2.255    0.152   14.819    0.000    2.255    0.820
+##    .neg               1.374    0.069   20.049    0.000    1.374    0.998
+##    .pos               0.694    0.054   12.866    0.000    0.694    0.994
+##    .alert             0.718    0.062   11.520    0.000    0.718    1.000
 ## 
 ## Defined Parameters:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##     indirect1         0.013    0.021    0.634    0.526    0.013    0.004
-##     indirect2         0.082    0.059    1.398    0.162    0.082    0.025
-##     Indirect3        -0.000    0.010   -0.036    0.971   -0.000   -0.000
-##     total             0.777    0.168    4.616    0.000    0.777    0.234</code></pre>
+##     indirect1         0.013    0.021    0.622    0.534    0.013    0.004
+##     indirect2         0.082    0.059    1.394    0.163    0.082    0.025
+##     Indirect3        -0.000    0.010   -0.037    0.970   -0.000   -0.000
+##     total             0.777    0.166    4.675    0.000    0.777    0.234</code></pre>
 </div>
 <div id="moderation" class="section level4">
 <h4>Moderation</h4>
+<div id="code-variables" class="section level5">
+<h5>Code variables</h5>
 <pre class="r"><code># mean center IVs
 risk_sur &lt;- risk_sur %&gt;% 
   mutate(
@@ -606,7 +608,42 @@ risk_pred &lt;- risk_pred %&gt;%
 write_sav(risk_pred, &quot;data/risk_pred.sav&quot;)
 
 # create interaction variables</code></pre>
-<pre class="r"><code>self_sur_mod &lt;- lm(risklevel ~ )</code></pre>
+</div>
+<div id="self-vs.-surrogate-moderation" class="section level5">
+<h5>Self vs. Surrogate Moderation</h5>
+<pre class="r"><code>self_sur_mod &lt;- lm(risklevel ~ neg + pos + alert + negint + posint + alertint, data = risk_sur)
+summary(self_sur_mod)</code></pre>
+</div>
+<div id="self-vs.-prediction-moderation" class="section level5">
+<h5>Self vs. Prediction Moderation</h5>
+<pre class="r"><code>self_pred_mod &lt;- lm(risklevel ~ neg + pos + alert + negint + posint + alertint, data = risk_sur)
+summary(self_pred_mod)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = risklevel ~ neg + pos + alert + negint + posint + 
+##     alertint, data = risk_sur)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.5823 -0.8329  0.2573  1.2032  2.9778 
+## 
+## Coefficients: (3 not defined because of singularities)
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  1.667939   0.624014   2.673  0.00818 ** 
+## neg         -0.003649   0.098159  -0.037  0.97038    
+## pos          0.774574   0.154013   5.029 1.15e-06 ***
+## alert       -0.061318   0.150746  -0.407  0.68465    
+## negint             NA         NA      NA       NA    
+## posint             NA         NA      NA       NA    
+## alertint           NA         NA      NA       NA    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.603 on 187 degrees of freedom
+##   (192 observations deleted due to missingness)
+## Multiple R-squared:  0.1202, Adjusted R-squared:  0.1061 
+## F-statistic: 8.513 on 3 and 187 DF,  p-value: 2.494e-05</code></pre>
+</div>
 </div>
 </div>
 
