@@ -1,0 +1,17 @@
+---
+title: "correlation-partial-correlation"
+author: "Ye Dam Yi"
+date: "4/10/2021"
+output: html_document
+---
+```{r libraries}
+# install.packages("ppcor)
+require(tidyverse)
+require(ppcor)
+require(haven)
+```
+
+
+
+
+```
