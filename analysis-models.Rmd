@@ -222,13 +222,6 @@ This is a saturated model. Someone said the following about a saturated model:
   I had to answer a reviewer asking me for fit measure in a model just like yours (path analysis and saturated)
 
 
-
-
-
-```{r self-surrogate-moderation}
-
-```
-
 #### Self decisions vs. predictions
 ```{r self-prediction-mediation}
 self_pred_mediation <- '
@@ -254,13 +247,53 @@ summary(self_pred_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE
 
 ```
 
-```{r self-prediction-moderation}
+#### Moderation
+
+```{r mean-centering}
+# mean center IVs
+risk_sur <- risk_sur %>% 
+  mutate(
+        # meancenter variables
+         negmc = neg - mean(neg),
+         posmc = pos - mean(pos),
+         alertmc = alert - mean(alert),
+        
+        # recode condition variable
+         conditionrecoded = case_when(condition == 1 ~ -1,
+                         condition == 2 ~ 1),
+        
+        # create interaction terms
+         negint = negmc * conditionrecoded,
+         posint = posmc * conditionrecoded,
+         alertint = alertmc * conditionrecoded)
+
+write_sav(risk_sur, "data/risk_sur.sav")
+
+risk_pred <- risk_pred %>% 
+   mutate(
+     
+       # meancenter variables
+         negmc = neg - mean(neg),
+         posmc = pos - mean(pos),
+         alertmc = alert - mean(alert),
+        
+        # recode condition variable
+         conditionrecoded = case_when(condition == 1 ~ -1,
+                         condition == 2 ~ 1),
+        
+        # create interaction terms
+         negint = negmc * conditionrecoded,
+         posint = posmc * conditionrecoded,
+         alertint = alertmc * conditionrecoded)
+
+write_sav(risk_pred, "data/risk_pred.sav")
+
+# create interaction variables
 
 ```
 
 
+```{r self-sur-moderation, eval = FALSE}
 
-
+self_sur_mod <- lm(risklevel ~ )
 ```
-
-
