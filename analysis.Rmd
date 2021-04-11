@@ -16,15 +16,26 @@ library(knitr)
 ```
 
 ```{r load-data}
-risk <- read_sav("data/risk_nonlabelled.sav")
+risk <- read_spss("data/risk_clean.sav")
 ```
 
 
 #### Exclusion
 ```{r exclusion}
+# check data
+glimpse(risk)
+
 # convert types
-risk <- risk %>% 
-  mutate_if(is.labelled, labelled::to_factor)
+# risk <- risk %>% 
+#   mutate(gender = as_factor(gender),
+#          condition = as_factor(condition),
+#          rel_self = as.numeric(as_factor(rel_self)),
+#          rel_friend1 = as.numeric(as_factor(rel_friend1)),
+#          rel_friend2 = as_factor(rel_friend2))
+
+# check data
+# glimpse(risk)
+
 # get participant info from the raw data
 # gender
 risk %>% 
@@ -36,7 +47,7 @@ risk %>%
 # age
 risk %>% 
   filter(age < 1000) %>% 
-  summarize(mean = mean(age,na.rm = TRUE), 
+  summarise(mean = mean(age,na.rm = TRUE), 
             sd = sd(age,na.rm = TRUE),
             min = min(age,na.rm = TRUE),
             max = max(age,na.rm = TRUE)
@@ -49,6 +60,8 @@ risk_excluded <- risk %>%
 # exclude those who indicated their gender to be non-binary or other/prefer not to say
   filter(gender == 1 | gender ==2) 
 
+# check file
+glimpse(risk_excluded)
 # write file
 write_sav(risk_excluded, "data/risk_excluded.sav")
 
@@ -166,11 +179,10 @@ risk_excluded %>%
 # age
 risk_excluded %>% 
   group_by(gender) %>% 
-  summarize(mean = mean(age,na.rm = TRUE), 
+  summarise(mean = mean(age,na.rm = TRUE), 
             sd = sd(age,na.rm = TRUE),
             min = min(age,na.rm = TRUE),
-            max = max(age,na.rm = TRUE)
-            )
+            max = max(age,na.rm = TRUE))
 
 # inspect why there's NA for female age
 risk_excluded %>% 
@@ -180,7 +192,7 @@ risk_excluded %>%
 # time
 risk_excluded %>% 
   group_by(gender) %>% 
-  summarize(mean = mean(time,na.rm = TRUE), 
+  summarise(mean = mean(time,na.rm = TRUE), 
             sd = sd(time,na.rm = TRUE),
             min = min(time,na.rm = TRUE),
             max = max(time,na.rm = TRUE)
