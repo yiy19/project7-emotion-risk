@@ -6,14 +6,14 @@ output: html_document
 ---
 ```{r libraries}
 # install.packages("ppcor")
-# install.packages("corrr")
+# install.packages("corx")
 require(tidyverse)
 require(ppcor)
 require(haven)
-library(corrr)
 library(Hmisc)
 library(broom)
 library(psych)
+require(corx)
 
 ```
 
@@ -75,7 +75,6 @@ write_csv(cor_all_table, "data/cor_all_table.csv")
 ```
 
 
-
 ```{r partial-correlations}
 risk_sur_cor <- risk_sur %>% 
   dplyr::select(all_of(vars))
@@ -83,10 +82,14 @@ risk_sur_cor <- risk_sur %>%
 risk_pred_cor <- risk_pred %>% 
   dplyr::select(all_of(vars))
 
-pcor(risk_sur_cor)
-partial.r(risk_sur_cor)
+lowerMat(partial.r(risk_sur_cor))
+lowerMat(pcor(risk_sur_cor)$p.value)
 
-pcor(risk_pred_cor)
-partial.r(risk_pred_cor)
+
+lowerMat(partial.r(risk_pred_cor))
+lowerMat(pcor(risk_pred_cor)$p.value)
+
 
 ```
+
+
