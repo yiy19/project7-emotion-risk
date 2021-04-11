@@ -218,7 +218,8 @@ risk_excluded %>%
   pivot_longer(c(riskyrisk, riskavrisk), names_to = "option", values_to = "riskrating") %>% 
   ggplot(aes(x = option, y = riskrating)) +
   geom_boxplot() +
-  scale_x_discrete(labels = c("Risk-Averse Option", "Risky Option"))
+  scale_x_discrete(labels = c("Risk-Averse Option", "Risky Option")) +
+  theme_bw()
 
 # look at the numbers
 risk_excluded %>% 

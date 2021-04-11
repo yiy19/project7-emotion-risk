@@ -20,6 +20,14 @@ risk_excluded <- read_sav("data/risk_excluded.sav")
 # convert types
 risk_excluded <- risk_excluded %>% 
   mutate_if(is.labelled, labelled::to_factor)
+
+# convert condition
+risk_excluded <- risk_excluded %>% 
+mutate(condition = fct_recode(condition, "Self" = "4")) 
+
+
+
+
 ```
 
 
@@ -27,6 +35,8 @@ risk_excluded <- risk_excluded %>%
 ```{r missing-data}
 
 summary(risk_excluded)
+risk_excluded %>% summarise_all(~ sum(is.na(.)))
+
 ```
 
 ```{r recipient-effects}

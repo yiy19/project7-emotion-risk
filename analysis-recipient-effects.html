@@ -198,7 +198,12 @@ library(knitr)</code></pre>
 
 # convert types
 risk_excluded &lt;- risk_excluded %&gt;% 
-  mutate_if(is.labelled, labelled::to_factor)</code></pre>
+  mutate_if(is.labelled, labelled::to_factor)
+
+# convert condition
+risk_excluded &lt;- risk_excluded %&gt;% 
+mutate(condition = fct_recode(condition, &quot;Self&quot; = &quot;4&quot;)) </code></pre>
+<pre><code>## Warning: Unknown levels in `f`: 4</code></pre>
 </div>
 <div id="effects-of-recipient-on-each-of-the-outcome-variables" class="section level4">
 <h4>Effects of recipient on each of the outcome variables</h4>
@@ -243,6 +248,14 @@ risk_excluded &lt;- risk_excluded %&gt;%
 ##                     3rd Qu.:457.0                     
 ##                     Max.   :607.0                     
 ## </code></pre>
+<pre class="r"><code>risk_excluded %&gt;% summarise_all(~ sum(is.na(.)))</code></pre>
+<pre><code>## # A tibble: 1 x 22
+##   consent  time   age gender gendcond condition friend1 friend2 risklevel   pos
+##     &lt;int&gt; &lt;int&gt; &lt;int&gt;  &lt;int&gt;    &lt;int&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt;     &lt;int&gt; &lt;int&gt;
+## 1       0     0     0      0        0         0       0       0         0     0
+## # … with 12 more variables: neg &lt;int&gt;, alert &lt;int&gt;, riskyrisk &lt;int&gt;,
+## #   riskavrisk &lt;int&gt;, rel_self &lt;int&gt;, rel_friend1 &lt;int&gt;, rel_friend2 &lt;int&gt;,
+## #   attention1 &lt;int&gt;, attention2 &lt;int&gt;, code &lt;int&gt;, id &lt;int&gt;, code_mturk &lt;int&gt;</code></pre>
 <pre class="r"><code># risk taking
 risk_excluded %&gt;% 
   ggplot(aes(y = risklevel, x = condition)) +
