@@ -204,7 +204,7 @@ self_sur_mediation <- '
     neg ~~ alert
 '
 self_sur_fit <- sem(model = self_sur_mediation, data = risk_sur, se = "bootstrap", bootstrap = 5000)
-summary(self_sur_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE)
+summary(self_sur_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE, rsquare = TRUE)
 standardizedSolution(self_sur_fit)
 
 
@@ -241,7 +241,7 @@ self_pred_mediation <- '
     neg ~~ alert
 '
 self_pred_fit <- sem(model = self_pred_mediation, data = risk_pred,se = "bootstrap", bootstrap = 5000)
-summary(self_pred_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE)
+summary(self_pred_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE, rsquare = TRUE)
 standardizedSolution(self_pred_fit)
 
 ```
@@ -299,7 +299,18 @@ self_sur_mod <- lm(risklevel ~ neg + pos + alert + negint + posint + alertint, d
 summary(self_sur_mod)
 lm.beta(self_sur_mod)
 
+# lavaan
+self_sur_mod_lav <- '
+risklevel ~ neg + pos + alert + negint + posint + alertint
 
+neg ~~ pos
+pos ~~ alert
+neg ~~ alert
+'
+self_sur_mod_fit <- sem(model = self_sur_mod_lav, data = risk_sur)
+summary(self_sur_mod_fit, standardized = T, rsquare = TRUE)
+lavInspect(self_sur_mod_fit, "cor.ov")
+lavTestLRT(self_sur_mod_fit, fit.int)
 
 ```
 
@@ -308,4 +319,19 @@ lm.beta(self_sur_mod)
 self_pred_mod <- lm(risklevel ~ neg + pos + alert + negint + posint + alertint, data = risk_sur)
 summary(self_pred_mod)
 lm.beta(self_pred_mod)
+
+
+# lavaan
+self_pred_mod_lav <- '
+risklevel ~ neg + pos + alert + negint + posint + alertint
+
+neg ~~ pos
+pos ~~ alert
+neg ~~ alert
+'
+self_pred_mod_fit <- sem(model = self_pred_mod_lav, data = risk_pred)
+summary(self_pred_mod_fit, standardized = T, rsquare = TRUE)
+lavInspect(self_pred_mod_fit, "cor.ov")
+lavTestLRT(self_pred_mod_fit, fit.int)
+
 ```
