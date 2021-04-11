@@ -62,6 +62,18 @@ risk_excluded <- risk %>%
 
 # check file
 glimpse(risk_excluded)
+
+# convert type
+risk_excluded <- risk_excluded %>% 
+  mutate(gender = as_factor(gender),
+         condition = as_factor(condition),
+         rel_self = as_factor(rel_self),
+         rel_friend1 = as_factor(rel_friend1),
+         rel_friend2 = as_factor(rel_friend2)) 
+
+# glimpse(risk_excluded)
+# levels(risk_excluded$condition)
+
 # write file
 write_sav(risk_excluded, "data/risk_excluded.sav")
 
