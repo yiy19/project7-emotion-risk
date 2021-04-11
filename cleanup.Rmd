@@ -157,11 +157,11 @@ riskraw <- riskraw %>%
 
 # 4. create combined condition variable
 riskraw <- riskraw %>% 
-  mutate(condition = case_when(
+  mutate(condition = as.factor(case_when(
     gendcond == "femself" | gendcond == "malself" ~ "Self",
     gendcond == "femsur" | gendcond == "malsur" ~ "Surrogate",
     gendcond == "fempred" | gendcond ==  "malpred" ~ "Prediction"
-  ))
+  )))
 
 # 5. select columns I'm interested in
 riskraw <- riskraw %>% 
@@ -223,7 +223,16 @@ riskraw <- riskraw %>%
 riskraw <- riskraw %>% 
   filter(!is.na(code_mturk))
 
-# 4. write file
+# 4. take a look at the data
+glimpse(riskraw)
+levels(riskraw$condition)
+
+# 5. convert types
+riskraw <- riskraw %>% 
+  mutate(age = as.numeric(age),
+         condition = fct_relevel(condition, "Self", "Surrogate", "Prediction"))
+
+# 6. write file
 write_sav(riskraw, "data/risk_labelled.sav")
 ```
 
@@ -231,12 +240,15 @@ write_sav(riskraw, "data/risk_labelled.sav")
 # read in file
 riskraw <- read_sav("data/risk_labelled.sav")
 
-# convert column types
-riskraw <- riskraw %>% 
-  mutate_if(is.labelled, labelled::to_factor)
-  
+# # # convert column types
+# riskraw <- riskraw %>%
+#   mutate_if(is.labelled, labelled::to_factor)
+
+# take a look at data
+glimpse(riskraw)
+
 # write file
-write_sav(riskraw, "data/risk_nonlabelled.sav")
+write_sav(riskraw, "data/risk_clean.sav")
 ```
 
 

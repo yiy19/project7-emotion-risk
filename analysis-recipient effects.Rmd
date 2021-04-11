@@ -17,12 +17,38 @@ library(knitr)
 ```{r import-data}
 risk_excluded <- read_sav("data/risk_excluded.sav")
 
+# check data
+glimpse(risk_excluded)
+
+risk_excluded <- read_spss("data/risk_excluded.sav")
+
 # convert types
+# risk_excluded <- risk_excluded %>% 
+#   mutate_if(is.labelled, labelled::to_factor)
+
+# convert type
 risk_excluded <- risk_excluded %>% 
-  mutate_if(is.labelled, labelled::to_factor)
+  mutate(gender = as_factor(gender),
+         condition = as_factor(condition),
+         rel_self = as_factor(rel_self),
+         rel_friend1 = as_factor(rel_friend1),
+         rel_friend2 = as_factor(rel_friend2)) 
+
+# write_sav(risk_excluded, "data/risk_excluded.sav")
+
+# check data
+glimpse(risk_excluded)
 ```
 
+
 #### Effects of recipient on each of the outcome variables
+```{r missing-data}
+
+summary(risk_excluded)
+risk_excluded %>% summarise_all(~ sum(is.na(.)))
+
+```
+
 ```{r recipient-effects}
 # risk taking
 risk_excluded %>% 

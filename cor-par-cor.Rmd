@@ -1,0 +1,92 @@
+---
+title: "correlation-partial-correlation"
+author: "Ye Dam Yi"
+date: "4/10/2021"
+output: html_document
+---
+```{r libraries}
+# install.packages("ppcor")
+# install.packages("corrr")
+require(tidyverse)
+require(ppcor)
+require(haven)
+library(corrr)
+library(Hmisc)
+library(broom)
+library(psych)
+
+```
+
+
+```{r load-data}
+risk_all <- read_sav("data/risk_excluded.sav")
+risk_sur <- read_sav("data/risk_sur.sav")
+risk_pred <- read_sav("data/risk_pred.sav")
+```
+
+
+```{r correlations}
+# create a dataframe
+vars <- c("risklevel", "negmc", "posmc", "alertmc", "negint", "posint", "alertint", "condition")
+# self vs. sur
+cor_sur <- risk_sur %>% 
+  dplyr::select(all_of(vars)) %>%
+  as.matrix() %>% 
+  rcorr(type = "spearman") 
+ # convert into a dataframe
+  # cor_sur <- do.call(rbind.data.frame, cor_sur) # doesn't look tidy
+
+# function for tidying up corr data
+flattenCorrMatrix <- function(cormat, pmat) {
+  ut <- upper.tri(cormat)
+  data.frame(
+    row = rownames(cormat)[row(cormat)[ut]],
+    column = rownames(cormat)[col(cormat)[ut]],
+    cor  =(cormat)[ut],
+    p = pmat[ut]
+    )
+}
+
+
+# self vs. pred 
+cor_pred <- risk_pred %>% 
+  dplyr::select(all_of(vars)) %>% 
+  as.matrix() %>% 
+  rcorr(type = "spearman") 
+
+
+# overall correlation
+cor_overall <- risk_all %>% 
+  dplyr::select(risklevel:alert) %>% 
+  as.matrix() %>% 
+  rcorr(type = "spearman") 
+
+# tidy up data
+cor_sur_table <- flattenCorrMatrix(round(cor_sur$r, 3), round(cor_sur$P, 3))
+cor_pred_table <- flattenCorrMatrix(round(cor_pred$r, 3), round(cor_pred$P, 3))
+cor_all_table <- flattenCorrMatrix(round(cor_overall$r, 3), round(cor_overall$P, 3))
+
+# write out files
+write_csv(cor_sur_table, "data/cor_sur_table.csv")
+write_csv(cor_pred_table, "data/cor_pred_table.csv")
+write_csv(cor_all_table, "data/cor_all_table.csv")
+
+
+```
+
+
+
+```{r partial-correlations}
+risk_sur_cor <- risk_sur %>% 
+  dplyr::select(all_of(vars))
+
+risk_pred_cor <- risk_pred %>% 
+  dplyr::select(all_of(vars))
+
+pcor(risk_sur_cor)
+partial.r(risk_sur_cor)
+
+pcor(risk_pred_cor)
+partial.r(risk_pred_cor)
+
+```

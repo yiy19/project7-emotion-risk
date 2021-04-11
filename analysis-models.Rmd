@@ -20,13 +20,18 @@ library(haven)
 risk_excluded <- read_sav("data/risk_excluded.sav")
 glimpse(risk_excluded)
 
-# convert types
+# convert type
 risk_excluded <- risk_excluded %>% 
-  mutate_if(is.labelled, labelled::to_factor)
+  mutate(gender = as_factor(gender),
+         condition = as_factor(condition),
+         rel_self = as_factor(rel_self),
+         rel_friend1 = as_factor(rel_friend1),
+         rel_friend2 = as_factor(rel_friend2)) 
 
-# convert condition
-risk_excluded <- risk_excluded %>% 
-mutate(condition = fct_recode(condition, "Self" = "4")) 
+# write_sav(risk_excluded, "data/risk_excluded.sav")
+
+# check data
+glimpse(risk_excluded)
 
 
 
