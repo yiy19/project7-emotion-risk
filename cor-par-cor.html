@@ -206,12 +206,21 @@ library(Hmisc)</code></pre>
 <pre><code>## The following objects are masked from &#39;package:base&#39;:
 ## 
 ##     format.pval, units</code></pre>
-<pre class="r"><code>library(broom)</code></pre>
+<pre class="r"><code>library(broom)
+library(psych)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;psych&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:Hmisc&#39;:
+## 
+##     describe</code></pre>
+<pre><code>## The following objects are masked from &#39;package:ggplot2&#39;:
+## 
+##     %+%, alpha</code></pre>
 <pre class="r"><code>risk_all &lt;- read_sav(&quot;data/risk_excluded.sav&quot;)
 risk_sur &lt;- read_sav(&quot;data/risk_sur.sav&quot;)
 risk_pred &lt;- read_sav(&quot;data/risk_pred.sav&quot;)</code></pre>
 <pre class="r"><code># create a dataframe
-vars &lt;- c(&quot;risklevel&quot;, &quot;neg&quot;, &quot;pos&quot;, &quot;alert&quot;, &quot;negmc&quot;, &quot;posmc&quot;, &quot;alertmc&quot;, &quot;negint&quot;, &quot;posint&quot;, &quot;alertint&quot;, &quot;condition&quot;, &quot;recipient_num&quot;)
+vars &lt;- c(&quot;risklevel&quot;, &quot;negmc&quot;, &quot;posmc&quot;, &quot;alertmc&quot;, &quot;negint&quot;, &quot;posint&quot;, &quot;alertint&quot;, &quot;condition&quot;)
 # self vs. sur
 cor_sur &lt;- risk_sur %&gt;% 
   dplyr::select(all_of(vars)) %&gt;%
@@ -219,6 +228,18 @@ cor_sur &lt;- risk_sur %&gt;%
   rcorr(type = &quot;spearman&quot;) 
  # convert into a dataframe
   # cor_sur &lt;- do.call(rbind.data.frame, cor_sur) # doesn&#39;t look tidy
+
+# function for tidying up corr data
+flattenCorrMatrix &lt;- function(cormat, pmat) {
+  ut &lt;- upper.tri(cormat)
+  data.frame(
+    row = rownames(cormat)[row(cormat)[ut]],
+    column = rownames(cormat)[col(cormat)[ut]],
+    cor  =(cormat)[ut],
+    p = pmat[ut]
+    )
+}
+
 
 # self vs. pred 
 cor_pred &lt;- risk_pred %&gt;% 
@@ -231,8 +252,199 @@ cor_pred &lt;- risk_pred %&gt;%
 cor_overall &lt;- risk_all %&gt;% 
   dplyr::select(risklevel:alert) %&gt;% 
   as.matrix() %&gt;% 
-  rcorr(type = &quot;spearman&quot;) </code></pre>
-<p>```</p>
+  rcorr(type = &quot;spearman&quot;) 
+
+# tidy up data
+cor_sur_table &lt;- flattenCorrMatrix(round(cor_sur$r, 3), round(cor_sur$P, 3))
+cor_pred_table &lt;- flattenCorrMatrix(round(cor_pred$r, 3), round(cor_pred$P, 3))
+cor_all_table &lt;- flattenCorrMatrix(round(cor_overall$r, 3), round(cor_overall$P, 3))
+
+# write out files
+write_csv(cor_sur_table, &quot;data/cor_sur_table.csv&quot;)
+write_csv(cor_pred_table, &quot;data/cor_pred_table.csv&quot;)
+write_csv(cor_all_table, &quot;data/cor_all_table.csv&quot;)</code></pre>
+<pre class="r"><code>risk_sur_cor &lt;- risk_sur %&gt;% 
+  dplyr::select(all_of(vars))
+
+risk_pred_cor &lt;- risk_pred %&gt;% 
+  dplyr::select(all_of(vars))
+
+pcor(risk_sur_cor)</code></pre>
+<pre><code>## $estimate
+##             risklevel       negmc        posmc      alertmc      negint
+## risklevel  1.00000000 -0.05100300  0.364520327 -0.004972320  0.04840662
+## negmc     -0.05100300  1.00000000 -0.116937217  0.248411754  0.07041038
+## posmc      0.36452033 -0.11693722  1.000000000  0.182413202  0.10382187
+## alertmc   -0.00497232  0.24841175  0.182413202  1.000000000 -0.08838185
+## negint     0.04840662  0.07041038  0.103821870 -0.088381855  1.00000000
+## posint    -0.01502002  0.12964443 -0.052609161 -0.005903018 -0.14481820
+## alertint  -0.02534594 -0.08987643  0.003812859 -0.054192952  0.24984762
+## condition  0.15903661  0.08929369  0.043030522  0.003369392 -0.02271986
+##                  posint     alertint     condition
+## risklevel -0.0150200180 -0.025345945  0.1590366107
+## negmc      0.1296444255 -0.089876430  0.0892936870
+## posmc     -0.0526091611  0.003812859  0.0430305216
+## alertmc   -0.0059030180 -0.054192952  0.0033693919
+## negint    -0.1448182050  0.249847618 -0.0227198629
+## posint     1.0000000000  0.193482513 -0.0004822749
+## alertint   0.1934825133  1.000000000  0.0137040234
+## condition -0.0004822749  0.013704023  1.0000000000
+## 
+## $p.value
+##              risklevel        negmc        posmc      alertmc       negint
+## risklevel 0.000000e+00 3.233223e-01 2.729029e-13 9.233419e-01 3.485965e-01
+## negmc     3.233223e-01 0.000000e+00 2.316114e-02 1.039375e-06 1.724807e-01
+## posmc     2.729029e-13 2.316114e-02 0.000000e+00 3.708890e-04 4.394561e-02
+## alertmc   9.233419e-01 1.039375e-06 3.708890e-04 0.000000e+00 8.657986e-02
+## negint    3.485965e-01 1.724807e-01 4.394561e-02 8.657986e-02 0.000000e+00
+## posint    7.712930e-01 1.175143e-02 3.082985e-01 9.090505e-01 4.841570e-03
+## alertint  6.237279e-01 8.136536e-02 9.411801e-01 2.939416e-01 8.960592e-07
+## condition 1.952167e-03 8.336750e-02 4.047810e-01 9.480110e-01 6.601314e-01
+##                 posint     alertint   condition
+## risklevel 0.7712930442 6.237279e-01 0.001952167
+## negmc     0.0117514321 8.136536e-02 0.083367496
+## posmc     0.3082985264 9.411801e-01 0.404780958
+## alertmc   0.9090505044 2.939416e-01 0.948011023
+## negint    0.0048415696 8.960592e-07 0.660131363
+## posint    0.0000000000 1.567937e-04 0.992553460
+## alertint  0.0001567937 0.000000e+00 0.790845482
+## condition 0.9925534596 7.908455e-01 0.000000000
+## 
+## $statistic
+##             risklevel      negmc       posmc     alertmc     negint
+## risklevel  0.00000000 -0.9889561  7.58047724 -0.09628975  0.9384904
+## negmc     -0.98895606  0.0000000 -2.28012269  4.96613888  1.3668836
+## posmc      7.58047724 -2.2801227  0.00000000  3.59269483  2.0214258
+## alertmc   -0.09628975  4.9661389  3.59269483  0.00000000 -1.7182313
+## negint     0.93849040  1.3668836  2.02142584 -1.71823127  0.0000000
+## posint    -0.29089421  2.5319215 -1.02018480 -0.11431344 -2.8342706
+## alertint  -0.49097984 -1.7475219  0.07383623 -1.05098645  4.9967494
+## condition  3.11943272  1.7360999  0.83405500  0.06524836 -0.4400819
+##                 posint    alertint    condition
+## risklevel -0.290894213 -0.49097984  3.119432724
+## negmc      2.531921531 -1.74752195  1.736099943
+## posmc     -1.020184797  0.07383623  0.834055004
+## alertmc   -0.114313444 -1.05098645  0.065248364
+## negint    -2.834270568  4.99674938 -0.440081852
+## posint     0.000000000  3.81893644 -0.009339214
+## alertint   3.818936437  0.00000000  0.265402195
+## condition -0.009339214  0.26540219  0.000000000
+## 
+## $n
+## [1] 383
+## 
+## $gp
+## [1] 6
+## 
+## $method
+## [1] &quot;pearson&quot;</code></pre>
+<pre class="r"><code>partial.r(risk_sur_cor)</code></pre>
+<pre><code>##             risklevel       negmc        posmc      alertmc      negint
+## risklevel  1.00000000 -0.05100300  0.364520327 -0.004972320  0.04840662
+## negmc     -0.05100300  1.00000000 -0.116937217  0.248411754  0.07041038
+## posmc      0.36452033 -0.11693722  1.000000000  0.182413202  0.10382187
+## alertmc   -0.00497232  0.24841175  0.182413202  1.000000000 -0.08838185
+## negint     0.04840662  0.07041038  0.103821870 -0.088381855  1.00000000
+## posint    -0.01502002  0.12964443 -0.052609161 -0.005903018 -0.14481820
+## alertint  -0.02534594 -0.08987643  0.003812859 -0.054192952  0.24984762
+## condition  0.15903661  0.08929369  0.043030522  0.003369392 -0.02271986
+##                  posint     alertint     condition
+## risklevel -0.0150200180 -0.025345945  0.1590366107
+## negmc      0.1296444255 -0.089876430  0.0892936870
+## posmc     -0.0526091611  0.003812859  0.0430305216
+## alertmc   -0.0059030180 -0.054192952  0.0033693919
+## negint    -0.1448182050  0.249847618 -0.0227198629
+## posint     1.0000000000  0.193482513 -0.0004822749
+## alertint   0.1934825133  1.000000000  0.0137040234
+## condition -0.0004822749  0.013704023  1.0000000000</code></pre>
+<pre class="r"><code>pcor(risk_pred_cor)</code></pre>
+<pre><code>## $estimate
+##              risklevel        negmc        posmc      alertmc        negint
+## risklevel  1.000000000 -0.105473686  0.308817420 -0.008170097 -0.0034987279
+## negmc     -0.105473686  1.000000000 -0.208827877  0.295098348 -0.0229790127
+## posmc      0.308817420 -0.208827877  1.000000000  0.348185482  0.0017719640
+## alertmc   -0.008170097  0.295098348  0.348185482  1.000000000 -0.0098714335
+## negint    -0.003498728 -0.022979013  0.001771964 -0.009871434  1.0000000000
+## posint    -0.098878019 -0.009709591 -0.083748923  0.177609020 -0.2543229728
+## alertint  -0.029057534 -0.012849005  0.179438919 -0.143218097  0.2974009463
+## condition -0.222438505 -0.002163387  0.002786673  0.010095113  0.0004826032
+##                 posint    alertint     condition
+## risklevel -0.098878019 -0.02905753 -0.2224385055
+## negmc     -0.009709591 -0.01284900 -0.0021633866
+## posmc     -0.083748923  0.17943892  0.0027866730
+## alertmc    0.177609020 -0.14321810  0.0100951134
+## negint    -0.254322973  0.29740095  0.0004826032
+## posint     1.000000000  0.35863146 -0.0318661559
+## alertint   0.358631459  1.00000000  0.0079032796
+## condition -0.031866156  0.00790328  1.0000000000
+## 
+## $p.value
+##              risklevel        negmc        posmc      alertmc       negint
+## risklevel 0.000000e+00 4.203932e-02 1.160618e-09 8.752043e-01 9.463794e-01
+## negmc     4.203932e-02 0.000000e+00 4.928117e-05 6.544619e-09 6.586557e-01
+## posmc     1.160618e-09 4.928117e-05 0.000000e+00 4.833680e-12 9.728282e-01
+## alertmc   8.752043e-01 6.544619e-09 4.833680e-12 0.000000e+00 8.494994e-01
+## negint    9.463794e-01 6.586557e-01 9.728282e-01 8.494994e-01 0.000000e+00
+## posint    5.673544e-02 8.519382e-01 1.068121e-01 5.785614e-04 6.672496e-07
+## alertint  5.763847e-01 8.049092e-01 5.060912e-04 5.652730e-03 4.926435e-09
+## condition 1.489946e-05 9.668291e-01 9.572804e-01 8.461311e-01 9.925983e-01
+##                 posint     alertint    condition
+## risklevel 5.673544e-02 5.763847e-01 1.489946e-05
+## negmc     8.519382e-01 8.049092e-01 9.668291e-01
+## posmc     1.068121e-01 5.060912e-04 9.572804e-01
+## alertmc   5.785614e-04 5.652730e-03 8.461311e-01
+## negint    6.672496e-07 4.926435e-09 9.925983e-01
+## posint    0.000000e+00 9.863741e-13 5.400752e-01
+## alertint  9.863741e-13 0.000000e+00 8.792482e-01
+## condition 5.400752e-01 8.792482e-01 0.000000e+00
+## 
+## $statistic
+##             risklevel       negmc       posmc    alertmc       negint
+## risklevel  0.00000000 -2.04020695  6.24549301 -0.1571602 -0.067299787
+## negmc     -2.04020695  0.00000000 -4.10744366  5.9408967 -0.442126880
+## posmc      6.24549301 -4.10744366  0.00000000  7.1445468  0.034084462
+## alertmc   -0.15716019  5.94089670  7.14454677  0.0000000 -0.189890068
+## negint    -0.06729979 -0.44212688  0.03408446 -0.1898901  0.000000000
+## posint    -1.91132298 -0.18677651 -1.61662208  3.4715718 -5.058320969
+## alertint  -0.55916894 -0.24717595  3.50852295 -2.7835503  5.991731211
+## condition -4.38863990 -0.04161367  0.05360293  0.1941933  0.009283059
+##               posint   alertint    condition
+## risklevel -1.9113230 -0.5591689 -4.388639897
+## negmc     -0.1867765 -0.2471759 -0.041613670
+## posmc     -1.6166221  3.5085230  0.053602934
+## alertmc    3.4715718 -2.7835503  0.194193279
+## negint    -5.0583210  5.9917312  0.009283059
+## posint     0.0000000  7.3900025 -0.613269199
+## alertint   7.3900025  0.0000000  0.152027367
+## condition -0.6132692  0.1520274  0.000000000
+## 
+## $n
+## [1] 378
+## 
+## $gp
+## [1] 6
+## 
+## $method
+## [1] &quot;pearson&quot;</code></pre>
+<pre class="r"><code>partial.r(risk_pred_cor)</code></pre>
+<pre><code>##              risklevel        negmc        posmc      alertmc        negint
+## risklevel  1.000000000 -0.105473686  0.308817420 -0.008170097 -0.0034987279
+## negmc     -0.105473686  1.000000000 -0.208827877  0.295098348 -0.0229790127
+## posmc      0.308817420 -0.208827877  1.000000000  0.348185482  0.0017719640
+## alertmc   -0.008170097  0.295098348  0.348185482  1.000000000 -0.0098714335
+## negint    -0.003498728 -0.022979013  0.001771964 -0.009871434  1.0000000000
+## posint    -0.098878019 -0.009709591 -0.083748923  0.177609020 -0.2543229728
+## alertint  -0.029057534 -0.012849005  0.179438919 -0.143218097  0.2974009463
+## condition -0.222438505 -0.002163387  0.002786673  0.010095113  0.0004826032
+##                 posint    alertint     condition
+## risklevel -0.098878019 -0.02905753 -0.2224385055
+## negmc     -0.009709591 -0.01284900 -0.0021633866
+## posmc     -0.083748923  0.17943892  0.0027866730
+## alertmc    0.177609020 -0.14321810  0.0100951134
+## negint    -0.254322973  0.29740095  0.0004826032
+## posint     1.000000000  0.35863146 -0.0318661559
+## alertint   0.358631459  1.00000000  0.0079032796
+## condition -0.031866156  0.00790328  1.0000000000</code></pre>
 
 
 
