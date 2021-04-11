@@ -310,7 +310,7 @@ neg ~~ alert
 self_sur_mod_fit <- sem(model = self_sur_mod_lav, data = risk_sur)
 summary(self_sur_mod_fit, standardized = T, rsquare = TRUE)
 lavInspect(self_sur_mod_fit, "cor.ov")
-lavTestLRT(self_sur_mod_fit, fit.int)
+lavTestLRT(self_sur_mod_fit, fit.measures = TRUE)
 
 ```
 
@@ -332,6 +332,6 @@ neg ~~ alert
 self_pred_mod_fit <- sem(model = self_pred_mod_lav, data = risk_pred)
 summary(self_pred_mod_fit, standardized = T, rsquare = TRUE)
 lavInspect(self_pred_mod_fit, "cor.ov")
-lavTestLRT(self_pred_mod_fit, fit.int)
+lavTestLRT(self_pred_mod_fit, fit.measures = TRUE)
 
 ```
