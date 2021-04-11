@@ -317,7 +317,7 @@ lavTestLRT(self_sur_mod_fit, fit.measures = TRUE)
 
 ##### Self vs. Prediction Moderation
 ```{r self-pred-moderation}
-self_pred_mod <- lm(risklevel ~ neg + pos + alert + negint + posint + alertint, data = risk_sur)
+self_pred_mod <- lm(risklevel ~ neg + pos + alert + negint + posint + alertint, data = risk_pred)
 summary(self_pred_mod)
 lm.beta(self_pred_mod)
 
