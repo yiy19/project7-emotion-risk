@@ -206,7 +206,7 @@ self_sur_mediation <- '
 self_sur_fit <- sem(model = self_sur_mediation, data = risk_sur, se = "bootstrap", bootstrap = 5000)
 summary(self_sur_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE, rsquare = TRUE)
 standardizedSolution(self_sur_fit)
-
+parameterEstimates(self_sur_fit, boot.ci.type = "bca.simple")
 
 ```
 
@@ -243,6 +243,7 @@ self_pred_mediation <- '
 self_pred_fit <- sem(model = self_pred_mediation, data = risk_pred,se = "bootstrap", bootstrap = 5000)
 summary(self_pred_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE, rsquare = TRUE)
 standardizedSolution(self_pred_fit)
+parameterEstimates(self_pred_fit, boot.ci.type = "bca.simple")
 
 ```
 
