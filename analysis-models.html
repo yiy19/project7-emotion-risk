@@ -188,7 +188,20 @@ pre code {
 <pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ## x dplyr::filter() masks stats::filter()
 ## x dplyr::lag()    masks stats::lag()</code></pre>
-<pre class="r"><code>library(haven)</code></pre>
+<pre class="r"><code>library(haven)
+library(QuantPsyc)</code></pre>
+<pre><code>## Loading required package: boot</code></pre>
+<pre><code>## Loading required package: MASS</code></pre>
+<pre><code>## 
+## Attaching package: &#39;MASS&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     select</code></pre>
+<pre><code>## 
+## Attaching package: &#39;QuantPsyc&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:base&#39;:
+## 
+##     norm</code></pre>
 </div>
 <div id="load-data" class="section level4">
 <h4>Load data</h4>
@@ -459,39 +472,80 @@ summary(self_sur_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE)
 ## Regressions:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
 ##   risklevel ~                                                           
-##     neg       (b1)   -0.069    0.076   -0.916    0.360   -0.069   -0.047
-##     pos       (b2)    0.822    0.108    7.604    0.000    0.822    0.376
-##     alert     (b3)   -0.016    0.106   -0.153    0.878   -0.016   -0.008
-##     recpnt_nm  (c)    0.516    0.168    3.081    0.002    0.516    0.146
+##     neg       (b1)   -0.069    0.077   -0.901    0.368   -0.069   -0.047
+##     pos       (b2)    0.822    0.109    7.571    0.000    0.822    0.376
+##     alert     (b3)   -0.016    0.107   -0.152    0.879   -0.016   -0.008
+##     recpnt_nm  (c)    0.516    0.168    3.075    0.002    0.516    0.146
 ##   neg ~                                                                 
-##     recpnt_nm (a1)    0.178    0.122    1.454    0.146    0.178    0.074
+##     recpnt_nm (a1)    0.178    0.121    1.468    0.142    0.178    0.074
 ##   pos ~                                                                 
-##     recpnt_nm (a2)    0.167    0.081    2.052    0.040    0.167    0.104
+##     recpnt_nm (a2)    0.167    0.081    2.054    0.040    0.167    0.104
 ##   alert ~                                                               
-##     recpnt_nm (a3)    0.068    0.084    0.805    0.421    0.068    0.041
+##     recpnt_nm (a3)    0.068    0.084    0.804    0.421    0.068    0.041
 ## 
 ## Covariances:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
 ##  .neg ~~                                                                
-##    .pos              -0.106    0.051   -2.058    0.040   -0.106   -0.110
+##    .pos              -0.106    0.051   -2.067    0.039   -0.106   -0.110
 ##  .pos ~~                                                                
-##    .alert             0.102    0.038    2.673    0.008    0.102    0.153
+##    .alert             0.102    0.038    2.705    0.007    0.102    0.153
 ##  .neg ~~                                                                
-##    .alert             0.231    0.056    4.143    0.000    0.231    0.231
+##    .alert             0.231    0.055    4.195    0.000    0.231    0.231
 ## 
 ## Variances:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .risklevel         2.553    0.170   15.001    0.000    2.553    0.821
-##    .neg               1.436    0.071   20.121    0.000    1.436    0.995
-##    .pos               0.645    0.048   13.323    0.000    0.645    0.989
-##    .alert             0.691    0.062   11.153    0.000    0.691    0.998
+##    .risklevel         2.553    0.169   15.116    0.000    2.553    0.821
+##    .neg               1.436    0.071   20.236    0.000    1.436    0.995
+##    .pos               0.645    0.048   13.510    0.000    0.645    0.989
+##    .alert             0.691    0.061   11.295    0.000    0.691    0.998
 ## 
 ## Defined Parameters:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##     indirect1        -0.012    0.019   -0.664    0.507   -0.012   -0.004
-##     indirect2         0.137    0.070    1.974    0.048    0.137    0.039
-##     Indirect3        -0.001    0.012   -0.096    0.924   -0.001   -0.000
-##     total             0.640    0.178    3.603    0.000    0.640    0.182</code></pre>
+##     indirect1        -0.012    0.019   -0.656    0.512   -0.012   -0.004
+##     indirect2         0.137    0.069    1.980    0.048    0.137    0.039
+##     Indirect3        -0.001    0.011   -0.097    0.923   -0.001   -0.000
+##     total             0.640    0.176    3.628    0.000    0.640    0.182</code></pre>
+<pre class="r"><code>standardizedSolution(self_sur_fit)</code></pre>
+<pre><code>##              lhs op                       rhs est.std    se       z pvalue
+## 1      risklevel  ~                       neg  -0.047 0.052  -0.901  0.368
+## 2      risklevel  ~                       pos   0.376 0.048   7.870  0.000
+## 3      risklevel  ~                     alert  -0.008 0.050  -0.152  0.879
+## 4      risklevel  ~             recipient_num   0.146 0.048   3.070  0.002
+## 5            neg  ~             recipient_num   0.074 0.050   1.474  0.141
+## 6            pos  ~             recipient_num   0.104 0.050   2.071  0.038
+## 7          alert  ~             recipient_num   0.041 0.051   0.805  0.421
+## 8            neg ~~                       pos  -0.110 0.052  -2.128  0.033
+## 9            pos ~~                     alert   0.153 0.057   2.682  0.007
+## 10           neg ~~                     alert   0.231 0.052   4.431  0.000
+## 11     risklevel ~~                 risklevel   0.821 0.039  20.817  0.000
+## 12           neg ~~                       neg   0.995 0.007 133.544  0.000
+## 13           pos ~~                       pos   0.989 0.010  95.580  0.000
+## 14         alert ~~                     alert   0.998 0.004 241.788  0.000
+## 15 recipient_num ~~             recipient_num   1.000 0.000      NA     NA
+## 16     indirect1 :=                     a1*b1  -0.004 0.005  -0.763  0.446
+## 17     indirect2 :=                     a2*b2   0.039 0.019   2.020  0.043
+## 18     Indirect3 :=                     a3*b3   0.000 0.002  -0.151  0.880
+## 19         total := c+(a1*b1)+(a2*b2)+(a3*b3)   0.182 0.050   3.638  0.000
+##    ci.lower ci.upper
+## 1    -0.150    0.056
+## 2     0.283    0.470
+## 3    -0.106    0.091
+## 4     0.053    0.240
+## 5    -0.024    0.173
+## 6     0.006    0.202
+## 7    -0.058    0.140
+## 8    -0.211   -0.009
+## 9     0.041    0.264
+## 10    0.129    0.334
+## 11    0.744    0.899
+## 12    0.980    1.009
+## 13    0.969    1.010
+## 14    0.990    1.006
+## 15    1.000    1.000
+## 16   -0.012    0.005
+## 17    0.001    0.077
+## 18   -0.004    0.004
+## 19    0.084    0.279</code></pre>
 <p>This is a saturated model. Someone said the following about a saturated model:</p>
 <p>Also, I see very little use of the fit indexes for path analysis. It seems incoherent to say that the relation between variables will reproduce the covariance matrix, as we can get the saturated model by including all relations.</p>
 <p>Fit its useful for a measurement model, when you try to state that latent variables structure reproduce the covariance matrix.</p>
@@ -573,39 +627,80 @@ summary(self_pred_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE
 ## Regressions:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
 ##   risklevel ~                                                           
-##     neg       (b1)   -0.143    0.077   -1.861    0.063   -0.143   -0.102
-##     pos       (b2)    0.645    0.113    5.687    0.000    0.645    0.325
-##     alert     (b3)   -0.041    0.110   -0.372    0.710   -0.041   -0.021
-##     recpnt_nm  (c)    0.682    0.155    4.407    0.000    0.682    0.206
+##     neg       (b1)   -0.143    0.075   -1.920    0.055   -0.143   -0.102
+##     pos       (b2)    0.645    0.110    5.883    0.000    0.645    0.325
+##     alert     (b3)   -0.041    0.109   -0.373    0.709   -0.041   -0.021
+##     recpnt_nm  (c)    0.682    0.157    4.350    0.000    0.682    0.206
 ##   neg ~                                                                 
-##     recpnt_nm (a1)   -0.091    0.121   -0.753    0.452   -0.091   -0.039
+##     recpnt_nm (a1)   -0.091    0.121   -0.755    0.450   -0.091   -0.039
 ##   pos ~                                                                 
-##     recpnt_nm (a2)    0.127    0.085    1.496    0.135    0.127    0.076
+##     recpnt_nm (a2)    0.127    0.087    1.468    0.142    0.127    0.076
 ##   alert ~                                                               
-##     recpnt_nm (a3)    0.009    0.089    0.104    0.917    0.009    0.005
+##     recpnt_nm (a3)    0.009    0.088    0.105    0.917    0.009    0.005
 ## 
 ## Covariances:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
 ##  .neg ~~                                                                
-##    .pos              -0.174    0.054   -3.215    0.001   -0.174   -0.178
+##    .pos              -0.174    0.054   -3.216    0.001   -0.174   -0.178
 ##  .pos ~~                                                                
-##    .alert             0.198    0.042    4.667    0.000    0.198    0.281
+##    .alert             0.198    0.043    4.656    0.000    0.198    0.281
 ##  .neg ~~                                                                
-##    .alert             0.239    0.056    4.246    0.000    0.239    0.241
+##    .alert             0.239    0.056    4.294    0.000    0.239    0.241
 ## 
 ## Variances:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .risklevel         2.255    0.151   14.893    0.000    2.255    0.820
-##    .neg               1.374    0.069   19.825    0.000    1.374    0.998
-##    .pos               0.694    0.054   12.924    0.000    0.694    0.994
-##    .alert             0.718    0.062   11.519    0.000    0.718    1.000
+##    .risklevel         2.255    0.152   14.812    0.000    2.255    0.820
+##    .neg               1.374    0.070   19.672    0.000    1.374    0.998
+##    .pos               0.694    0.055   12.578    0.000    0.694    0.994
+##    .alert             0.718    0.064   11.267    0.000    0.718    1.000
 ## 
 ## Defined Parameters:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##     indirect1         0.013    0.021    0.626    0.531    0.013    0.004
-##     indirect2         0.082    0.058    1.414    0.157    0.082    0.025
-##     Indirect3        -0.000    0.011   -0.036    0.971   -0.000   -0.000
-##     total             0.777    0.165    4.718    0.000    0.777    0.234</code></pre>
+##     indirect1         0.013    0.021    0.637    0.524    0.013    0.004
+##     indirect2         0.082    0.059    1.392    0.164    0.082    0.025
+##     Indirect3        -0.000    0.010   -0.037    0.971   -0.000   -0.000
+##     total             0.777    0.167    4.658    0.000    0.777    0.234</code></pre>
+<pre class="r"><code>standardizedSolution(self_pred_fit)</code></pre>
+<pre><code>##              lhs op                       rhs est.std    se        z pvalue
+## 1      risklevel  ~                       neg  -0.102 0.052   -1.934  0.053
+## 2      risklevel  ~                       pos   0.325 0.054    6.069  0.000
+## 3      risklevel  ~                     alert  -0.021 0.056   -0.373  0.709
+## 4      risklevel  ~             recipient_num   0.206 0.046    4.469  0.000
+## 5            neg  ~             recipient_num  -0.039 0.052   -0.755  0.450
+## 6            pos  ~             recipient_num   0.076 0.052    1.466  0.143
+## 7          alert  ~             recipient_num   0.005 0.052    0.105  0.917
+## 8            neg ~~                       pos  -0.178 0.052   -3.431  0.001
+## 9            pos ~~                     alert   0.281 0.057    4.950  0.000
+## 10           neg ~~                     alert   0.241 0.050    4.782  0.000
+## 11     risklevel ~~                 risklevel   0.820 0.039   20.801  0.000
+## 12           neg ~~                       neg   0.998 0.004  248.583  0.000
+## 13           pos ~~                       pos   0.994 0.008  126.262  0.000
+## 14         alert ~~                     alert   1.000 0.001 1762.854  0.000
+## 15 recipient_num ~~             recipient_num   1.000 0.000       NA     NA
+## 16     indirect1 :=                     a1*b1   0.004 0.006    0.713  0.476
+## 17     indirect2 :=                     a2*b2   0.025 0.017    1.424  0.154
+## 18     Indirect3 :=                     a3*b3   0.000 0.001   -0.104  0.917
+## 19         total := c+(a1*b1)+(a2*b2)+(a3*b3)   0.234 0.049    4.817  0.000
+##    ci.lower ci.upper
+## 1    -0.204    0.001
+## 2     0.220    0.430
+## 3    -0.130    0.089
+## 4     0.115    0.296
+## 5    -0.140    0.062
+## 6    -0.026    0.178
+## 7    -0.096    0.107
+## 8    -0.280   -0.077
+## 9     0.170    0.392
+## 10    0.142    0.339
+## 11    0.743    0.898
+## 12    0.991    1.006
+## 13    0.979    1.010
+## 14    0.999    1.001
+## 15    1.000    1.000
+## 16   -0.007    0.015
+## 17   -0.009    0.059
+## 18   -0.002    0.002
+## 19    0.139    0.329</code></pre>
 </div>
 <div id="moderation" class="section level4">
 <h4>Moderation</h4>
@@ -679,6 +774,9 @@ summary(self_sur_mod)</code></pre>
 ## Residual standard error: 1.631 on 376 degrees of freedom
 ## Multiple R-squared:  0.1599, Adjusted R-squared:  0.1465 
 ## F-statistic: 11.93 on 6 and 376 DF,  p-value: 2.858e-12</code></pre>
+<pre class="r"><code>lm.beta(self_sur_mod)</code></pre>
+<pre><code>##          neg          pos        alert       negint       posint     alertint 
+## -0.036080627  0.385685638 -0.004341651  0.043788965 -0.014523352 -0.022659558</code></pre>
 </div>
 <div id="self-vs.-prediction-moderation" class="section level5">
 <h5>Self vs. Prediction Moderation</h5>
@@ -708,6 +806,9 @@ summary(self_pred_mod)</code></pre>
 ## Residual standard error: 1.631 on 376 degrees of freedom
 ## Multiple R-squared:  0.1599, Adjusted R-squared:  0.1465 
 ## F-statistic: 11.93 on 6 and 376 DF,  p-value: 2.858e-12</code></pre>
+<pre class="r"><code>lm.beta(self_pred_mod)</code></pre>
+<pre><code>##          neg          pos        alert       negint       posint     alertint 
+## -0.036080627  0.385685638 -0.004341651  0.043788965 -0.014523352 -0.022659558</code></pre>
 </div>
 </div>
 </div>

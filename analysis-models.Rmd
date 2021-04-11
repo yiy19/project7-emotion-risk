@@ -13,6 +13,7 @@ output: html_document
 require(lavaan)
 library(tidyverse)
 library(haven)
+library(QuantPsyc)
 
 ```
 #### Load data
@@ -204,7 +205,7 @@ self_sur_mediation <- '
 '
 self_sur_fit <- sem(model = self_sur_mediation, data = risk_sur, se = "bootstrap", bootstrap = 5000)
 summary(self_sur_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE)
-
+standardizedSolution(self_sur_fit)
 
 
 ```
@@ -241,6 +242,7 @@ self_pred_mediation <- '
 '
 self_pred_fit <- sem(model = self_pred_mediation, data = risk_pred,se = "bootstrap", bootstrap = 5000)
 summary(self_pred_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE)
+standardizedSolution(self_pred_fit)
 
 ```
 
@@ -295,6 +297,7 @@ write_sav(risk_pred, "data/risk_pred.sav")
 
 self_sur_mod <- lm(risklevel ~ neg + pos + alert + negint + posint + alertint, data = risk_sur)
 summary(self_sur_mod)
+lm.beta(self_sur_mod)
 
 
 
@@ -304,4 +307,5 @@ summary(self_sur_mod)
 ```{r self-pred-moderation}
 self_pred_mod <- lm(risklevel ~ neg + pos + alert + negint + posint + alertint, data = risk_sur)
 summary(self_pred_mod)
+lm.beta(self_pred_mod)
 ```
