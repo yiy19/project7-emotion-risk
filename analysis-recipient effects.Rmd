@@ -22,7 +22,13 @@ risk_excluded <- risk_excluded %>%
   mutate_if(is.labelled, labelled::to_factor)
 ```
 
+
 #### Effects of recipient on each of the outcome variables
+```{r missing-data}
+
+summary(risk_excluded)
+```
+
 ```{r recipient-effects}
 # risk taking
 risk_excluded %>% 
