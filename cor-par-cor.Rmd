@@ -71,6 +71,14 @@ write_csv(cor_sur_table, "data/cor_sur_table.csv")
 write_csv(cor_pred_table, "data/cor_pred_table.csv")
 write_csv(cor_all_table, "data/cor_all_table.csv")
 
+lowerMat(cor_sur$r)
+lowerMat(cor_sur$P, digits = 3)
+lowerMat(cor_pred$r)
+lowerMat(cor_pred$P,digits = 3)
+lowerMat(cor_overall$r)
+lowerMat(cor_overall$P,digits = 3)
+
+
 
 ```
 
@@ -82,12 +90,15 @@ risk_sur_cor <- risk_sur %>%
 risk_pred_cor <- risk_pred %>% 
   dplyr::select(all_of(vars))
 
+# 
+lowerMat(pcor(risk_sur_cor)$estimate)
+lowerMat(pcor(risk_sur_cor)$p.value,digits = 3)
 lowerMat(partial.r(risk_sur_cor))
-lowerMat(pcor(risk_sur_cor)$p.value)
 
 
+lowerMat(pcor(risk_pred_cor)$estimate)
+lowerMat(pcor(risk_pred_cor)$p.value,digits = 3)
 lowerMat(partial.r(risk_pred_cor))
-lowerMat(pcor(risk_pred_cor)$p.value)
 
 
 ```
