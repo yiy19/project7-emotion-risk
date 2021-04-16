@@ -247,6 +247,21 @@ risk_excluded &lt;- risk %&gt;%
 # exclude those who indicated their gender to be non-binary or other/prefer not to say
   filter(gender == 1 | gender ==2) 
 
+# # see exclusion by condition
+# risk_exc &lt;- risk %&gt;% 
+#   filter(attention1 != 7 | attention2 != 3 | gender %in% c(&quot;3&quot;, &quot;4&quot;) | consent == 2) %&gt;% 
+#   group_by(condition) %&gt;% 
+#   count()
+#   
+# risk_exc %&gt;% 
+# group_by(gender) %&gt;% 
+#   count()
+# 
+# risk_exc %&gt;% 
+#   filter(gender %in% c(&quot;1&quot;, &quot;2&quot;)) %&gt;% 
+#   group_by(condition) %&gt;% 
+#   count()
+
 # check file
 glimpse(risk_excluded)</code></pre>
 <pre><code>## Rows: 569

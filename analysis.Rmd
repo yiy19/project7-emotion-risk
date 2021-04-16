@@ -60,6 +60,21 @@ risk_excluded <- risk %>%
 # exclude those who indicated their gender to be non-binary or other/prefer not to say
   filter(gender == 1 | gender ==2) 
 
+# # see exclusion by condition
+# risk_exc <- risk %>% 
+#   filter(attention1 != 7 | attention2 != 3 | gender %in% c("3", "4") | consent == 2) %>% 
+#   group_by(condition) %>% 
+#   count()
+#   
+# risk_exc %>% 
+# group_by(gender) %>% 
+#   count()
+# 
+# risk_exc %>% 
+#   filter(gender %in% c("1", "2")) %>% 
+#   group_by(condition) %>% 
+#   count()
+
 # check file
 glimpse(risk_excluded)
 
