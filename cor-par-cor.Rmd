@@ -27,12 +27,12 @@ risk_pred <- read_sav("data/risk_pred.sav")
 
 ```{r correlations}
 # create a dataframe
-vars <- c("risklevel", "negmc", "posmc", "alertmc", "negint", "posint", "alertint", "condition")
+vars <- c("risklevel", "negmc", "posmc", "alertmc", "condition", "negint", "posint", "alertint")
 # self vs. sur
 cor_sur <- risk_sur %>% 
   dplyr::select(all_of(vars)) %>%
   as.matrix() %>% 
-  rcorr(type = "spearman") 
+  rcorr(type = "pearson") 
  # convert into a dataframe
   # cor_sur <- do.call(rbind.data.frame, cor_sur) # doesn't look tidy
 
@@ -52,14 +52,14 @@ flattenCorrMatrix <- function(cormat, pmat) {
 cor_pred <- risk_pred %>% 
   dplyr::select(all_of(vars)) %>% 
   as.matrix() %>% 
-  rcorr(type = "spearman") 
+  rcorr(type = "pearson") 
 
 
 # overall correlation
 cor_overall <- risk_all %>% 
   dplyr::select(risklevel:alert) %>% 
   as.matrix() %>% 
-  rcorr(type = "spearman") 
+  rcorr(type = "pearson") 
 
 # tidy up data
 cor_sur_table <- flattenCorrMatrix(round(cor_sur$r, 3), round(cor_sur$P, 3))

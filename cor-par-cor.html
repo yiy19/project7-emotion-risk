@@ -221,12 +221,12 @@ library(psych)</code></pre>
 risk_sur &lt;- read_sav(&quot;data/risk_sur.sav&quot;)
 risk_pred &lt;- read_sav(&quot;data/risk_pred.sav&quot;)</code></pre>
 <pre class="r"><code># create a dataframe
-vars &lt;- c(&quot;risklevel&quot;, &quot;negmc&quot;, &quot;posmc&quot;, &quot;alertmc&quot;, &quot;negint&quot;, &quot;posint&quot;, &quot;alertint&quot;, &quot;condition&quot;)
+vars &lt;- c(&quot;risklevel&quot;, &quot;negmc&quot;, &quot;posmc&quot;, &quot;alertmc&quot;, &quot;condition&quot;, &quot;negint&quot;, &quot;posint&quot;, &quot;alertint&quot;)
 # self vs. sur
 cor_sur &lt;- risk_sur %&gt;% 
   dplyr::select(all_of(vars)) %&gt;%
   as.matrix() %&gt;% 
-  rcorr(type = &quot;spearman&quot;) 
+  rcorr(type = &quot;pearson&quot;) 
  # convert into a dataframe
   # cor_sur &lt;- do.call(rbind.data.frame, cor_sur) # doesn&#39;t look tidy
 
@@ -246,14 +246,14 @@ flattenCorrMatrix &lt;- function(cormat, pmat) {
 cor_pred &lt;- risk_pred %&gt;% 
   dplyr::select(all_of(vars)) %&gt;% 
   as.matrix() %&gt;% 
-  rcorr(type = &quot;spearman&quot;) 
+  rcorr(type = &quot;pearson&quot;) 
 
 
 # overall correlation
 cor_overall &lt;- risk_all %&gt;% 
   dplyr::select(risklevel:alert) %&gt;% 
   as.matrix() %&gt;% 
-  rcorr(type = &quot;spearman&quot;) 
+  rcorr(type = &quot;pearson&quot;) 
 
 # tidy up data
 cor_sur_table &lt;- flattenCorrMatrix(round(cor_sur$r, 3), round(cor_sur$P, 3))
@@ -266,57 +266,57 @@ write_csv(cor_pred_table, &quot;data/cor_pred_table.csv&quot;)
 write_csv(cor_all_table, &quot;data/cor_all_table.csv&quot;)
 
 lowerMat(cor_sur$r)</code></pre>
-<pre><code>##           rsklv negmc posmc alrtm negnt posnt alrtn cndtn
+<pre><code>##           rsklv negmc posmc alrtm cndtn negnt posnt alrtn
 ## risklevel  1.00                                          
-## negmc     -0.07  1.00                                    
-## posmc      0.40 -0.06  1.00                              
-## alertmc    0.07  0.25  0.19  1.00                        
-## negint     0.04 -0.01  0.11 -0.05  1.00                  
-## posint    -0.10  0.10 -0.08 -0.01 -0.02  1.00            
-## alertint   0.06 -0.02  0.03 -0.06  0.17  0.07  1.00      
-## condition  0.19  0.07  0.10  0.04 -0.13 -0.24  0.34  1.00</code></pre>
+## negmc     -0.08  1.00                                    
+## posmc      0.40 -0.10  1.00                              
+## alertmc    0.05  0.23  0.16  1.00                        
+## condition  0.18  0.07  0.10  0.04  1.00                  
+## negint     0.09  0.00  0.12 -0.08  0.00  1.00            
+## posint    -0.06  0.12 -0.09  0.01  0.00 -0.11  1.00      
+## alertint  -0.01 -0.08  0.01 -0.09  0.00  0.23  0.15  1.00</code></pre>
 <pre class="r"><code>lowerMat(cor_sur$P, digits = 3)</code></pre>
-<pre><code>##           rsklv negmc posmc alrtm negnt posnt alrtn cndtn
+<pre><code>##           rsklv negmc posmc alrtm cndtn negnt posnt alrtn
 ## risklevel    NA                                          
-## negmc     0.198    NA                                    
-## posmc     0.000 0.231    NA                              
-## alertmc   0.202 0.000 0.000    NA                        
-## negint    0.382 0.844 0.028 0.293    NA                  
-## posint    0.062 0.048 0.099 0.774 0.636    NA            
-## alertint  0.213 0.632 0.554 0.259 0.001 0.165    NA      
-## condition 0.000 0.150 0.050 0.490 0.012 0.000 0.000    NA</code></pre>
+## negmc     0.136    NA                                    
+## posmc     0.000 0.047    NA                              
+## alertmc   0.370 0.000 0.002    NA                        
+## condition 0.000 0.148 0.043 0.426    NA                  
+## negint    0.086 0.942 0.016 0.128 0.997    NA            
+## posint    0.215 0.016 0.066 0.870 0.996 0.031    NA      
+## alertint  0.871 0.129 0.871 0.069 0.998 0.000 0.003    NA</code></pre>
 <pre class="r"><code>lowerMat(cor_pred$r)</code></pre>
-<pre><code>##           rsklv negmc posmc alrtm negnt posnt alrtn cndtn
+<pre><code>##           rsklv negmc posmc alrtm cndtn negnt posnt alrtn
 ## risklevel  1.00                                          
-## negmc     -0.15  1.00                                    
-## posmc      0.37 -0.15  1.00                              
-## alertmc    0.06  0.23  0.30  1.00                        
-## negint     0.05 -0.06  0.06 -0.07  1.00                  
-## posint    -0.08  0.05 -0.03  0.11 -0.15  1.00            
-## alertint   0.07 -0.08  0.13 -0.06  0.26  0.29  1.00      
-## condition  0.22 -0.04  0.08  0.00  0.17  0.06  0.31  1.00</code></pre>
+## negmc     -0.17  1.00                                    
+## posmc      0.35 -0.18  1.00                              
+## alertmc    0.05  0.24  0.28  1.00                        
+## condition  0.23 -0.04  0.08  0.01  1.00                  
+## negint     0.03 -0.06  0.05 -0.07  0.00  1.00            
+## posint    -0.12  0.05 -0.03  0.14  0.00 -0.18  1.00      
+## alertint   0.00 -0.07  0.14 -0.07  0.00  0.24  0.28  1.00</code></pre>
 <pre class="r"><code>lowerMat(cor_pred$P,digits = 3)</code></pre>
-<pre><code>##           rsklv negmc posmc alrtm negnt posnt alrtn cndtn
+<pre><code>##           rsklv negmc posmc alrtm cndtn negnt posnt alrtn
 ## risklevel    NA                                          
-## negmc     0.003    NA                                    
-## posmc     0.000 0.004    NA                              
-## alertmc   0.215 0.000 0.000    NA                        
-## negint    0.332 0.243 0.253 0.148    NA                  
-## posint    0.102 0.320 0.524 0.029 0.005    NA            
-## alertint  0.158 0.144 0.009 0.227 0.000 0.000    NA      
-## condition 0.000 0.468 0.111 0.937 0.001 0.264 0.000    NA</code></pre>
+## negmc     0.001    NA                                    
+## posmc     0.000 0.000    NA                              
+## alertmc   0.362 0.000 0.000    NA                        
+## condition 0.000 0.450 0.140 0.916    NA                  
+## negint    0.541 0.225 0.293 0.153 0.990    NA            
+## posint    0.017 0.292 0.556 0.006 0.981 0.000    NA      
+## alertint  0.941 0.153 0.006 0.202 0.999 0.000 0.000    NA</code></pre>
 <pre class="r"><code>lowerMat(cor_overall$r)</code></pre>
 <pre><code>##           rsklv pos   neg   alert
 ## risklevel  1.00                  
-## pos        0.37  1.00            
-## neg       -0.10 -0.08  1.00      
-## alert      0.07  0.26  0.22  1.00</code></pre>
+## pos        0.35  1.00            
+## neg       -0.11 -0.11  1.00      
+## alert      0.04  0.25  0.22  1.00</code></pre>
 <pre class="r"><code>lowerMat(cor_overall$P,digits = 3)</code></pre>
 <pre><code>##           rsklv pos   neg   alert
 ## risklevel    NA                  
 ## pos       0.000    NA            
-## neg       0.017 0.071    NA      
-## alert     0.093 0.000 0.000    NA</code></pre>
+## neg       0.011 0.007    NA      
+## alert     0.285 0.000 0.000    NA</code></pre>
 <pre class="r"><code>risk_sur_cor &lt;- risk_sur %&gt;% 
   dplyr::select(all_of(vars))
 
@@ -325,65 +325,65 @@ risk_pred_cor &lt;- risk_pred %&gt;%
 
 # 
 lowerMat(pcor(risk_sur_cor)$estimate)</code></pre>
-<pre><code>##           rsklv negmc posmc alrtm negnt posnt alrtn cndtn
+<pre><code>##           rsklv negmc posmc alrtm cndtn negnt posnt alrtn
 ## risklevel  1.00                                          
 ## negmc     -0.05  1.00                                    
 ## posmc      0.36 -0.12  1.00                              
 ## alertmc    0.00  0.25  0.18  1.00                        
-## negint     0.05  0.07  0.10 -0.09  1.00                  
-## posint    -0.02  0.13 -0.05 -0.01 -0.14  1.00            
-## alertint  -0.03 -0.09  0.00 -0.05  0.25  0.19  1.00      
-## condition  0.16  0.09  0.04  0.00 -0.02  0.00  0.01  1.00</code></pre>
+## condition  0.16  0.09  0.04  0.00  1.00                  
+## negint     0.05  0.07  0.10 -0.09 -0.02  1.00            
+## posint    -0.02  0.13 -0.05 -0.01  0.00 -0.14  1.00      
+## alertint  -0.03 -0.09  0.00 -0.05  0.01  0.25  0.19  1.00</code></pre>
 <pre class="r"><code>lowerMat(pcor(risk_sur_cor)$p.value,digits = 3)</code></pre>
-<pre><code>##           rsklv negmc posmc alrtm negnt posnt alrtn cndtn
+<pre><code>##           rsklv negmc posmc alrtm cndtn negnt posnt alrtn
 ## risklevel 0.000                                          
 ## negmc     0.323 0.000                                    
 ## posmc     0.000 0.023 0.000                              
 ## alertmc   0.923 0.000 0.000 0.000                        
-## negint    0.349 0.172 0.044 0.087 0.000                  
-## posint    0.771 0.012 0.308 0.909 0.005 0.000            
-## alertint  0.624 0.081 0.941 0.294 0.000 0.000 0.000      
-## condition 0.002 0.083 0.405 0.948 0.660 0.993 0.791 0.000</code></pre>
+## condition 0.002 0.083 0.405 0.948 0.000                  
+## negint    0.349 0.172 0.044 0.087 0.660 0.000            
+## posint    0.771 0.012 0.308 0.909 0.993 0.005 0.000      
+## alertint  0.624 0.081 0.941 0.294 0.791 0.000 0.000 0.000</code></pre>
 <pre class="r"><code>lowerMat(partial.r(risk_sur_cor))</code></pre>
-<pre><code>##           rsklv negmc posmc alrtm negnt posnt alrtn cndtn
+<pre><code>##           rsklv negmc posmc alrtm cndtn negnt posnt alrtn
 ## risklevel  1.00                                          
 ## negmc     -0.05  1.00                                    
 ## posmc      0.36 -0.12  1.00                              
 ## alertmc    0.00  0.25  0.18  1.00                        
-## negint     0.05  0.07  0.10 -0.09  1.00                  
-## posint    -0.02  0.13 -0.05 -0.01 -0.14  1.00            
-## alertint  -0.03 -0.09  0.00 -0.05  0.25  0.19  1.00      
-## condition  0.16  0.09  0.04  0.00 -0.02  0.00  0.01  1.00</code></pre>
+## condition  0.16  0.09  0.04  0.00  1.00                  
+## negint     0.05  0.07  0.10 -0.09 -0.02  1.00            
+## posint    -0.02  0.13 -0.05 -0.01  0.00 -0.14  1.00      
+## alertint  -0.03 -0.09  0.00 -0.05  0.01  0.25  0.19  1.00</code></pre>
 <pre class="r"><code>lowerMat(pcor(risk_pred_cor)$estimate)</code></pre>
-<pre><code>##           rsklv negmc posmc alrtm negnt posnt alrtn cndtn
+<pre><code>##           rsklv negmc posmc alrtm cndtn negnt posnt alrtn
 ## risklevel  1.00                                          
 ## negmc     -0.11  1.00                                    
 ## posmc      0.31 -0.21  1.00                              
 ## alertmc   -0.01  0.30  0.35  1.00                        
-## negint     0.00 -0.02  0.00 -0.01  1.00                  
-## posint    -0.10 -0.01 -0.08  0.18 -0.25  1.00            
-## alertint  -0.03 -0.01  0.18 -0.14  0.30  0.36  1.00      
-## condition  0.22  0.00  0.00 -0.01  0.00  0.03 -0.01  1.00</code></pre>
+## condition  0.22  0.00  0.00 -0.01  1.00                  
+## negint     0.00 -0.02  0.00 -0.01  0.00  1.00            
+## posint    -0.10 -0.01 -0.08  0.18  0.03 -0.25  1.00      
+## alertint  -0.03 -0.01  0.18 -0.14 -0.01  0.30  0.36  1.00</code></pre>
 <pre class="r"><code>lowerMat(pcor(risk_pred_cor)$p.value,digits = 3)</code></pre>
-<pre><code>##           rsklv negmc posmc alrtm negnt posnt alrtn cndtn
+<pre><code>##           rsklv negmc posmc alrtm cndtn negnt posnt alrtn
 ## risklevel 0.000                                          
 ## negmc     0.042 0.000                                    
 ## posmc     0.000 0.000 0.000                              
 ## alertmc   0.875 0.000 0.000 0.000                        
-## negint    0.946 0.659 0.973 0.849 0.000                  
-## posint    0.057 0.852 0.107 0.001 0.000 0.000            
-## alertint  0.576 0.805 0.001 0.006 0.000 0.000 0.000      
-## condition 0.000 0.967 0.957 0.846 0.993 0.540 0.879 0.000</code></pre>
+## condition 0.000 0.967 0.957 0.846 0.000                  
+## negint    0.946 0.659 0.973 0.849 0.993 0.000            
+## posint    0.057 0.852 0.107 0.001 0.540 0.000 0.000      
+## alertint  0.576 0.805 0.001 0.006 0.879 0.000 0.000 0.000</code></pre>
 <pre class="r"><code>lowerMat(partial.r(risk_pred_cor))</code></pre>
-<pre><code>##           rsklv negmc posmc alrtm negnt posnt alrtn cndtn
+<pre><code>##           rsklv negmc posmc alrtm cndtn negnt posnt alrtn
 ## risklevel  1.00                                          
 ## negmc     -0.11  1.00                                    
 ## posmc      0.31 -0.21  1.00                              
 ## alertmc   -0.01  0.30  0.35  1.00                        
-## negint     0.00 -0.02  0.00 -0.01  1.00                  
-## posint    -0.10 -0.01 -0.08  0.18 -0.25  1.00            
-## alertint  -0.03 -0.01  0.18 -0.14  0.30  0.36  1.00      
-## condition  0.22  0.00  0.00 -0.01  0.00  0.03 -0.01  1.00</code></pre>
+## condition  0.22  0.00  0.00 -0.01  1.00                  
+## negint     0.00 -0.02  0.00 -0.01  0.00  1.00            
+## posint    -0.10 -0.01 -0.08  0.18  0.03 -0.25  1.00      
+## alertint  -0.03 -0.01  0.18 -0.14 -0.01  0.30  0.36  1.00</code></pre>
 
 
 
