@@ -262,6 +262,8 @@ risk_sur <- risk_sur %>%
         # recode condition variable
          conditionrecoded = case_when(condition == "Self" ~ -1,
                          condition == "Surrogate" ~ 1),
+         target = case_when(condition == "Self" ~ 0,
+                         condition == "Surrogate" ~ 1),
         
         # create interaction terms
          negint = negmc * conditionrecoded,
@@ -280,6 +282,8 @@ risk_pred <- risk_pred %>%
         
         # recode condition variable
          conditionrecoded = case_when(condition == "Self" ~ -1,
+                         condition == "Prediction" ~ 1), 
+        target = case_when(condition == "Self" ~ 0,
                          condition == "Prediction" ~ 1),
         
         # create interaction terms
@@ -296,17 +300,21 @@ write_sav(risk_pred, "data/risk_pred.sav")
 ##### Self vs. Surrogate Moderation
 ```{r self-sur-moderation}
 
-self_sur_mod <- lm(risklevel ~ neg + pos + alert + negint + posint + alertint, data = risk_sur)
+self_sur_mod <- lm(risklevel ~ neg + pos + alert + target + negint + posint + alertint, data = risk_sur)
 summary(self_sur_mod)
 lm.beta(self_sur_mod)
 
 # lavaan
 self_sur_mod_lav <- '
-risklevel ~ neg + pos + alert + negint + posint + alertint
+risklevel ~ neg + pos + alert + target + negint + posint + alertint
 
 neg ~~ pos
-pos ~~ alert
 neg ~~ alert
+neg ~~ target
+pos ~~ alert
+pos ~~ target
+alert ~~ target
+
 '
 self_sur_mod_fit <- sem(model = self_sur_mod_lav, data = risk_sur)
 summary(self_sur_mod_fit, standardized = T, rsquare = TRUE)
@@ -317,18 +325,21 @@ lavTestLRT(self_sur_mod_fit, fit.measures = TRUE)
 
 ##### Self vs. Prediction Moderation
 ```{r self-pred-moderation}
-self_pred_mod <- lm(risklevel ~ neg + pos + alert + negint + posint + alertint, data = risk_pred)
+self_pred_mod <- lm(risklevel ~ neg + pos + alert + target + negint + posint + alertint, data = risk_pred)
 summary(self_pred_mod)
 lm.beta(self_pred_mod)
 
 
 # lavaan
 self_pred_mod_lav <- '
-risklevel ~ neg + pos + alert + negint + posint + alertint
+risklevel ~ neg + pos + alert + target + negint + posint + alertint
 
 neg ~~ pos
-pos ~~ alert
 neg ~~ alert
+neg ~~ target
+pos ~~ alert
+pos ~~ target
+alert ~~ target
 '
 self_pred_mod_fit <- sem(model = self_pred_mod_lav, data = risk_pred)
 summary(self_pred_mod_fit, standardized = T, rsquare = TRUE)
