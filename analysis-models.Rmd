@@ -255,6 +255,7 @@ parameterEstimates(self_pred_fit, boot.ci.type = "bca.simple")
 risk_sur <- risk_sur %>% 
   mutate(
         # meancenter variables
+         riskmc = risklevel - mean(risklevel),
          negmc = neg - mean(neg),
          posmc = pos - mean(pos),
          alertmc = alert - mean(alert),
@@ -276,7 +277,8 @@ risk_pred <- risk_pred %>%
    mutate(
      
        # meancenter variables
-         negmc = neg - mean(neg),
+         riskmc = risklevel - mean(risklevel), 
+        negmc = neg - mean(neg),
          posmc = pos - mean(pos),
          alertmc = alert - mean(alert),
         
@@ -325,7 +327,7 @@ lavTestLRT(self_sur_mod_fit, fit.measures = TRUE)
 
 ##### Self vs. Prediction Moderation
 ```{r self-pred-moderation}
-self_pred_mod <- lm(risklevel ~ neg + pos + alert + target + negint + posint + alertint, data = risk_pred)
+self_pred_mod <- lm(riskmc ~ neg + pos + alert + target + negint + posint + alertint, data = risk_pred)
 summary(self_pred_mod)
 lm.beta(self_pred_mod)
 
