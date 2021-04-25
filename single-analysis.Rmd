@@ -1,5 +1,5 @@
 ---
-title: "relationship-single-mediation-moderation"
+title: "relationship-self-surrogate"
 author: "Ye Dam Yi"
 date: "4/24/2021"
 output: html_document
@@ -22,7 +22,7 @@ glimpse(surrogate)
 #### Mediation
 ```{r mediation}
 
-surrogate_mediation <- '
+surrogate_mediation_free <- '
     # direct effect
     risklevel ~ c(b1a,b1b) * neg + c(b2a,b2b) * pos + c(b3a,b3b) * alert + c(c1,c2) * recipient_num
     # mediator
@@ -40,12 +40,31 @@ surrogate_mediation <- '
     pos ~~ alert
     neg ~~ alert
 '
-surrogate_fit <- sem(model = surrogate_mediation, data = surrogate, se = "bootstrap", bootstrap = 5000, group = "group")
+surrogate_fit <- sem(model = surrogate_mediation_free, data = surrogate, se = "bootstrap", bootstrap = 5000, group = "group")
 summary(surrogate_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE, rsquare = TRUE)
 standardizedSolution(surrogate_fit)
 parameterEstimates(surrogate_fit, boot.ci.type = "bca.simple")
 
-surrogate_fit_constrained <- sem(model = surrogate_mediation, data = surrogate, se = "bootstrap", bootstrap = 5000, group = "group", group.equal = c("intercepts", "regressions"))
+
+surrogate_mediation_constrained <- '
+    # direct effect
+    risklevel ~ b1 * neg + b2 * pos + b3 * alert + c * recipient_num
+    # mediator
+    neg ~ a1 * recipient_num
+    pos ~ a2 * recipient_num
+    alert ~ a3 * recipient_num
+    # indirect effect (a*b)
+    indirect1 := a1 * b1
+    indirect2 := a2 * b2
+    Indirect3 := a3 * b3
+    # total effect
+    total := c + (a1 * b1) + (a2 * b2) + (a3 * b3)
+    # covariances
+    neg ~~ pos
+    pos ~~ alert
+    neg ~~ alert
+'
+surrogate_fit_constrained <- sem(model = surrogate_mediation_constrained, data = surrogate, se = "bootstrap", bootstrap = 5000, group = "group", group.equal = c("intercepts", "regressions"))
 summary(surrogate_fit_constrained, fit.measures = TRUE, standardize = TRUE, estimates = TRUE, rsquare = TRUE)
 
 anova(surrogate_fit, surrogate_fit_constrained)
@@ -54,7 +73,7 @@ anova(surrogate_fit, surrogate_fit_constrained)
 ```
 
 #### Moderation
-```{r moderation, eval = FALSE}
+```{r moderation}
 surrogate_single <- surrogate %>% 
   filter(group == 1)
 surrogate_rel <- surrogate %>% 
