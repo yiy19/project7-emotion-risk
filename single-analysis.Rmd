@@ -1,0 +1,72 @@
+---
+title: "relationship-single-mediation-moderation"
+author: "Ye Dam Yi"
+date: "4/24/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+require(tidyverse)
+require(lavaan)
+require(haven)
+require(QuantPsyc)
+```
+
+### Self vs. Surrogate
+```{r data}
+surrogate <- read_spss("data/self_surrogate.sav")
+glimpse(surrogate)
+
+```
+
+#### Mediation
+```{r mediation}
+
+surrogate_mediation <- '
+    # direct effect
+    risklevel ~ c(b1a,b1b) * neg + c(b2a,b2b) * pos + c(b3a,b3b) * alert + c(c1,c2) * recipient_num
+    # mediator
+    neg ~ c(a1a,a1b) * recipient_num
+    pos ~ c(a2a,a2b) * recipient_num
+    alert ~ c(a3a,a3b) * recipient_num
+    # indirect effect c(a*b)
+    indirect1 := c(a1a,a1b) * c(b1a,b1b)
+    indirect2 := c(a2a,a2b) * c(b2a,b2b)
+    Indirect3 := c(a3a,a3b) * c(b3a,b3b)
+    # total effect
+    total := c(c1,c2) + c(a1a,a1b) * c(b1a,b1b) + c(a2a,a2b) * c(b2a,b2b) + c(a3a,a3b) * c(b3a,b3b)
+    # covariances
+    neg ~~ pos
+    pos ~~ alert
+    neg ~~ alert
+'
+surrogate_fit <- sem(model = surrogate_mediation, data = surrogate, se = "bootstrap", bootstrap = 5000, group = "group")
+summary(surrogate_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE, rsquare = TRUE)
+standardizedSolution(surrogate_fit)
+parameterEstimates(surrogate_fit, boot.ci.type = "bca.simple")
+
+surrogate_fit_constrained <- sem(model = surrogate_mediation, data = surrogate, se = "bootstrap", bootstrap = 5000, group = "group", group.equal = c("intercepts", "regressions"))
+summary(surrogate_fit_constrained, fit.measures = TRUE, standardize = TRUE, estimates = TRUE, rsquare = TRUE)
+
+anova(surrogate_fit, surrogate_fit_constrained)
+
+
+```
+
+#### Moderation
+```{r moderation, eval = FALSE}
+surrogate_single <- surrogate %>% 
+  filter(group == 1)
+surrogate_rel <- surrogate %>% 
+  filter(group == 2)
+
+surrogate_single_moderation <- lm(riskmc ~ negmc + posmc + alertmc + target + negint + posint + alertint, data = surrogate_single)
+summary(surrogate_single_moderation)
+lm.beta(surrogate_single_moderation)
+
+surrogate_rel_moderation <- lm(riskmc ~ negmc + posmc + alertmc + target + negint + posint + alertint, data = surrogate_rel)
+summary(surrogate_rel_moderation)
+lm.beta(surrogate_rel_moderation)
+```
+
+
