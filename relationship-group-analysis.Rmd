@@ -42,33 +42,33 @@ summary(relationship)
 single %>% 
   get_summary_stats(riskyrisk, riskavrisk, type = "mean_sd")
 
-single %>% 
+single %>% group_by(condition) %>% 
   get_summary_stats(risklevel, type = "mean_sd")
 
-single %>% 
+single %>% group_by(condition) %>% 
   get_summary_stats(neg, type = "mean_sd")
 
-single %>% 
+single %>% group_by(condition) %>% 
   get_summary_stats(pos, type = "mean_sd")
 
-single %>% 
+single %>% group_by(condition) %>% 
   get_summary_stats(alert, type = "mean_sd")
 
 # relationship
 relationship %>% 
   get_summary_stats(riskyrisk, riskavrisk, type = "mean_sd")
-relationship %>% 
+relationship %>% group_by(condition) %>% 
   get_summary_stats(risklevel, type = "mean_sd")
-relationship %>% 
+relationship %>% group_by(condition) %>% 
   get_summary_stats(neg, type = "mean_sd")
-relationship %>% 
+relationship %>% group_by(condition) %>% 
   get_summary_stats(pos, type = "mean_sd")
-relationship %>% 
+relationship %>% group_by(condition) %>% 
   get_summary_stats(alert, type = "mean_sd")
 
 
 ```
-
+#### Single
 ```{r tests-single}
 
 # compare means
@@ -85,6 +85,28 @@ single %>%
   t_test(pos ~ condition, comparisons = list(c("Self", "Surrogate"), c("Self", "Prediction")), paired = FALSE) 
 
 single %>% 
+  t_test(alert ~ condition, comparisons = list(c("Self", "Surrogate"), c("Self", "Prediction")), paired = FALSE) 
+
+```
+
+#### Relationship
+```{r relationship}
+
+
+# compare means
+t.test(relationship$riskyrisk, relationship$riskavrisk, paired = TRUE) %>% 
+  tidy()
+
+relationship %>% 
+  t_test(risklevel ~ condition, comparisons = list(c("Self", "Surrogate"), c("Self", "Prediction")), paired = FALSE) 
+
+relationship %>% 
+  t_test(neg ~ condition, comparisons = list(c("Self", "Surrogate"), c("Self", "Prediction")), paired = FALSE) 
+
+relationship %>% 
+  t_test(pos ~ condition, comparisons = list(c("Self", "Surrogate"), c("Self", "Prediction")), paired = FALSE) 
+
+relationship %>% 
   t_test(alert ~ condition, comparisons = list(c("Self", "Surrogate"), c("Self", "Prediction")), paired = FALSE) 
 
 ```
