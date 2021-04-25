@@ -1,0 +1,13 @@
+---
+title: "multigroup analysis"
+author: "Ye Dam Yi"
+date: "4/24/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+require(lavaan)
+require(tidyverse)
+require(haven)
+```
+
