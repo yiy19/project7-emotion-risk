@@ -1,0 +1,103 @@
+---
+title: "relationship-correlation"
+author: "Ye Dam Yi"
+date: "4/25/2021"
+output: html_document
+---
+
+```{r libraries}
+# install.packages("ppcor")
+# install.packages("corx")
+require(tidyverse)
+require(ppcor)
+require(haven)
+library(Hmisc)
+library(broom)
+library(psych)
+require(corx)
+require(haven)
+
+```
+
+
+
+```{r load-data}
+surrogate <- read_sav("data/self_surrogate.sav")
+prediction <- read_sav("data/self_prediction.sav")
+```
+
+
+```{r correlations}
+# create a dataframe
+vars <- c("risklevel", "negmc", "posmc", "alertmc", "condition", "negint", "posint", "alertint")
+
+
+# self vs. sur 
+# single
+surrogate_single_cor <- surrogate %>% 
+  filter(group == 1) %>% 
+  dplyr::select(all_of(vars)) %>%
+  as.matrix() %>% 
+  rcorr(type = "pearson") 
+ # convert into a dataframe
+  # cor_sur <- do.call(rbind.data.frame, cor_sur) # doesn't look tidy
+
+# relationship
+surrogate_rel_cor <- surrogate %>% 
+  filter(group == 2) %>% 
+  dplyr::select(all_of(vars)) %>%
+  as.matrix() %>% 
+  rcorr(type = "pearson") 
+
+
+# function for tidying up corr data
+flattenCorrMatrix <- function(cormat, pmat) {
+  ut <- upper.tri(cormat)
+  data.frame(
+    row = rownames(cormat)[row(cormat)[ut]],
+    column = rownames(cormat)[col(cormat)[ut]],
+    cor  =(cormat)[ut],
+    p = pmat[ut]
+    )
+}
+
+
+# self vs. pred 
+# single
+prediction_single_cor <- prediction %>% 
+  filter(group == 1) %>% 
+  dplyr::select(all_of(vars)) %>%
+  as.matrix() %>% 
+  rcorr(type = "pearson") 
+ # convert into a dataframe
+  # cor_sur <- do.call(rbind.data.frame, cor_sur) # doesn't look tidy
+
+# relationship
+prediction_rel_cor <- prediction %>% 
+  filter(group == 2) %>% 
+  dplyr::select(all_of(vars)) %>%
+  as.matrix() %>% 
+  rcorr(type = "pearson") 
+
+
+# tidy up data
+sur_single_cor_table <- flattenCorrMatrix(round(surrogate_single_cor$r, 3), round(surrogate_single_cor$P, 3))
+sur_rel_cor_table <- flattenCorrMatrix(round(surrogate_rel_cor$r, 3), round(surrogate_rel_cor$P, 3))
+pred_single_cor_table <- flattenCorrMatrix(round(prediction_single_cor$r, 3), round(prediction_single_cor$P, 3))
+pred_rel_cor_table <- flattenCorrMatrix(round(prediction_rel_cor$r, 3), round(prediction_rel_cor$P, 3))
+
+
+lowerMat(surrogate_single_cor$r)
+lowerMat(surrogate_single_cor$P, digits = 3)
+lowerMat(surrogate_rel_cor$r)
+lowerMat(surrogate_rel_cor$P,digits = 3)
+lowerMat(prediction_single_cor$r)
+lowerMat(prediction_single_cor$P,digits = 3)
+lowerMat(prediction_rel_cor$r)
+lowerMat(prediction_rel_cor$P,digits = 3)
+
+
+
+```
+
+
