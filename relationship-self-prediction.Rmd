@@ -1,0 +1,36 @@
+---
+title: "relationship prediction"
+author: "Ye Dam Yi"
+date: "4/24/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+require(tidyverse)
+require(lavaan)
+require(haven)
+require(QuantPsyc)
+```
+
+
+```{r data}
+pred <- read_spss("data/self_prediction.sav")
+glimpse(pred)
+
+```
+
+#### Moderation
+```{r moderation}
+pred_single <- pred %>% 
+  filter(group == 1)
+pred_rel <- pred %>% 
+  filter(group == 2)
+
+pred_single_moderation <- lm(riskmc ~ negmc + posmc + alertmc + target + negint + posint + alertint, data = pred_single)
+summary(pred_single_moderation)
+lm.beta(pred_single_moderation)
+
+pred_rel_moderation <- lm(riskmc ~ negmc + posmc + alertmc + target + negint + posint + alertint, data = pred_rel)
+summary(pred_rel_moderation)
+lm.beta(pred_rel_moderation)
+```
