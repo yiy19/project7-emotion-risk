@@ -44,7 +44,7 @@ glimpse(risk_pred)
 write_sav(single, "data/single.sav")
 write_sav(inrelationship, "data/inrelationship.sav")
 write_sav(risk_sur, "data/self_surrogate.sav")
-write_sav(risk_sur, "data/self_prediction.sav")
+write_sav(risk_pred, "data/self_prediction.sav")
 
 
 
