@@ -171,7 +171,200 @@ pre code {
 </div>
 
 
+<div id="pairwise-contrasts-based-on-groups" class="section level3">
+<h3>1. Pairwise contrasts based on groups</h3>
+<pre class="r"><code>single &lt;- read_spss(&quot;data/single.sav&quot;)
+relationship &lt;- read_spss(&quot;data/inrelationship.sav&quot;)
 
+single &lt;- single %&gt;% 
+  mutate(gender = as_factor(gender),
+         condition = as_factor(condition),
+         rel_self = as_factor(rel_self),
+         rel_friend1 = as_factor(rel_friend1),
+         rel_friend2 = as_factor(rel_friend2)) 
+
+relationship &lt;- relationship %&gt;% 
+  mutate(gender = as_factor(gender),
+         condition = as_factor(condition),
+         rel_self = as_factor(rel_self),
+         rel_friend1 = as_factor(rel_friend1),
+         rel_friend2 = as_factor(rel_friend2)) </code></pre>
+<pre class="r"><code>summary(single)</code></pre>
+<pre><code>##     consent       time             age                              gender   
+##  Min.   :1   Min.   :  63.0   Min.   :  19.00   Male                   : 91  
+##  1st Qu.:1   1st Qu.: 272.0   1st Qu.:  29.00   Female                 :106  
+##  Median :1   Median : 354.0   Median :  36.00   Non-binary             :  0  
+##  Mean   :1   Mean   : 406.1   Mean   :  49.86   Other/Prefer not to say:  0  
+##  3rd Qu.:1   3rd Qu.: 480.0   3rd Qu.:  49.00                                
+##  Max.   :1   Max.   :2495.0   Max.   :1985.00                                
+##    gendcond              condition    friend1            friend2         
+##  Length:197         Self      :68   Length:197         Length:197        
+##  Class :character   Surrogate :64   Class :character   Class :character  
+##  Mode  :character   Prediction:65   Mode  :character   Mode  :character  
+##                                                                          
+##                                                                          
+##                                                                          
+##    risklevel          pos            neg            alert         riskyrisk    
+##  Min.   :0.000   Min.   :0.00   Min.   :0.000   Min.   :0.000   Min.   :0.000  
+##  1st Qu.:2.000   1st Qu.:3.00   1st Qu.:1.000   1st Qu.:3.000   1st Qu.:1.000  
+##  Median :4.000   Median :3.00   Median :2.000   Median :3.000   Median :1.000  
+##  Mean   :3.569   Mean   :3.03   Mean   :1.985   Mean   :3.076   Mean   :1.563  
+##  3rd Qu.:5.000   3rd Qu.:4.00   3rd Qu.:3.000   3rd Qu.:4.000   3rd Qu.:2.000  
+##  Max.   :6.000   Max.   :4.00   Max.   :4.000   Max.   :4.000   Max.   :4.000  
+##    riskavrisk    rel_self  rel_friend1 rel_friend2   attention1   attention2
+##  Min.   :0.000   YES:  0   YES:  0     YES: 32     Min.   :7    Min.   :3   
+##  1st Qu.:0.000   NO :197   NO :197     NO :165     1st Qu.:7    1st Qu.:3   
+##  Median :0.000                                     Median :7    Median :3   
+##  Mean   :0.533                                     Mean   :7    Mean   :3   
+##  3rd Qu.:1.000                                     3rd Qu.:7    3rd Qu.:3   
+##  Max.   :4.000                                     Max.   :7    Max.   :3   
+##      code                 id         code_mturk       
+##  Length:197         Min.   :  4.0   Length:197        
+##  Class :character   1st Qu.:179.0   Class :character  
+##  Mode  :character   Median :343.0   Mode  :character  
+##                     Mean   :326.9                     
+##                     3rd Qu.:469.0                     
+##                     Max.   :607.0</code></pre>
+<pre class="r"><code>summary(relationship)</code></pre>
+<pre><code>##     consent       time             age                            gender   
+##  Min.   :1   Min.   :  60.0   Min.   :18.00   Male                   :113  
+##  1st Qu.:1   1st Qu.: 213.2   1st Qu.:31.00   Female                 : 97  
+##  Median :1   Median : 293.5   Median :39.50   Non-binary             :  0  
+##  Mean   :1   Mean   : 383.7   Mean   :41.46   Other/Prefer not to say:  0  
+##  3rd Qu.:1   3rd Qu.: 406.0   3rd Qu.:50.00                                
+##  Max.   :1   Max.   :3142.0   Max.   :75.00                                
+##    gendcond              condition    friend1            friend2         
+##  Length:210         Self      :79   Length:210         Length:210        
+##  Class :character   Surrogate :65   Class :character   Class :character  
+##  Mode  :character   Prediction:66   Mode  :character   Mode  :character  
+##                                                                          
+##                                                                          
+##                                                                          
+##    risklevel          pos             neg            alert      
+##  Min.   :0.000   Min.   :1.000   Min.   :0.000   Min.   :0.000  
+##  1st Qu.:3.000   1st Qu.:3.000   1st Qu.:1.000   1st Qu.:2.000  
+##  Median :4.000   Median :3.000   Median :2.000   Median :3.000  
+##  Mean   :3.948   Mean   :3.033   Mean   :1.976   Mean   :2.862  
+##  3rd Qu.:5.000   3rd Qu.:4.000   3rd Qu.:3.000   3rd Qu.:3.000  
+##  Max.   :6.000   Max.   :4.000   Max.   :4.000   Max.   :4.000  
+##    riskyrisk       riskavrisk    rel_self  rel_friend1 rel_friend2   attention1
+##  Min.   :0.000   Min.   :0.000   YES:210   YES:210     YES:165     Min.   :7   
+##  1st Qu.:1.000   1st Qu.:0.000   NO :  0   NO :  0     NO : 45     1st Qu.:7   
+##  Median :2.000   Median :0.000                                     Median :7   
+##  Mean   :1.824   Mean   :1.024                                     Mean   :7   
+##  3rd Qu.:3.000   3rd Qu.:2.000                                     3rd Qu.:7   
+##  Max.   :4.000   Max.   :4.000                                     Max.   :7   
+##    attention2     code                 id         code_mturk       
+##  Min.   :3    Length:210         Min.   :  2.0   Length:210        
+##  1st Qu.:3    Class :character   1st Qu.:138.2   Class :character  
+##  Median :3    Mode  :character   Median :275.0   Mode  :character  
+##  Mean   :3                       Mean   :286.8                     
+##  3rd Qu.:3                       3rd Qu.:420.5                     
+##  Max.   :3                       Max.   :604.0</code></pre>
+<pre class="r"><code># single
+single %&gt;% 
+  get_summary_stats(riskyrisk, riskavrisk, type = &quot;mean_sd&quot;)</code></pre>
+<pre><code>## Warning: attributes are not identical across measure variables;
+## they will be dropped</code></pre>
+<pre><code>## # A tibble: 2 x 4
+##   variable       n  mean    sd
+## * &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 riskavrisk   197 0.533 0.906
+## 2 riskyrisk    197 1.56  1.14</code></pre>
+<pre class="r"><code>single %&gt;% 
+  get_summary_stats(risklevel, type = &quot;mean_sd&quot;)</code></pre>
+<pre><code>## # A tibble: 1 x 4
+##   variable      n  mean    sd
+## * &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 risklevel   197  3.57  1.78</code></pre>
+<pre class="r"><code>single %&gt;% 
+  get_summary_stats(neg, type = &quot;mean_sd&quot;)</code></pre>
+<pre><code>## # A tibble: 1 x 4
+##   variable     n  mean    sd
+## * &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 neg        197  1.98  1.15</code></pre>
+<pre class="r"><code>single %&gt;% 
+  get_summary_stats(pos, type = &quot;mean_sd&quot;)</code></pre>
+<pre><code>## # A tibble: 1 x 4
+##   variable     n  mean    sd
+## * &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 pos        197  3.03 0.788</code></pre>
+<pre class="r"><code>single %&gt;% 
+  get_summary_stats(alert, type = &quot;mean_sd&quot;)</code></pre>
+<pre><code>## # A tibble: 1 x 4
+##   variable     n  mean    sd
+## * &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 alert      197  3.08 0.775</code></pre>
+<pre class="r"><code># relationship
+relationship %&gt;% 
+  get_summary_stats(riskyrisk, riskavrisk, type = &quot;mean_sd&quot;)</code></pre>
+<pre><code>## Warning: attributes are not identical across measure variables;
+## they will be dropped</code></pre>
+<pre><code>## # A tibble: 2 x 4
+##   variable       n  mean    sd
+## * &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 riskavrisk   210  1.02  1.28
+## 2 riskyrisk    210  1.82  1.19</code></pre>
+<pre class="r"><code>relationship %&gt;% 
+  get_summary_stats(risklevel, type = &quot;mean_sd&quot;)</code></pre>
+<pre><code>## # A tibble: 1 x 4
+##   variable      n  mean    sd
+## * &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 risklevel   210  3.95  1.58</code></pre>
+<pre class="r"><code>relationship %&gt;% 
+  get_summary_stats(neg, type = &quot;mean_sd&quot;)</code></pre>
+<pre><code>## # A tibble: 1 x 4
+##   variable     n  mean    sd
+## * &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 neg        210  1.98  1.17</code></pre>
+<pre class="r"><code>relationship %&gt;% 
+  get_summary_stats(pos, type = &quot;mean_sd&quot;)</code></pre>
+<pre><code>## # A tibble: 1 x 4
+##   variable     n  mean    sd
+## * &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 pos        210  3.03 0.844</code></pre>
+<pre class="r"><code>relationship %&gt;% 
+  get_summary_stats(alert, type = &quot;mean_sd&quot;)</code></pre>
+<pre><code>## # A tibble: 1 x 4
+##   variable     n  mean    sd
+## * &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 alert      210  2.86 0.878</code></pre>
+<pre class="r"><code># compare means
+t.test(single$riskyrisk, single$riskavrisk, paired = TRUE) %&gt;% 
+  tidy()</code></pre>
+<pre><code>## # A tibble: 1 x 8
+##   estimate statistic  p.value parameter conf.low conf.high method    alternative
+##      &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;      
+## 1     1.03      9.91 5.17e-19       196    0.825      1.24 Paired t… two.sided</code></pre>
+<pre class="r"><code>single %&gt;% 
+  t_test(risklevel ~ condition, comparisons = list(c(&quot;Self&quot;, &quot;Surrogate&quot;), c(&quot;Self&quot;, &quot;Prediction&quot;)), paired = FALSE) </code></pre>
+<pre><code>## # A tibble: 2 x 10
+##   .y.    group1 group2     n1    n2 statistic    df       p   p.adj p.adj.signif
+## * &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;   &lt;int&gt; &lt;int&gt;     &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;       
+## 1 riskl… Self   Surrog…    68    64     -2.03  128. 4.40e-2 4.40e-2 *           
+## 2 riskl… Self   Predic…    68    65     -3.62  128. 4.18e-4 8.36e-4 ***</code></pre>
+<pre class="r"><code>single %&gt;% 
+  t_test(neg ~ condition, comparisons = list(c(&quot;Self&quot;, &quot;Surrogate&quot;), c(&quot;Self&quot;, &quot;Prediction&quot;)), paired = FALSE) </code></pre>
+<pre><code>## # A tibble: 2 x 10
+##   .y.   group1 group2        n1    n2 statistic    df     p p.adj p.adj.signif
+## * &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;      &lt;int&gt; &lt;int&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;       
+## 1 neg   Self   Surrogate     68    64    -1.56   126. 0.121 0.242 ns          
+## 2 neg   Self   Prediction    68    65    -0.914  130. 0.362 0.362 ns</code></pre>
+<pre class="r"><code>single %&gt;% 
+  t_test(pos ~ condition, comparisons = list(c(&quot;Self&quot;, &quot;Surrogate&quot;), c(&quot;Self&quot;, &quot;Prediction&quot;)), paired = FALSE) </code></pre>
+<pre><code>## # A tibble: 2 x 10
+##   .y.   group1 group2        n1    n2 statistic    df     p p.adj p.adj.signif
+## * &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;      &lt;int&gt; &lt;int&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;       
+## 1 pos   Self   Surrogate     68    64     -1.84  130. 0.068 0.068 ns          
+## 2 pos   Self   Prediction    68    65     -2.81  131. 0.006 0.011 *</code></pre>
+<pre class="r"><code>single %&gt;% 
+  t_test(alert ~ condition, comparisons = list(c(&quot;Self&quot;, &quot;Surrogate&quot;), c(&quot;Self&quot;, &quot;Prediction&quot;)), paired = FALSE) </code></pre>
+<pre><code>## # A tibble: 2 x 10
+##   .y.   group1 group2        n1    n2 statistic    df     p p.adj p.adj.signif
+## * &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;      &lt;int&gt; &lt;int&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;       
+## 1 alert Self   Surrogate     68    64     -1.05  130. 0.295  0.59 ns          
+## 2 alert Self   Prediction    68    65     -1.00  130. 0.318  0.59 ns</code></pre>
+</div>
 
 
 

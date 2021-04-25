@@ -9,5 +9,82 @@ output: html_document
 require(lavaan)
 require(tidyverse)
 require(haven)
+require(rstatix)
 ```
 
+
+### 1. Pairwise contrasts based on groups
+```{r read-data}
+single <- read_spss("data/single.sav")
+relationship <- read_spss("data/inrelationship.sav")
+
+single <- single %>% 
+  mutate(gender = as_factor(gender),
+         condition = as_factor(condition),
+         rel_self = as_factor(rel_self),
+         rel_friend1 = as_factor(rel_friend1),
+         rel_friend2 = as_factor(rel_friend2)) 
+
+relationship <- relationship %>% 
+  mutate(gender = as_factor(gender),
+         condition = as_factor(condition),
+         rel_self = as_factor(rel_self),
+         rel_friend1 = as_factor(rel_friend1),
+         rel_friend2 = as_factor(rel_friend2)) 
+
+```
+
+```{r summary}
+summary(single)
+summary(relationship)
+
+# single
+single %>% 
+  get_summary_stats(riskyrisk, riskavrisk, type = "mean_sd")
+
+single %>% 
+  get_summary_stats(risklevel, type = "mean_sd")
+
+single %>% 
+  get_summary_stats(neg, type = "mean_sd")
+
+single %>% 
+  get_summary_stats(pos, type = "mean_sd")
+
+single %>% 
+  get_summary_stats(alert, type = "mean_sd")
+
+# relationship
+relationship %>% 
+  get_summary_stats(riskyrisk, riskavrisk, type = "mean_sd")
+relationship %>% 
+  get_summary_stats(risklevel, type = "mean_sd")
+relationship %>% 
+  get_summary_stats(neg, type = "mean_sd")
+relationship %>% 
+  get_summary_stats(pos, type = "mean_sd")
+relationship %>% 
+  get_summary_stats(alert, type = "mean_sd")
+
+
+```
+
+```{r tests-single}
+
+# compare means
+t.test(single$riskyrisk, single$riskavrisk, paired = TRUE) %>% 
+  tidy()
+
+single %>% 
+  t_test(risklevel ~ condition, comparisons = list(c("Self", "Surrogate"), c("Self", "Prediction")), paired = FALSE) 
+
+single %>% 
+  t_test(neg ~ condition, comparisons = list(c("Self", "Surrogate"), c("Self", "Prediction")), paired = FALSE) 
+
+single %>% 
+  t_test(pos ~ condition, comparisons = list(c("Self", "Surrogate"), c("Self", "Prediction")), paired = FALSE) 
+
+single %>% 
+  t_test(alert ~ condition, comparisons = list(c("Self", "Surrogate"), c("Self", "Prediction")), paired = FALSE) 
+
+```
