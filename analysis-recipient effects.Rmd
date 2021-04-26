@@ -48,6 +48,43 @@ summary(risk_excluded)
 risk_excluded %>% summarise_all(~ sum(is.na(.)))
 
 ```
+```{r recode}
+risk_excluded <- risk_excluded %>% 
+  mutate(risklevel = case_when(risklevel == 0 ~ 1,
+                               risklevel == 1 ~ 2,
+                               risklevel == 2 ~ 3,
+                               risklevel == 3 ~ 4,
+                               risklevel == 4 ~ 5,
+                               risklevel == 5 ~ 6,
+                               risklevel == 6 ~7),
+         neg = case_when(neg == 0 ~ 1,
+                         neg == 1 ~ 2,
+                         neg == 2 ~ 3,
+                         neg == 3 ~ 4,
+                         neg == 4 ~ 5),
+         pos = case_when(pos == 0 ~ 1,
+                         pos == 1 ~ 2,
+                         pos == 2 ~ 3,
+                         pos == 3 ~ 4,
+                         pos == 4 ~ 5),
+         alert = case_when(alert == 0 ~ 1,
+                         alert == 1 ~ 2,
+                         alert == 2 ~ 3,
+                         alert == 3 ~ 4,
+                         alert == 4 ~ 5),
+         riskyrisk = case_when(riskyrisk == 0 ~ 1,
+                         riskyrisk == 1 ~ 2,
+                         riskyrisk == 2 ~ 3,
+                         riskyrisk == 3 ~ 4,
+                         riskyrisk == 4 ~ 5),
+         riskavrisk = case_when(riskavrisk == 0 ~ 1,
+                         riskavrisk == 1 ~ 2,
+                         riskavrisk == 2 ~ 3,
+                         riskavrisk == 3 ~ 4,
+                         riskavrisk == 4 ~ 5))
+
+```
+
 
 ```{r recipient-effects}
 # risk taking
