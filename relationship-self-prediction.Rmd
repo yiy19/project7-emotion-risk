@@ -10,6 +10,7 @@ require(tidyverse)
 require(lavaan)
 require(haven)
 require(QuantPsyc)
+require(semTools)
 ```
 
 
@@ -18,6 +19,65 @@ pred <- read_spss("data/self_prediction.sav")
 glimpse(pred)
 
 ```
+#### Mediation
+```{r mediation}
+
+pred_mediation_free <- '
+    # direct effect
+    risklevel ~ c(b1a,b1b) * neg + c(b2a,b2b) * pos + c(b3a,b3b) * alert + c(c1,c2) * recipient_num
+    # mediator
+    neg ~ c(a1a,a1b) * recipient_num
+    pos ~ c(a2a,a2b) * recipient_num
+    alert ~ c(a3a,a3b) * recipient_num
+    # indirect effect c(a*b)
+    indirect1 := c(a1a,a1b) * c(b1a,b1b)
+    indirect2 := c(a2a,a2b) * c(b2a,b2b)
+    Indirect3 := c(a3a,a3b) * c(b3a,b3b)
+    # total effect
+    total := c(c1,c2) + c(a1a,a1b) * c(b1a,b1b) + c(a2a,a2b) * c(b2a,b2b) + c(a3a,a3b) * c(b3a,b3b)
+    # covariances
+    neg ~~ pos
+    pos ~~ alert
+    neg ~~ alert
+'
+prediction_fit <- sem(model = pred_mediation_free, data = pred, se = "bootstrap", bootstrap = 5000, group = "group")
+summary(prediction_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE, rsquare = TRUE)
+standardizedSolution(prediction_fit)
+parameterEstimates(prediction_fit, boot.ci.type = "bca.simple")
+
+
+pred_mediation_constrained <- '
+    # direct effect
+    risklevel ~ b1 * neg + b2 * pos + b3 * alert + c * recipient_num
+    # mediator
+    neg ~ a1 * recipient_num
+    pos ~ a2 * recipient_num
+    alert ~ a3 * recipient_num
+    # indirect effect (a*b)
+    indirect1 := a1 * b1
+    indirect2 := a2 * b2
+    Indirect3 := a3 * b3
+    # total effect
+    total := c + (a1 * b1) + (a2 * b2) + (a3 * b3)
+    # covariances
+    neg ~~ pos
+    pos ~~ alert
+    neg ~~ alert
+'
+pred_fit_constrained <- sem(model = pred_mediation_constrained, data = pred, se = "bootstrap", bootstrap = 5000, group = "group", group.equal = c("intercepts", "regressions"))
+summary(pred_fit_constrained, fit.measures = TRUE, standardize = TRUE, estimates = TRUE, rsquare = TRUE)
+parameterEstimates(pred_fit_constrained, boot.ci.type = "bca.simple")
+
+
+anova(prediction_fit, pred_fit_constrained)
+
+# semTools::clipboard(prediction_fit,fit.measures=TRUE,standardized=TRUE, rsquare = TRUE)
+# semTools::clipboard(pred_fit_constrained,fit.measures=TRUE,standardized=TRUE, rsquare = TRUE)
+
+
+
+```
+
 
 #### Moderation
 ```{r moderation}
