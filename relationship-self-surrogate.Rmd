@@ -74,18 +74,18 @@ anova(surrogate_fit, surrogate_fit_constrained)
 
 #### Moderation
 ```{r moderation}
-surrogate_single <- surrogate %>% 
-  filter(group == 1)
 surrogate_rel <- surrogate %>% 
+  filter(group == 1)
+surrogate_single <- surrogate %>% 
   filter(group == 2)
-
-surrogate_single_moderation <- lm(riskmc ~ negmc + posmc + alertmc + target + negint + posint + alertint, data = surrogate_single)
-summary(surrogate_single_moderation)
-lm.beta(surrogate_single_moderation)
 
 surrogate_rel_moderation <- lm(riskmc ~ negmc + posmc + alertmc + target + negint + posint + alertint, data = surrogate_rel)
 summary(surrogate_rel_moderation)
 lm.beta(surrogate_rel_moderation)
+
+surrogate_single_moderation <- lm(riskmc ~ negmc + posmc + alertmc + target + negint + posint + alertint, data = surrogate_single)
+summary(surrogate_single_moderation)
+lm.beta(surrogate_single_moderation)
 ```
 
 

@@ -81,16 +81,16 @@ anova(prediction_fit, pred_fit_constrained)
 
 #### Moderation
 ```{r moderation}
-pred_single <- pred %>% 
-  filter(group == 1)
 pred_rel <- pred %>% 
+  filter(group == 1)
+pred_single <- pred %>% 
   filter(group == 2)
-
-pred_single_moderation <- lm(riskmc ~ negmc + posmc + alertmc + target + negint + posint + alertint, data = pred_single)
-summary(pred_single_moderation)
-lm.beta(pred_single_moderation)
 
 pred_rel_moderation <- lm(riskmc ~ negmc + posmc + alertmc + target + negint + posint + alertint, data = pred_rel)
 summary(pred_rel_moderation)
 lm.beta(pred_rel_moderation)
+
+pred_single_moderation <- lm(riskmc ~ negmc + posmc + alertmc + target + negint + posint + alertint, data = pred_single)
+summary(pred_single_moderation)
+lm.beta(pred_single_moderation)
 ```
