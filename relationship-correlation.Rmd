@@ -33,8 +33,8 @@ vars <- c("risklevel", "negmc", "posmc", "alertmc", "condition", "negint", "posi
 
 
 # self vs. sur 
-# single
-surrogate_single_cor <- surrogate %>% 
+# relationship
+surrogate_rel_cor <- surrogate %>% 
   filter(group == 1) %>% 
   dplyr::select(all_of(vars)) %>%
   as.matrix() %>% 
@@ -42,8 +42,8 @@ surrogate_single_cor <- surrogate %>%
  # convert into a dataframe
   # cor_sur <- do.call(rbind.data.frame, cor_sur) # doesn't look tidy
 
-# relationship
-surrogate_rel_cor <- surrogate %>% 
+# single
+surrogate_single_cor <- surrogate %>% 
   filter(group == 2) %>% 
   dplyr::select(all_of(vars)) %>%
   as.matrix() %>% 
@@ -63,8 +63,8 @@ flattenCorrMatrix <- function(cormat, pmat) {
 
 
 # self vs. pred 
-# single
-prediction_single_cor <- prediction %>% 
+# relationship
+prediction_rel_cor <- prediction %>% 
   filter(group == 1) %>% 
   dplyr::select(all_of(vars)) %>%
   as.matrix() %>% 
@@ -72,8 +72,8 @@ prediction_single_cor <- prediction %>%
  # convert into a dataframe
   # cor_sur <- do.call(rbind.data.frame, cor_sur) # doesn't look tidy
 
-# relationship
-prediction_rel_cor <- prediction %>% 
+# single
+prediction_single_cor <- prediction %>% 
   filter(group == 2) %>% 
   dplyr::select(all_of(vars)) %>%
   as.matrix() %>% 
