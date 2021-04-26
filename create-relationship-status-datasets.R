@@ -32,8 +32,8 @@ risk_sur <- risk_sur %>%
   filter(group %in% c(1, 2))
 
 risk_pred <- risk_pred %>% 
-  mutate(group = case_when(rel_self == 1 & rel_friend1 == 1 ~ 1,
-                           rel_self == 2 & rel_friend1 == 2 ~ 2,
+  mutate(group = case_when(rel_self == 1 & rel_friend1 == 1 ~ 1, # relationship
+                           rel_self == 2 & rel_friend1 == 2 ~ 2, # single
                            TRUE ~ 3)) %>% 
   filter(group %in% c(1, 2))
 
