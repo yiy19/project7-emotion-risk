@@ -23,27 +23,35 @@ glimpse(pred)
 ```{r mediation}
 
 pred_mediation_free <- '
-    # direct effect
+      # direct effect
     risklevel ~ c(b1a,b1b) * neg + c(b2a,b2b) * pos + c(b3a,b3b) * alert + c(c1,c2) * recipient_num
     # mediator
     neg ~ c(a1a,a1b) * recipient_num
     pos ~ c(a2a,a2b) * recipient_num
     alert ~ c(a3a,a3b) * recipient_num
     # indirect effect c(a*b)
-    indirect1 := c(a1a,a1b) * c(b1a,b1b)
-    indirect2 := c(a2a,a2b) * c(b2a,b2b)
-    Indirect3 := c(a3a,a3b) * c(b3a,b3b)
+    indirect1_g1 := a1a * b1a
+    indirect2_g1 := a2a * b2a
+    Indirect3_g1:= a3a * b3a
+    indirect1_g2 := a1b * b1b
+    indirect2_g2 := a2b * b2b
+    Indirect3_g2 := a3b * b3b
     # total effect
-    total := c(c1,c2) + c(a1a,a1b) * c(b1a,b1b) + c(a2a,a2b) * c(b2a,b2b) + c(a3a,a3b) * c(b3a,b3b)
+    total_g1:= c1 + a1a * b1a + a2a * b2a + a3a * b3a
+    total_g2:= c2 + a1b * b1b + a2b * b2b + a3b * b3b
     # covariances
     neg ~~ pos
     pos ~~ alert
     neg ~~ alert
 '
-prediction_fit <- sem(model = pred_mediation_free, data = pred, se = "bootstrap", bootstrap = 5000, group = "group")
-summary(prediction_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE, rsquare = TRUE)
-standardizedSolution(prediction_fit)
-parameterEstimates(prediction_fit, boot.ci.type = "bca.simple")
+pred_fit <- sem(model = pred_mediation_free, data = pred, se = "bootstrap", bootstrap = 5000, group = "group")
+summary(pred_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE, rsquare = TRUE)
+
+standardizedSolution(pred_fit)
+parameterEstimates(pred_fit, boot.ci.type = "bca.simple")
+
+pred_fit_constrained1 <- sem(model = pred_mediation_free, data = pred, se = "bootstrap", bootstrap = 5000, group = "group", group.equal = c("intercepts", "regressions"))
+summary(pred_fit_constrained1, fit.measures = TRUE, standardize = TRUE, estimates = TRUE, rsquare = TRUE)
 
 
 pred_mediation_constrained <- '
@@ -64,17 +72,19 @@ pred_mediation_constrained <- '
     pos ~~ alert
     neg ~~ alert
 '
-pred_fit_constrained <- sem(model = pred_mediation_constrained, data = pred, se = "bootstrap", bootstrap = 5000, group = "group", group.equal = c("intercepts", "regressions"))
-summary(pred_fit_constrained, fit.measures = TRUE, standardize = TRUE, estimates = TRUE, rsquare = TRUE)
-parameterEstimates(pred_fit_constrained, boot.ci.type = "bca.simple")
+pred_fit_constrained2 <- sem(model = pred_mediation_constrained, data = pred, se = "bootstrap", bootstrap = 5000, group = "group", group.equal = c("intercepts", "regressions"))
+
+summary(pred_fit_constrained2, fit.measures = TRUE, standardize = TRUE, estimates = TRUE, rsquare = TRUE)
+parameterEstimates(pred_fit_constrained2, boot.ci.type = "bca.simple")
 
 
-anova(prediction_fit, pred_fit_constrained)
+
 
 # semTools::clipboard(prediction_fit,fit.measures=TRUE,standardized=TRUE, rsquare = TRUE)
 # semTools::clipboard(pred_fit_constrained,fit.measures=TRUE,standardized=TRUE, rsquare = TRUE)
 
-
+anova(pred_fit, pred_fit_constrained1)
+anova(pred_fit, pred_fit_constrained2)
 
 ```
 
