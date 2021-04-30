@@ -92,3 +92,69 @@ standardizedSolution(sur_rel_mediation_fit)
 
 
 
+### Self Prediction Mediation for Single and Relationship Groups
+#### Create data
+```{r self-pred-data}
+# create data for single
+pred_single <- pred %>% 
+  filter(group == 2)
+
+# create data for relationship
+pred_rel <- pred %>% 
+  filter(group == 1)
+```
+
+#### Run mediation
+```{r self-pred-mediation-single}
+pred_single_mediation <- '
+    # direct effect
+    risklevel ~ b1 * neg + b2 * pos + b3 * alert + c * recipient_num
+    # mediator
+    neg ~ a1 * recipient_num
+    pos ~ a2 * recipient_num
+    alert ~ a3 * recipient_num
+    # indirect effect (a*b)
+    indirect1 := a1 * b1
+    indirect2 := a2 * b2
+    Indirect3 := a3 * b3
+    # total effect
+    total := c + (a1 * b1) + (a2 * b2) + (a3 * b3)
+    # covariances
+    neg ~~ pos
+    pos ~~ alert
+    neg ~~ alert
+'
+pred_single_mediation_fit <- sem(model = pred_single_mediation, data = pred_single, se = "bootstrap", bootstrap = 5000)
+summary(pred_single_mediation_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE, rsquare = TRUE)
+parameterEstimates(pred_single_mediation_fit, boot.ci.type = "bca.simple")
+standardizedSolution(pred_single_mediation_fit)
+
+```
+
+##### Check results with the ones I have
+
+```{r self-pred-mediation-relationship}
+
+pred_rel_mediation <- '
+    # direct effect
+    risklevel ~ b1 * neg + b2 * pos + b3 * alert + c * recipient_num
+    # mediator
+    neg ~ a1 * recipient_num
+    pos ~ a2 * recipient_num
+    alert ~ a3 * recipient_num
+    # indirect effect (a*b)
+    indirect1 := a1 * b1
+    indirect2 := a2 * b2
+    Indirect3 := a3 * b3
+    # total effect
+    total := c + (a1 * b1) + (a2 * b2) + (a3 * b3)
+    # covariances
+    neg ~~ pos
+    pos ~~ alert
+    neg ~~ alert
+'
+pred_rel_mediation_fit <- sem(model = pred_rel_mediation, data = pred_rel, se = "bootstrap", bootstrap = 5000)
+summary(pred_rel_mediation_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE, rsquare = TRUE)
+parameterEstimates(pred_rel_mediation_fit, boot.ci.type = "bca.simple")
+standardizedSolution(pred_rel_mediation_fit)
+```

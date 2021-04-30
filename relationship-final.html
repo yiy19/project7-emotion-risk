@@ -335,32 +335,32 @@ summary(sur_single_mediation_fit, fit.measures = TRUE, standardize = TRUE, estim
 ## Regressions:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
 ##   risklevel ~                                                           
-##     neg       (b1)    0.127    0.138    0.923    0.356    0.127    0.079
-##     pos       (b2)    0.898    0.206    4.359    0.000    0.898    0.385
-##     alert     (b3)    0.090    0.203    0.443    0.658    0.090    0.037
-##     recpnt_nm  (c)    0.376    0.324    1.160    0.246    0.376    0.100
+##     neg       (b1)    0.127    0.136    0.930    0.352    0.127    0.079
+##     pos       (b2)    0.898    0.204    4.409    0.000    0.898    0.385
+##     alert     (b3)    0.090    0.196    0.456    0.648    0.090    0.037
+##     recpnt_nm  (c)    0.376    0.323    1.163    0.245    0.376    0.100
 ##   neg ~                                                                 
-##     recpnt_nm (a1)    0.317    0.201    1.581    0.114    0.317    0.136
+##     recpnt_nm (a1)    0.317    0.202    1.573    0.116    0.317    0.136
 ##   pos ~                                                                 
-##     recpnt_nm (a2)    0.255    0.136    1.870    0.061    0.255    0.159
+##     recpnt_nm (a2)    0.255    0.138    1.846    0.065    0.255    0.159
 ##   alert ~                                                               
-##     recpnt_nm (a3)    0.140    0.132    1.056    0.291    0.140    0.092
+##     recpnt_nm (a3)    0.140    0.131    1.065    0.287    0.140    0.092
 ## 
 ## Covariances:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
 ##  .neg ~~                                                                
-##    .pos              -0.203    0.087   -2.348    0.019   -0.203   -0.223
+##    .pos              -0.203    0.086   -2.368    0.018   -0.203   -0.223
 ##  .pos ~~                                                                
 ##    .alert             0.009    0.053    0.172    0.864    0.009    0.015
 ##  .neg ~~                                                                
-##    .alert             0.164    0.078    2.098    0.036    0.164    0.188
+##    .alert             0.164    0.079    2.068    0.039    0.164    0.188
 ## 
 ## Variances:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .risklevel         2.898    0.291    9.955    0.000    2.898    0.829
-##    .neg               1.330    0.123   10.852    0.000    1.330    0.981
-##    .pos               0.625    0.080    7.773    0.000    0.625    0.975
-##    .alert             0.576    0.069    8.325    0.000    0.576    0.992
+##    .risklevel         2.898    0.292    9.940    0.000    2.898    0.829
+##    .neg               1.330    0.121   10.997    0.000    1.330    0.981
+##    .pos               0.625    0.081    7.745    0.000    0.625    0.975
+##    .alert             0.576    0.069    8.334    0.000    0.576    0.992
 ## 
 ## R-Square:
 ##                    Estimate
@@ -371,92 +371,92 @@ summary(sur_single_mediation_fit, fit.measures = TRUE, standardize = TRUE, estim
 ## 
 ## Defined Parameters:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##     indirect1         0.040    0.059    0.681    0.496    0.040    0.011
-##     indirect2         0.229    0.133    1.723    0.085    0.229    0.061
-##     Indirect3         0.013    0.043    0.294    0.769    0.013    0.003
-##     total             0.657    0.323    2.037    0.042    0.657    0.176</code></pre>
+##     indirect1         0.040    0.057    0.703    0.482    0.040    0.011
+##     indirect2         0.229    0.133    1.720    0.085    0.229    0.061
+##     Indirect3         0.013    0.041    0.303    0.762    0.013    0.003
+##     total             0.657    0.324    2.031    0.042    0.657    0.176</code></pre>
 <pre class="r"><code>standardizedSolution(sur_single_mediation_fit)</code></pre>
 <pre><code>##              lhs op                       rhs est.std    se      z pvalue
-## 1      risklevel  ~                       neg   0.079 0.086  0.919  0.358
-## 2      risklevel  ~                       pos   0.385 0.086  4.500  0.000
-## 3      risklevel  ~                     alert   0.037 0.083  0.442  0.659
-## 4      risklevel  ~             recipient_num   0.100 0.087  1.159  0.246
-## 5            neg  ~             recipient_num   0.136 0.086  1.589  0.112
-## 6            pos  ~             recipient_num   0.159 0.084  1.894  0.058
-## 7          alert  ~             recipient_num   0.092 0.087  1.058  0.290
-## 8            neg ~~                       pos  -0.223 0.087 -2.564  0.010
+## 1      risklevel  ~                       neg   0.079 0.085  0.927  0.354
+## 2      risklevel  ~                       pos   0.385 0.084  4.569  0.000
+## 3      risklevel  ~                     alert   0.037 0.080  0.456  0.649
+## 4      risklevel  ~             recipient_num   0.100 0.086  1.162  0.245
+## 5            neg  ~             recipient_num   0.136 0.086  1.584  0.113
+## 6            pos  ~             recipient_num   0.159 0.085  1.868  0.062
+## 7          alert  ~             recipient_num   0.092 0.086  1.066  0.286
+## 8            neg ~~                       pos  -0.223 0.086 -2.589  0.010
 ## 9            pos ~~                     alert   0.015 0.088  0.171  0.864
-## 10           neg ~~                     alert   0.188 0.090  2.090  0.037
-## 11     risklevel ~~                 risklevel   0.829 0.067 12.358  0.000
-## 12           neg ~~                       neg   0.981 0.023 42.100  0.000
-## 13           pos ~~                       pos   0.975 0.027 36.563  0.000
-## 14         alert ~~                     alert   0.992 0.016 62.448  0.000
+## 10           neg ~~                     alert   0.188 0.091  2.062  0.039
+## 11     risklevel ~~                 risklevel   0.829 0.067 12.430  0.000
+## 12           neg ~~                       neg   0.981 0.023 41.962  0.000
+## 13           pos ~~                       pos   0.975 0.027 36.054  0.000
+## 14         alert ~~                     alert   0.992 0.016 62.945  0.000
 ## 15 recipient_num ~~             recipient_num   1.000 0.000     NA     NA
-## 16     indirect1 :=                     a1*b1   0.011 0.014  0.785  0.433
-## 17     indirect2 :=                     a2*b2   0.061 0.034  1.797  0.072
-## 18     Indirect3 :=                     a3*b3   0.003 0.008  0.394  0.693
-## 19         total := c+(a1*b1)+(a2*b2)+(a3*b3)   0.176 0.087  2.020  0.043
+## 16     indirect1 :=                     a1*b1   0.011 0.014  0.793  0.428
+## 17     indirect2 :=                     a2*b2   0.061 0.034  1.776  0.076
+## 18     Indirect3 :=                     a3*b3   0.003 0.008  0.400  0.689
+## 19         total := c+(a1*b1)+(a2*b2)+(a3*b3)   0.176 0.087  2.015  0.044
 ##    ci.lower ci.upper
-## 1    -0.089    0.247
-## 2     0.217    0.552
-## 3    -0.126    0.199
+## 1    -0.088    0.246
+## 2     0.220    0.550
+## 3    -0.121    0.194
 ## 4    -0.069    0.270
-## 5    -0.032    0.304
-## 6    -0.005    0.323
-## 7    -0.078    0.261
-## 8    -0.393   -0.052
+## 5    -0.032    0.305
+## 6    -0.008    0.326
+## 7    -0.077    0.260
+## 8    -0.392   -0.054
 ## 9    -0.158    0.188
-## 10    0.012    0.364
-## 11    0.698    0.961
+## 10    0.009    0.366
+## 11    0.698    0.960
 ## 12    0.936    1.027
-## 13    0.922    1.027
-## 14    0.960    1.023
+## 13    0.922    1.028
+## 14    0.961    1.022
 ## 15    1.000    1.000
-## 16   -0.016    0.038
-## 17   -0.006    0.128
+## 16   -0.016    0.037
+## 17   -0.006    0.129
 ## 18   -0.013    0.020
-## 19    0.005    0.346</code></pre>
+## 19    0.005    0.347</code></pre>
 <pre class="r"><code>parameterEstimates(sur_single_mediation_fit, boot.ci.type = &quot;bca.simple&quot;)</code></pre>
 <pre><code>##              lhs op                       rhs     label    est    se      z
-## 1      risklevel  ~                       neg        b1  0.127 0.138  0.923
-## 2      risklevel  ~                       pos        b2  0.898 0.206  4.359
-## 3      risklevel  ~                     alert        b3  0.090 0.203  0.443
-## 4      risklevel  ~             recipient_num         c  0.376 0.324  1.160
-## 5            neg  ~             recipient_num        a1  0.317 0.201  1.581
-## 6            pos  ~             recipient_num        a2  0.255 0.136  1.870
-## 7          alert  ~             recipient_num        a3  0.140 0.132  1.056
-## 8            neg ~~                       pos           -0.203 0.087 -2.348
+## 1      risklevel  ~                       neg        b1  0.127 0.136  0.930
+## 2      risklevel  ~                       pos        b2  0.898 0.204  4.409
+## 3      risklevel  ~                     alert        b3  0.090 0.196  0.456
+## 4      risklevel  ~             recipient_num         c  0.376 0.323  1.163
+## 5            neg  ~             recipient_num        a1  0.317 0.202  1.573
+## 6            pos  ~             recipient_num        a2  0.255 0.138  1.846
+## 7          alert  ~             recipient_num        a3  0.140 0.131  1.065
+## 8            neg ~~                       pos           -0.203 0.086 -2.368
 ## 9            pos ~~                     alert            0.009 0.053  0.172
-## 10           neg ~~                     alert            0.164 0.078  2.098
-## 11     risklevel ~~                 risklevel            2.898 0.291  9.955
-## 12           neg ~~                       neg            1.330 0.123 10.852
-## 13           pos ~~                       pos            0.625 0.080  7.773
-## 14         alert ~~                     alert            0.576 0.069  8.325
+## 10           neg ~~                     alert            0.164 0.079  2.068
+## 11     risklevel ~~                 risklevel            2.898 0.292  9.940
+## 12           neg ~~                       neg            1.330 0.121 10.997
+## 13           pos ~~                       pos            0.625 0.081  7.745
+## 14         alert ~~                     alert            0.576 0.069  8.334
 ## 15 recipient_num ~~             recipient_num            0.250 0.000     NA
-## 16     indirect1 :=                     a1*b1 indirect1  0.040 0.059  0.681
-## 17     indirect2 :=                     a2*b2 indirect2  0.229 0.133  1.723
-## 18     Indirect3 :=                     a3*b3 Indirect3  0.013 0.043  0.294
-## 19         total := c+(a1*b1)+(a2*b2)+(a3*b3)     total  0.657 0.323  2.037
+## 16     indirect1 :=                     a1*b1 indirect1  0.040 0.057  0.703
+## 17     indirect2 :=                     a2*b2 indirect2  0.229 0.133  1.720
+## 18     Indirect3 :=                     a3*b3 Indirect3  0.013 0.041  0.303
+## 19         total := c+(a1*b1)+(a2*b2)+(a3*b3)     total  0.657 0.324  2.031
 ##    pvalue ci.lower ci.upper
-## 1   0.356   -0.138    0.401
-## 2   0.000    0.478    1.291
-## 3   0.658   -0.307    0.489
-## 4   0.246   -0.269    0.988
-## 5   0.114   -0.088    0.700
-## 6   0.061   -0.006    0.524
-## 7   0.291   -0.131    0.394
-## 8   0.019   -0.383   -0.047
-## 9   0.864   -0.101    0.110
-## 10  0.036    0.013    0.323
-## 11  0.000    2.432    3.568
-## 12  0.000    1.117    1.609
-## 13  0.000    0.485    0.801
-## 14  0.000    0.457    0.733
+## 1   0.352   -0.139    0.396
+## 2   0.000    0.506    1.294
+## 3   0.648   -0.293    0.473
+## 4   0.245   -0.261    1.018
+## 5   0.116   -0.083    0.712
+## 6   0.065   -0.023    0.514
+## 7   0.287   -0.119    0.395
+## 8   0.018   -0.383   -0.043
+## 9   0.864   -0.099    0.111
+## 10  0.039    0.009    0.321
+## 11  0.000    2.440    3.626
+## 12  0.000    1.120    1.602
+## 13  0.000    0.484    0.810
+## 14  0.000    0.456    0.737
 ## 15     NA    0.250    0.250
-## 16  0.496   -0.027    0.235
-## 17  0.085    0.010    0.544
-## 18  0.769   -0.036    0.162
-## 19  0.042    0.021    1.290</code></pre>
+## 16  0.482   -0.025    0.236
+## 17  0.085    0.000    0.529
+## 18  0.762   -0.031    0.167
+## 19  0.042    0.014    1.280</code></pre>
 <div id="check-results-with-the-ones-i-have" class="section level5">
 <h5>Check results with the ones I have</h5>
 <pre class="r"><code>sur_rel_mediation &lt;- &#39;
@@ -532,32 +532,32 @@ summary(sur_rel_mediation_fit, fit.measures = TRUE, standardize = TRUE, estimate
 ## Regressions:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
 ##   risklevel ~                                                           
-##     neg       (b1)   -0.097    0.110   -0.881    0.379   -0.097   -0.069
-##     pos       (b2)    0.965    0.150    6.418    0.000    0.965    0.475
-##     alert     (b3)   -0.100    0.143   -0.703    0.482   -0.100   -0.054
-##     recpnt_nm  (c)    0.541    0.237    2.285    0.022    0.541    0.165
+##     neg       (b1)   -0.097    0.110   -0.881    0.378   -0.097   -0.069
+##     pos       (b2)    0.965    0.151    6.399    0.000    0.965    0.475
+##     alert     (b3)   -0.100    0.142   -0.705    0.481   -0.100   -0.054
+##     recpnt_nm  (c)    0.541    0.238    2.272    0.023    0.541    0.165
 ##   neg ~                                                                 
-##     recpnt_nm (a1)    0.141    0.194    0.726    0.468    0.141    0.060
+##     recpnt_nm (a1)    0.141    0.194    0.729    0.466    0.141    0.060
 ##   pos ~                                                                 
-##     recpnt_nm (a2)    0.067    0.136    0.493    0.622    0.067    0.041
+##     recpnt_nm (a2)    0.067    0.135    0.497    0.619    0.067    0.041
 ##   alert ~                                                               
-##     recpnt_nm (a3)    0.106    0.148    0.716    0.474    0.106    0.060
+##     recpnt_nm (a3)    0.106    0.147    0.721    0.471    0.106    0.060
 ## 
 ## Covariances:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
 ##  .neg ~~                                                                
-##    .pos              -0.152    0.079   -1.937    0.053   -0.152   -0.162
+##    .pos              -0.152    0.076   -2.006    0.045   -0.152   -0.162
 ##  .pos ~~                                                                
-##    .alert             0.150    0.059    2.558    0.011    0.150    0.212
+##    .alert             0.150    0.058    2.584    0.010    0.150    0.212
 ##  .neg ~~                                                                
-##    .alert             0.185    0.096    1.935    0.053    0.185    0.180
+##    .alert             0.185    0.094    1.965    0.049    0.185    0.180
 ## 
 ## Variances:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .risklevel         1.965    0.207    9.492    0.000    1.965    0.734
-##    .neg               1.371    0.109   12.555    0.000    1.371    0.996
-##    .pos               0.649    0.082    7.892    0.000    0.649    0.998
-##    .alert             0.771    0.108    7.137    0.000    0.771    0.996
+##    .risklevel         1.965    0.210    9.353    0.000    1.965    0.734
+##    .neg               1.371    0.110   12.449    0.000    1.371    0.996
+##    .pos               0.649    0.083    7.861    0.000    0.649    0.998
+##    .alert             0.771    0.106    7.242    0.000    0.771    0.996
 ## 
 ## R-Square:
 ##                    Estimate
@@ -568,95 +568,504 @@ summary(sur_rel_mediation_fit, fit.measures = TRUE, standardize = TRUE, estimate
 ## 
 ## Defined Parameters:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##     indirect1        -0.014    0.033   -0.415    0.679   -0.014   -0.004
-##     indirect2         0.065    0.134    0.482    0.630    0.065    0.020
+##     indirect1        -0.014    0.033   -0.419    0.675   -0.014   -0.004
+##     indirect2         0.065    0.134    0.483    0.629    0.065    0.020
 ##     Indirect3        -0.011    0.029   -0.365    0.715   -0.011   -0.003
-##     total             0.581    0.266    2.183    0.029    0.581    0.177</code></pre>
+##     total             0.581    0.267    2.179    0.029    0.581    0.177</code></pre>
 <pre class="r"><code>parameterEstimates(sur_rel_mediation_fit, boot.ci.type = &quot;bca.simple&quot;)</code></pre>
 <pre><code>##              lhs op                       rhs     label    est    se      z
 ## 1      risklevel  ~                       neg        b1 -0.097 0.110 -0.881
-## 2      risklevel  ~                       pos        b2  0.965 0.150  6.418
-## 3      risklevel  ~                     alert        b3 -0.100 0.143 -0.703
-## 4      risklevel  ~             recipient_num         c  0.541 0.237  2.285
-## 5            neg  ~             recipient_num        a1  0.141 0.194  0.726
-## 6            pos  ~             recipient_num        a2  0.067 0.136  0.493
-## 7          alert  ~             recipient_num        a3  0.106 0.148  0.716
-## 8            neg ~~                       pos           -0.152 0.079 -1.937
-## 9            pos ~~                     alert            0.150 0.059  2.558
-## 10           neg ~~                     alert            0.185 0.096  1.935
-## 11     risklevel ~~                 risklevel            1.965 0.207  9.492
-## 12           neg ~~                       neg            1.371 0.109 12.555
-## 13           pos ~~                       pos            0.649 0.082  7.892
-## 14         alert ~~                     alert            0.771 0.108  7.137
+## 2      risklevel  ~                       pos        b2  0.965 0.151  6.399
+## 3      risklevel  ~                     alert        b3 -0.100 0.142 -0.705
+## 4      risklevel  ~             recipient_num         c  0.541 0.238  2.272
+## 5            neg  ~             recipient_num        a1  0.141 0.194  0.729
+## 6            pos  ~             recipient_num        a2  0.067 0.135  0.497
+## 7          alert  ~             recipient_num        a3  0.106 0.147  0.721
+## 8            neg ~~                       pos           -0.152 0.076 -2.006
+## 9            pos ~~                     alert            0.150 0.058  2.584
+## 10           neg ~~                     alert            0.185 0.094  1.965
+## 11     risklevel ~~                 risklevel            1.965 0.210  9.353
+## 12           neg ~~                       neg            1.371 0.110 12.449
+## 13           pos ~~                       pos            0.649 0.083  7.861
+## 14         alert ~~                     alert            0.771 0.106  7.242
 ## 15 recipient_num ~~             recipient_num            0.248 0.000     NA
-## 16     indirect1 :=                     a1*b1 indirect1 -0.014 0.033 -0.415
-## 17     indirect2 :=                     a2*b2 indirect2  0.065 0.134  0.482
+## 16     indirect1 :=                     a1*b1 indirect1 -0.014 0.033 -0.419
+## 17     indirect2 :=                     a2*b2 indirect2  0.065 0.134  0.483
 ## 18     Indirect3 :=                     a3*b3 Indirect3 -0.011 0.029 -0.365
-## 19         total := c+(a1*b1)+(a2*b2)+(a3*b3)     total  0.581 0.266  2.183
+## 19         total := c+(a1*b1)+(a2*b2)+(a3*b3)     total  0.581 0.267  2.179
 ##    pvalue ci.lower ci.upper
-## 1   0.379   -0.306    0.127
-## 2   0.000    0.692    1.281
-## 3   0.482   -0.384    0.183
-## 4   0.022    0.070    0.989
-## 5   0.468   -0.245    0.529
-## 6   0.622   -0.194    0.340
-## 7   0.474   -0.187    0.403
-## 8   0.053   -0.305    0.003
-## 9   0.011    0.038    0.265
-## 10  0.053    0.013    0.394
-## 11  0.000    1.637    2.505
-## 12  0.000    1.181    1.608
-## 13  0.000    0.506    0.832
-## 14  0.000    0.588    1.018
+## 1   0.378   -0.308    0.124
+## 2   0.000    0.693    1.282
+## 3   0.481   -0.363    0.192
+## 4   0.023    0.075    0.991
+## 5   0.466   -0.258    0.504
+## 6   0.619   -0.209    0.324
+## 7   0.471   -0.185    0.395
+## 8   0.045   -0.302   -0.006
+## 9   0.010    0.044    0.272
+## 10  0.049    0.019    0.388
+## 11  0.000    1.638    2.475
+## 12  0.000    1.175    1.612
+## 13  0.000    0.504    0.832
+## 14  0.000    0.594    1.022
 ## 15     NA    0.248    0.248
-## 16  0.679   -0.134    0.020
-## 17  0.630   -0.175    0.360
-## 18  0.715   -0.113    0.020
-## 19  0.029    0.058    1.091</code></pre>
+## 16  0.675   -0.134    0.021
+## 17  0.629   -0.189    0.346
+## 18  0.715   -0.121    0.019
+## 19  0.029    0.052    1.094</code></pre>
 <pre class="r"><code>standardizedSolution(sur_rel_mediation_fit)</code></pre>
 <pre><code>##              lhs op                       rhs est.std    se       z pvalue
-## 1      risklevel  ~                       neg  -0.069 0.079  -0.881  0.378
-## 2      risklevel  ~                       pos   0.475 0.061   7.735  0.000
-## 3      risklevel  ~                     alert  -0.054 0.077  -0.701  0.484
-## 4      risklevel  ~             recipient_num   0.165 0.072   2.295  0.022
-## 5            neg  ~             recipient_num   0.060 0.082   0.729  0.466
-## 6            pos  ~             recipient_num   0.041 0.084   0.493  0.622
-## 7          alert  ~             recipient_num   0.060 0.083   0.721  0.471
-## 8            neg ~~                       pos  -0.162 0.081  -1.993  0.046
-## 9            pos ~~                     alert   0.212 0.082   2.574  0.010
-## 10           neg ~~                     alert   0.180 0.085   2.111  0.035
-## 11     risklevel ~~                 risklevel   0.734 0.062  11.775  0.000
-## 12           neg ~~                       neg   0.996 0.010 101.309  0.000
-## 13           pos ~~                       pos   0.998 0.007 143.798  0.000
-## 14         alert ~~                     alert   0.996 0.010 100.364  0.000
+## 1      risklevel  ~                       neg  -0.069 0.079  -0.881  0.379
+## 2      risklevel  ~                       pos   0.475 0.061   7.776  0.000
+## 3      risklevel  ~                     alert  -0.054 0.077  -0.704  0.481
+## 4      risklevel  ~             recipient_num   0.165 0.073   2.270  0.023
+## 5            neg  ~             recipient_num   0.060 0.082   0.732  0.464
+## 6            pos  ~             recipient_num   0.041 0.083   0.497  0.619
+## 7          alert  ~             recipient_num   0.060 0.082   0.725  0.468
+## 8            neg ~~                       pos  -0.162 0.078  -2.077  0.038
+## 9            pos ~~                     alert   0.212 0.081   2.603  0.009
+## 10           neg ~~                     alert   0.180 0.084   2.144  0.032
+## 11     risklevel ~~                 risklevel   0.734 0.063  11.646  0.000
+## 12           neg ~~                       neg   0.996 0.010 101.711  0.000
+## 13           pos ~~                       pos   0.998 0.007 144.956  0.000
+## 14         alert ~~                     alert   0.996 0.010 100.972  0.000
 ## 15 recipient_num ~~             recipient_num   1.000 0.000      NA     NA
-## 16     indirect1 :=                     a1*b1  -0.004 0.008  -0.549  0.583
-## 17     indirect2 :=                     a2*b2   0.020 0.040   0.488  0.626
-## 18     Indirect3 :=                     a3*b3  -0.003 0.006  -0.509  0.610
-## 19         total := c+(a1*b1)+(a2*b2)+(a3*b3)   0.177 0.081   2.188  0.029
+## 16     indirect1 :=                     a1*b1  -0.004 0.008  -0.547  0.585
+## 17     indirect2 :=                     a2*b2   0.020 0.040   0.491  0.623
+## 18     Indirect3 :=                     a3*b3  -0.003 0.006  -0.511  0.609
+## 19         total := c+(a1*b1)+(a2*b2)+(a3*b3)   0.177 0.081   2.179  0.029
 ##    ci.lower ci.upper
 ## 1    -0.224    0.085
-## 2     0.355    0.596
-## 3    -0.205    0.097
-## 4     0.024    0.305
-## 5    -0.101    0.221
-## 6    -0.123    0.206
-## 7    -0.103    0.222
-## 8    -0.321   -0.003
-## 9     0.051    0.373
-## 10    0.013    0.347
-## 11    0.612    0.857
+## 2     0.356    0.595
+## 3    -0.204    0.096
+## 4     0.022    0.307
+## 5    -0.100    0.220
+## 6    -0.122    0.205
+## 7    -0.102    0.221
+## 8    -0.314   -0.009
+## 9     0.052    0.371
+## 10    0.015    0.344
+## 11    0.611    0.858
 ## 12    0.977    1.016
 ## 13    0.985    1.012
 ## 14    0.977    1.016
 ## 15    1.000    1.000
 ## 16   -0.019    0.011
-## 17   -0.059    0.099
+## 17   -0.059    0.098
 ## 18   -0.016    0.009
-## 19    0.018    0.335</code></pre>
+## 19    0.018    0.336</code></pre>
 </div>
 <div id="check-results-with-the-ones-i-have-1" class="section level5">
 <h5>Check results with the ones I have</h5>
+</div>
+</div>
+</div>
+<div id="self-prediction-mediation-for-single-and-relationship-groups" class="section level3">
+<h3>Self Prediction Mediation for Single and Relationship Groups</h3>
+<div id="create-data-1" class="section level4">
+<h4>Create data</h4>
+<pre class="r"><code># create data for single
+pred_single &lt;- pred %&gt;% 
+  filter(group == 2)
+
+# create data for relationship
+pred_rel &lt;- pred %&gt;% 
+  filter(group == 1)</code></pre>
+</div>
+<div id="run-mediation-1" class="section level4">
+<h4>Run mediation</h4>
+<pre class="r"><code>pred_single_mediation &lt;- &#39;
+    # direct effect
+    risklevel ~ b1 * neg + b2 * pos + b3 * alert + c * recipient_num
+    # mediator
+    neg ~ a1 * recipient_num
+    pos ~ a2 * recipient_num
+    alert ~ a3 * recipient_num
+    # indirect effect (a*b)
+    indirect1 := a1 * b1
+    indirect2 := a2 * b2
+    Indirect3 := a3 * b3
+    # total effect
+    total := c + (a1 * b1) + (a2 * b2) + (a3 * b3)
+    # covariances
+    neg ~~ pos
+    pos ~~ alert
+    neg ~~ alert
+&#39;
+pred_single_mediation_fit &lt;- sem(model = pred_single_mediation, data = pred_single, se = &quot;bootstrap&quot;, bootstrap = 5000)
+summary(pred_single_mediation_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE, rsquare = TRUE)</code></pre>
+<pre><code>## lavaan 0.6-7 ended normally after 31 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of free parameters                         14
+##                                                       
+##   Number of observations                           133
+##                                                       
+## Model Test User Model:
+##                                                       
+##   Test statistic                                 0.000
+##   Degrees of freedom                                 0
+## 
+## Model Test Baseline Model:
+## 
+##   Test statistic                                56.162
+##   Degrees of freedom                                10
+##   P-value                                        0.000
+## 
+## User Model versus Baseline Model:
+## 
+##   Comparative Fit Index (CFI)                    1.000
+##   Tucker-Lewis Index (TLI)                       1.000
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)               -749.019
+##   Loglikelihood unrestricted model (H1)             NA
+##                                                       
+##   Akaike (AIC)                                1526.039
+##   Bayesian (BIC)                              1566.504
+##   Sample-size adjusted Bayesian (BIC)         1522.220
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.000
+##   90 Percent confidence interval - lower         0.000
+##   90 Percent confidence interval - upper         0.000
+##   P-value RMSEA &lt;= 0.05                             NA
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.000
+## 
+## Parameter Estimates:
+## 
+##   Standard errors                            Bootstrap
+##   Number of requested bootstrap draws             5000
+##   Number of successful bootstrap draws            5000
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   risklevel ~                                                           
+##     neg       (b1)   -0.074    0.156   -0.475    0.635   -0.074   -0.048
+##     pos       (b2)    0.438    0.243    1.801    0.072    0.438    0.202
+##     alert     (b3)    0.135    0.215    0.628    0.530    0.135    0.062
+##     recpnt_nm  (c)    0.861    0.298    2.889    0.004    0.861    0.251
+##   neg ~                                                                 
+##     recpnt_nm (a1)    0.176    0.191    0.925    0.355    0.176    0.080
+##   pos ~                                                                 
+##     recpnt_nm (a2)    0.376    0.133    2.826    0.005    0.376    0.238
+##   alert ~                                                               
+##     recpnt_nm (a3)    0.138    0.135    1.024    0.306    0.138    0.087
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##  .neg ~~                                                                
+##    .pos              -0.196    0.087   -2.252    0.024   -0.196   -0.232
+##  .pos ~~                                                                
+##    .alert             0.130    0.059    2.196    0.028    0.130    0.215
+##  .neg ~~                                                                
+##    .alert             0.202    0.078    2.571    0.010    0.202    0.233
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .risklevel         2.520    0.275    9.172    0.000    2.520    0.857
+##    .neg               1.217    0.106   11.484    0.000    1.217    0.994
+##    .pos               0.589    0.100    5.904    0.000    0.589    0.943
+##    .alert             0.617    0.092    6.668    0.000    0.617    0.992
+## 
+## R-Square:
+##                    Estimate
+##     risklevel         0.143
+##     neg               0.006
+##     pos               0.057
+##     alert             0.008
+## 
+## Defined Parameters:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##     indirect1        -0.013    0.044   -0.297    0.767   -0.013   -0.004
+##     indirect2         0.165    0.120    1.376    0.169    0.165    0.048
+##     Indirect3         0.019    0.047    0.395    0.693    0.019    0.005
+##     total             1.031    0.281    3.668    0.000    1.031    0.301</code></pre>
+<pre class="r"><code>parameterEstimates(pred_single_mediation_fit, boot.ci.type = &quot;bca.simple&quot;)</code></pre>
+<pre><code>##              lhs op                       rhs     label    est    se      z
+## 1      risklevel  ~                       neg        b1 -0.074 0.156 -0.475
+## 2      risklevel  ~                       pos        b2  0.438 0.243  1.801
+## 3      risklevel  ~                     alert        b3  0.135 0.215  0.628
+## 4      risklevel  ~             recipient_num         c  0.861 0.298  2.889
+## 5            neg  ~             recipient_num        a1  0.176 0.191  0.925
+## 6            pos  ~             recipient_num        a2  0.376 0.133  2.826
+## 7          alert  ~             recipient_num        a3  0.138 0.135  1.024
+## 8            neg ~~                       pos           -0.196 0.087 -2.252
+## 9            pos ~~                     alert            0.130 0.059  2.196
+## 10           neg ~~                     alert            0.202 0.078  2.571
+## 11     risklevel ~~                 risklevel            2.520 0.275  9.172
+## 12           neg ~~                       neg            1.217 0.106 11.484
+## 13           pos ~~                       pos            0.589 0.100  5.904
+## 14         alert ~~                     alert            0.617 0.092  6.668
+## 15 recipient_num ~~             recipient_num            0.250 0.000     NA
+## 16     indirect1 :=                     a1*b1 indirect1 -0.013 0.044 -0.297
+## 17     indirect2 :=                     a2*b2 indirect2  0.165 0.120  1.376
+## 18     Indirect3 :=                     a3*b3 Indirect3  0.019 0.047  0.395
+## 19         total := c+(a1*b1)+(a2*b2)+(a3*b3)     total  1.031 0.281  3.668
+##    pvalue ci.lower ci.upper
+## 1   0.635   -0.390    0.229
+## 2   0.072   -0.026    0.917
+## 3   0.530   -0.291    0.555
+## 4   0.004    0.263    1.442
+## 5   0.355   -0.200    0.549
+## 6   0.005    0.111    0.626
+## 7   0.306   -0.133    0.402
+## 8   0.024   -0.392   -0.043
+## 9   0.028    0.017    0.250
+## 10  0.010    0.048    0.356
+## 11  0.000    2.089    3.202
+## 12  0.000    1.033    1.458
+## 13  0.000    0.423    0.823
+## 14  0.000    0.464    0.843
+## 15     NA    0.250    0.250
+## 16  0.767   -0.176    0.036
+## 17  0.169    0.003    0.482
+## 18  0.693   -0.033    0.189
+## 19  0.000    0.460    1.558</code></pre>
+<pre class="r"><code>standardizedSolution(pred_single_mediation_fit)</code></pre>
+<pre><code>##              lhs op                       rhs est.std    se      z pvalue
+## 1      risklevel  ~                       neg  -0.048 0.101 -0.476  0.634
+## 2      risklevel  ~                       pos   0.202 0.106  1.898  0.058
+## 3      risklevel  ~                     alert   0.062 0.099  0.629  0.530
+## 4      risklevel  ~             recipient_num   0.251 0.085  2.947  0.003
+## 5            neg  ~             recipient_num   0.080 0.086  0.928  0.353
+## 6            pos  ~             recipient_num   0.238 0.085  2.800  0.005
+## 7          alert  ~             recipient_num   0.087 0.086  1.012  0.312
+## 8            neg ~~                       pos  -0.232 0.088 -2.644  0.008
+## 9            pos ~~                     alert   0.215 0.091  2.372  0.018
+## 10           neg ~~                     alert   0.233 0.085  2.734  0.006
+## 11     risklevel ~~                 risklevel   0.857 0.063 13.535  0.000
+## 12           neg ~~                       neg   0.994 0.014 72.596  0.000
+## 13           pos ~~                       pos   0.943 0.041 23.264  0.000
+## 14         alert ~~                     alert   0.992 0.015 65.750  0.000
+## 15 recipient_num ~~             recipient_num   1.000 0.000     NA     NA
+## 16     indirect1 :=                     a1*b1  -0.004 0.009 -0.414  0.679
+## 17     indirect2 :=                     a2*b2   0.048 0.034  1.436  0.151
+## 18     Indirect3 :=                     a3*b3   0.005 0.010  0.519  0.604
+## 19         total := c+(a1*b1)+(a2*b2)+(a3*b3)   0.301 0.080  3.757  0.000
+##    ci.lower ci.upper
+## 1    -0.245    0.149
+## 2    -0.007    0.410
+## 3    -0.132    0.256
+## 4     0.084    0.418
+## 5    -0.089    0.248
+## 6     0.071    0.405
+## 7    -0.082    0.257
+## 8    -0.404   -0.060
+## 9     0.037    0.393
+## 10    0.066    0.400
+## 11    0.733    0.981
+## 12    0.967    1.020
+## 13    0.864    1.023
+## 14    0.963    1.022
+## 15    1.000    1.000
+## 16   -0.022    0.014
+## 17   -0.018    0.114
+## 18   -0.015    0.026
+## 19    0.144    0.457</code></pre>
+<div id="check-results-with-the-ones-i-have-2" class="section level5">
+<h5>Check results with the ones I have</h5>
+<pre class="r"><code>pred_rel_mediation &lt;- &#39;
+    # direct effect
+    risklevel ~ b1 * neg + b2 * pos + b3 * alert + c * recipient_num
+    # mediator
+    neg ~ a1 * recipient_num
+    pos ~ a2 * recipient_num
+    alert ~ a3 * recipient_num
+    # indirect effect (a*b)
+    indirect1 := a1 * b1
+    indirect2 := a2 * b2
+    Indirect3 := a3 * b3
+    # total effect
+    total := c + (a1 * b1) + (a2 * b2) + (a3 * b3)
+    # covariances
+    neg ~~ pos
+    pos ~~ alert
+    neg ~~ alert
+&#39;
+pred_rel_mediation_fit &lt;- sem(model = pred_rel_mediation, data = pred_rel, se = &quot;bootstrap&quot;, bootstrap = 5000)
+summary(pred_rel_mediation_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE, rsquare = TRUE)</code></pre>
+<pre><code>## lavaan 0.6-7 ended normally after 28 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of free parameters                         14
+##                                                       
+##   Number of observations                           145
+##                                                       
+## Model Test User Model:
+##                                                       
+##   Test statistic                                 0.000
+##   Degrees of freedom                                 0
+## 
+## Model Test Baseline Model:
+## 
+##   Test statistic                                90.065
+##   Degrees of freedom                                10
+##   P-value                                        0.000
+## 
+## User Model versus Baseline Model:
+## 
+##   Comparative Fit Index (CFI)                    1.000
+##   Tucker-Lewis Index (TLI)                       1.000
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)               -831.055
+##   Loglikelihood unrestricted model (H1)             NA
+##                                                       
+##   Akaike (AIC)                                1690.111
+##   Bayesian (BIC)                              1731.785
+##   Sample-size adjusted Bayesian (BIC)         1687.484
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.000
+##   90 Percent confidence interval - lower         0.000
+##   90 Percent confidence interval - upper         0.000
+##   P-value RMSEA &lt;= 0.05                             NA
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.000
+## 
+## Parameter Estimates:
+## 
+##   Standard errors                            Bootstrap
+##   Number of requested bootstrap draws             5000
+##   Number of successful bootstrap draws            5000
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   risklevel ~                                                           
+##     neg       (b1)   -0.147    0.110   -1.339    0.181   -0.147   -0.109
+##     pos       (b2)    0.901    0.148    6.094    0.000    0.901    0.486
+##     alert     (b3)   -0.019    0.149   -0.127    0.899   -0.019   -0.011
+##     recpnt_nm  (c)    0.668    0.223    2.998    0.003    0.668    0.209
+##   neg ~                                                                 
+##     recpnt_nm (a1)   -0.255    0.194   -1.315    0.188   -0.255   -0.108
+##   pos ~                                                                 
+##     recpnt_nm (a2)   -0.040    0.147   -0.275    0.783   -0.040   -0.023
+##   alert ~                                                               
+##     recpnt_nm (a3)   -0.060    0.150   -0.400    0.689   -0.060   -0.033
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##  .neg ~~                                                                
+##    .pos              -0.257    0.081   -3.176    0.001   -0.257   -0.257
+##  .pos ~~                                                                
+##    .alert             0.256    0.069    3.718    0.000    0.256    0.331
+##  .neg ~~                                                                
+##    .alert             0.109    0.096    1.131    0.258    0.109    0.104
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .risklevel         1.733    0.231    7.499    0.000    1.733    0.684
+##    .neg               1.359    0.110   12.326    0.000    1.359    0.988
+##    .pos               0.737    0.083    8.854    0.000    0.737    0.999
+##    .alert             0.808    0.100    8.096    0.000    0.808    0.999
+## 
+## R-Square:
+##                    Estimate
+##     risklevel         0.316
+##     neg               0.012
+##     pos               0.001
+##     alert             0.001
+## 
+## Defined Parameters:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##     indirect1         0.038    0.044    0.848    0.397    0.038    0.012
+##     indirect2        -0.036    0.134   -0.272    0.786   -0.036   -0.011
+##     Indirect3         0.001    0.024    0.047    0.962    0.001    0.000
+##     total             0.670    0.256    2.620    0.009    0.670    0.210</code></pre>
+<pre class="r"><code>parameterEstimates(pred_rel_mediation_fit, boot.ci.type = &quot;bca.simple&quot;)</code></pre>
+<pre><code>##              lhs op                       rhs     label    est    se      z
+## 1      risklevel  ~                       neg        b1 -0.147 0.110 -1.339
+## 2      risklevel  ~                       pos        b2  0.901 0.148  6.094
+## 3      risklevel  ~                     alert        b3 -0.019 0.149 -0.127
+## 4      risklevel  ~             recipient_num         c  0.668 0.223  2.998
+## 5            neg  ~             recipient_num        a1 -0.255 0.194 -1.315
+## 6            pos  ~             recipient_num        a2 -0.040 0.147 -0.275
+## 7          alert  ~             recipient_num        a3 -0.060 0.150 -0.400
+## 8            neg ~~                       pos           -0.257 0.081 -3.176
+## 9            pos ~~                     alert            0.256 0.069  3.718
+## 10           neg ~~                     alert            0.109 0.096  1.131
+## 11     risklevel ~~                 risklevel            1.733 0.231  7.499
+## 12           neg ~~                       neg            1.359 0.110 12.326
+## 13           pos ~~                       pos            0.737 0.083  8.854
+## 14         alert ~~                     alert            0.808 0.100  8.096
+## 15 recipient_num ~~             recipient_num            0.248 0.000     NA
+## 16     indirect1 :=                     a1*b1 indirect1  0.038 0.044  0.848
+## 17     indirect2 :=                     a2*b2 indirect2 -0.036 0.134 -0.272
+## 18     Indirect3 :=                     a3*b3 Indirect3  0.001 0.024  0.047
+## 19         total := c+(a1*b1)+(a2*b2)+(a3*b3)     total  0.670 0.256  2.620
+##    pvalue ci.lower ci.upper
+## 1   0.181   -0.370    0.065
+## 2   0.000    0.594    1.176
+## 3   0.899   -0.296    0.287
+## 4   0.003    0.233    1.110
+## 5   0.188   -0.647    0.111
+## 6   0.783   -0.317    0.251
+## 7   0.689   -0.355    0.233
+## 8   0.001   -0.417   -0.101
+## 9   0.000    0.126    0.394
+## 10  0.258   -0.070    0.305
+## 11  0.000    1.372    2.302
+## 12  0.000    1.176    1.618
+## 13  0.000    0.593    0.923
+## 14  0.000    0.637    1.038
+## 15     NA    0.248    0.248
+## 16  0.397   -0.012    0.192
+## 17  0.786   -0.303    0.226
+## 18  0.962   -0.040    0.069
+## 19  0.009    0.190    1.188</code></pre>
+<pre class="r"><code>standardizedSolution(pred_rel_mediation_fit)</code></pre>
+<pre><code>##              lhs op                       rhs est.std    se       z pvalue
+## 1      risklevel  ~                       neg  -0.109 0.080  -1.353  0.176
+## 2      risklevel  ~                       pos   0.486 0.081   6.009  0.000
+## 3      risklevel  ~                     alert  -0.011 0.084  -0.127  0.899
+## 4      risklevel  ~             recipient_num   0.209 0.069   3.046  0.002
+## 5            neg  ~             recipient_num  -0.108 0.082  -1.319  0.187
+## 6            pos  ~             recipient_num  -0.023 0.085  -0.276  0.782
+## 7          alert  ~             recipient_num  -0.033 0.083  -0.399  0.690
+## 8            neg ~~                       pos  -0.257 0.075  -3.419  0.001
+## 9            pos ~~                     alert   0.331 0.084   3.947  0.000
+## 10           neg ~~                     alert   0.104 0.088   1.175  0.240
+## 11     risklevel ~~                 risklevel   0.684 0.072   9.510  0.000
+## 12           neg ~~                       neg   0.988 0.018  55.575  0.000
+## 13           pos ~~                       pos   0.999 0.004 250.656  0.000
+## 14         alert ~~                     alert   0.999 0.006 179.463  0.000
+## 15 recipient_num ~~             recipient_num   1.000 0.000      NA     NA
+## 16     indirect1 :=                     a1*b1   0.012 0.012   0.991  0.322
+## 17     indirect2 :=                     a2*b2  -0.011 0.042  -0.274  0.784
+## 18     Indirect3 :=                     a3*b3   0.000 0.003   0.122  0.903
+## 19         total := c+(a1*b1)+(a2*b2)+(a3*b3)   0.210 0.079   2.669  0.008
+##    ci.lower ci.upper
+## 1    -0.266    0.049
+## 2     0.328    0.645
+## 3    -0.176    0.155
+## 4     0.075    0.344
+## 5    -0.269    0.053
+## 6    -0.190    0.143
+## 7    -0.197    0.130
+## 8    -0.404   -0.110
+## 9     0.167    0.496
+## 10   -0.069    0.277
+## 11    0.543    0.825
+## 12    0.953    1.023
+## 13    0.992    1.007
+## 14    0.988    1.010
+## 15    1.000    1.000
+## 16   -0.011    0.035
+## 17   -0.093    0.070
+## 18   -0.005    0.006
+## 19    0.056    0.364</code></pre>
 </div>
 </div>
 </div>
