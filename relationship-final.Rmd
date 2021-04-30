@@ -17,10 +17,27 @@ sur <- read_spss("data/self_surrogate.sav")
 pred <- read_spss("data/self_prediction.sav")
 glimpse(sur)
 glimpse(pred)
+
+
 ```
 
-#### Self Surrogate Mediation for Relationship and Single
+### Self Surrogate Mediation for Relationship and Single
+#### Create data
+```{r self-sur-data}
+# create data for single
+sur_single <- sur %>% 
+  filter(group == 2)
+
+# create data for relationship
+sur_rel <- sur %>% 
+  filter(group == 1)
+```
+
+
+
 ```{r self-sur-mediation-relationship, eval = FALSE}
+
+
 
 
 surrogate_mediation_free <- '

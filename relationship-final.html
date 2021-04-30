@@ -248,8 +248,17 @@ glimpse(sur)</code></pre>
 ## $ alertint         &lt;dbl&gt; -0.95767196, -0.04232804, -0.04232804, 0.95767196, 1.…
 ## $ group            &lt;dbl&gt; 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 2, 2, 1, 1, 1, 1, 2, 1,…</code></pre>
 </div>
-<div id="self-surrogate-mediation-for-relationship-and-single" class="section level4">
-<h4>Self Surrogate Mediation for Relationship and Single</h4>
+<div id="self-surrogate-mediation-for-relationship-and-single" class="section level3">
+<h3>Self Surrogate Mediation for Relationship and Single</h3>
+<div id="create-data" class="section level4">
+<h4>Create data</h4>
+<pre class="r"><code># create data for single
+sur_single &lt;- sur %&gt;% 
+  filter(group == 2)
+
+# create data for relationship
+sur_rel &lt;- sur %&gt;% 
+  filter(group == 1)</code></pre>
 <pre class="r"><code>surrogate_mediation_free &lt;- &#39;
     # direct effect
     risklevel ~ c(b1a,b1b) * neg + c(b2a,b2b) * pos + c(b3a,b3b) * alert + c(c1,c2) * recipient_num
@@ -276,6 +285,7 @@ surrogate_fit &lt;- sem(model = surrogate_mediation_free, data = surrogate, se =
 summary(surrogate_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE, rsquare = TRUE)
 standardizedSolution(surrogate_fit)
 parameterEstimates(surrogate_fit, boot.ci.type = &quot;bca.simple&quot;)</code></pre>
+</div>
 </div>
 
 
