@@ -1,0 +1,21 @@
+---
+title: "relationship-final"
+author: "Ye Dam Yi"
+date: "4/29/2021"
+output: html_document
+---
+```{r setup, include=FALSE}
+require(tidyverse)
+require(lavaan)
+require(haven)
+require(QuantPsyc)
+```
+
+#### Load data
+```{r data}
+sur <- read_spss("data/self_surrogate.sav")
+pred <- read_spss("data/self_prediction.sav")
+
+```
+
+
