@@ -21,7 +21,7 @@ glimpse(pred)
 
 ```
 
-### Self Surrogate Mediation for Relationship and Single
+### Self Surrogate Mediation for Single and Relationship Groups
 #### Create data
 ```{r self-sur-data}
 # create data for single
@@ -33,37 +33,62 @@ sur_rel <- sur %>%
   filter(group == 1)
 ```
 
-
-
-```{r self-sur-mediation-relationship, eval = FALSE}
-
-
-
-
-surrogate_mediation_free <- '
+#### Run mediation
+```{r self-sur-mediation-single}
+sur_single_mediation <- '
     # direct effect
-    risklevel ~ c(b1a,b1b) * neg + c(b2a,b2b) * pos + c(b3a,b3b) * alert + c(c1,c2) * recipient_num
+    risklevel ~ b1 * neg + b2 * pos + b3 * alert + c * recipient_num
     # mediator
-    neg ~ c(a1a,a1b) * recipient_num
-    pos ~ c(a2a,a2b) * recipient_num
-    alert ~ c(a3a,a3b) * recipient_num
-    # indirect effect c(a*b)
-    indirect1_g1 := a1a * b1a
-    indirect2_g1 := a2a * b2a
-    Indirect3_g1:= a3a * b3a
-    indirect1_g2 := a1b * b1b
-    indirect2_g2 := a2b * b2b
-    Indirect3_g2 := a3b * b3b
+    neg ~ a1 * recipient_num
+    pos ~ a2 * recipient_num
+    alert ~ a3 * recipient_num
+    # indirect effect (a*b)
+    indirect1 := a1 * b1
+    indirect2 := a2 * b2
+    Indirect3 := a3 * b3
     # total effect
-    total_g1:= c1 + a1a * b1a + a2a * b2a + a3a * b3a
-    total_g2:= c2 + a1b * b1b + a2b * b2b + a3b * b3b
+    total := c + (a1 * b1) + (a2 * b2) + (a3 * b3)
     # covariances
     neg ~~ pos
     pos ~~ alert
     neg ~~ alert
 '
-surrogate_fit <- sem(model = surrogate_mediation_free, data = surrogate, se = "bootstrap", bootstrap = 5000, group = "group")
-summary(surrogate_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE, rsquare = TRUE)
-standardizedSolution(surrogate_fit)
-parameterEstimates(surrogate_fit, boot.ci.type = "bca.simple")
+sur_single_mediation_fit <- sem(model = sur_single_mediation, data = sur_single, se = "bootstrap", bootstrap = 5000)
+summary(sur_single_mediation_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE, rsquare = TRUE)
+standardizedSolution(sur_single_mediation_fit)
+parameterEstimates(sur_single_mediation_fit, boot.ci.type = "bca.simple")
 ```
+
+##### Check results with the ones I have
+
+```{r self-sur-mediation-relationship}
+
+sur_rel_mediation <- '
+    # direct effect
+    risklevel ~ b1 * neg + b2 * pos + b3 * alert + c * recipient_num
+    # mediator
+    neg ~ a1 * recipient_num
+    pos ~ a2 * recipient_num
+    alert ~ a3 * recipient_num
+    # indirect effect (a*b)
+    indirect1 := a1 * b1
+    indirect2 := a2 * b2
+    Indirect3 := a3 * b3
+    # total effect
+    total := c + (a1 * b1) + (a2 * b2) + (a3 * b3)
+    # covariances
+    neg ~~ pos
+    pos ~~ alert
+    neg ~~ alert
+'
+sur_rel_mediation_fit <- sem(model = sur_rel_mediation, data = sur_rel, se = "bootstrap", bootstrap = 5000)
+summary(sur_rel_mediation_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE, rsquare = TRUE)
+parameterEstimates(sur_rel_mediation_fit, boot.ci.type = "bca.simple")
+standardizedSolution(sur_rel_mediation_fit)
+```
+
+
+##### Check results with the ones I have
+
+
+
