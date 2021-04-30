@@ -15,7 +15,38 @@ require(QuantPsyc)
 ```{r data}
 sur <- read_spss("data/self_surrogate.sav")
 pred <- read_spss("data/self_prediction.sav")
-
+glimpse(sur)
+glimpse(pred)
 ```
 
+#### Self Surrogate Mediation for Relationship and Single
+```{r self-sur-mediation-relationship, eval = FALSE}
 
+
+surrogate_mediation_free <- '
+    # direct effect
+    risklevel ~ c(b1a,b1b) * neg + c(b2a,b2b) * pos + c(b3a,b3b) * alert + c(c1,c2) * recipient_num
+    # mediator
+    neg ~ c(a1a,a1b) * recipient_num
+    pos ~ c(a2a,a2b) * recipient_num
+    alert ~ c(a3a,a3b) * recipient_num
+    # indirect effect c(a*b)
+    indirect1_g1 := a1a * b1a
+    indirect2_g1 := a2a * b2a
+    Indirect3_g1:= a3a * b3a
+    indirect1_g2 := a1b * b1b
+    indirect2_g2 := a2b * b2b
+    Indirect3_g2 := a3b * b3b
+    # total effect
+    total_g1:= c1 + a1a * b1a + a2a * b2a + a3a * b3a
+    total_g2:= c2 + a1b * b1b + a2b * b2b + a3b * b3b
+    # covariances
+    neg ~~ pos
+    pos ~~ alert
+    neg ~~ alert
+'
+surrogate_fit <- sem(model = surrogate_mediation_free, data = surrogate, se = "bootstrap", bootstrap = 5000, group = "group")
+summary(surrogate_fit, fit.measures = TRUE, standardize = TRUE, estimates = TRUE, rsquare = TRUE)
+standardizedSolution(surrogate_fit)
+parameterEstimates(surrogate_fit, boot.ci.type = "bca.simple")
+```
